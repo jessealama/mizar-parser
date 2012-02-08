@@ -55,7 +55,21 @@
   (handle :get))
 
 (defmethod handle ((method (eql :get)))
-  "Method: GET")
+  (let ((message (raw-post-data :force-text t)))
+    (let* ((tempdir (temporary-directory))
+	   (article-path (merge-pathnames "article.miz" (format nil "~a/" tempdir))))
+      (write-string-into-file message article-path
+			      :if-exists :error
+			      :if-does-not-exist :create
+			      :external-format :ascii)
+      (if (accom article-path)
+	  (if (wsmparser article-path)
+	      (let ((wsx-path (merge-pathnames "article.wsx" (format nil "~a/" tempdir))))
+		(setf (return-code*) +http-ok+)
+		(setf (content-type*) "application/xml")
+		(file-as-string wsx-path))
+	      (setf (return-code*) +http-bad-request+))
+	  (setf (return-code*) +http-bad-request+)))))
 
 (defun not-found ()
   (setf (return-code*) +http-not-found+)

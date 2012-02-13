@@ -1,0 +1,52 @@
+Parsing Mizar Texts
+==========
+
+
+
+
+Resources
+----------
+
+The Mizar parsing service defines only one resource, `/`.  Accessing
+any other resource will result in a 404 (Not Found).
+
+* Allowed Methods **GET**, **HEAD**, **OPTIONS**
+
+* Protocol: In the message body, include the Mizar text.
+
+* Query Parameters
+
+    * format  Two supported values: `text` and `xml`.
+
+ 	    Default is `xml`.
+
+	* strictness: Three supported values: `none`, `weak`, `more`.
+
+	    Default is `none`.
+
+* Response (**GET**) An XML representation of the parse tree for the
+given Mizar text, if the text is parseable; the MIME type will be
+`application/xml` and the return code will be 200 (OK).  If the text is
+not parseable, and if it can be determined that the error lies in the
+supplied text and not with the Mizar tools themselves, then the return
+code will be 400 (Bad Request), the response body will be a plain text
+listing (served as `text/plain`) of the errors.  The response will be a
+list of lines each of which has the following format:
+
+    `line-number column-number error-number explanation`
+
+    where `line-number`, `column-number`, and `error-number` are
+    positive natural numbers and `explanation` is a natural language
+    explanation of the error.
+
+    If it can be determined that the supplied text is problematic
+    because the Mizar tools themselves somehow crash when operating on
+    the text, then the return code will be 500 (Internal Server
+    Error), and there will be an empty response body.
+
+* Response (**HEAD**) The response will be computed just as described
+    above, except that of course there will be an empty response body,
+    served without any MIME type.
+
+* Response (**OPTIONS**) The return code will be 200 (OK) and the
+    message body will be the string `GET, HEAD, OPTIONS`.

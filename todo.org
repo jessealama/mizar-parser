@@ -1,0 +1,4 @@
+* TODO Support the text format for strictness = none.
+  Simply pretty-print the text.
+* TODO Support the text format for strictness = weak.
+* TODO Suppose the text format for strictness = more.

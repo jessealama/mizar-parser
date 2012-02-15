@@ -6,6 +6,11 @@
   :test #'=
   :documentation "The port on which we listen for parsing requests.")
 
+(define-constant +biggest-article-length+
+    1000000
+  :test #'=
+  :documentation "The length of the largest article that we accept.")
+
 (defclass parser-acceptor (acceptor)
   ())
 
@@ -34,25 +39,43 @@
 
 ;; We don't handle anything requests except those for "/"
 (defmethod handle :around ((method symbol) (format string) (strictness string))
-  (let ((uri (script-name*)))
-    (if (string= uri "/")
-	(let ((format (cond ((string= format "text") :text)
-			    ((string= format "xml") :xml)
-			    ((stringp format) nil)
-			    ((null format) :text)))
-	      (strictness (cond ((string= strictness "none") :none)
-				((string= strictness "weak") :weak)
-				((string= strictness "more") :more)
-				((stringp strictness) nil)
-				((null format) :none))))
-	  (if (and format strictness)
-	      (handle method format strictness)
-	      (progn
-		(setf (return-code*) +http-bad-request+)
-		(setf (content-type*) nil))))
+  (let ((message-length-header (header-in* "Content-Length")))
+    (if message-length-header
+	(let ((message-length (handler-case (parse-integer message-length-header :junk-allowed nil)
+				(error () nil))))
+	  (if (integerp message-length)
+	      (cond ((null message-length)
+		     (setf (return-code*) +http-length-required+
+			   (content-type*) nil))
+		    ((< message-length 0)
+		     (setf (return-code*) +http-length-required+
+			   (content-type*) nil))
+		    ((> message-length +biggest-article-length+)
+		     (setf (return-code*) +http-request-entity-too-large+
+			   (content-type*) nil))
+		    (t
+		     (let ((uri (script-name*)))
+		       (if (string= uri "/")
+			   (let ((format (cond ((string= format "text") :text)
+					       ((string= format "xml") :xml)
+					       ((stringp format) nil)
+					       ((null format) :text)))
+				 (strictness (cond ((string= strictness "none") :none)
+						   ((string= strictness "weak") :weak)
+						   ((string= strictness "more") :more)
+						   ((stringp strictness) nil)
+						   ((null format) :none))))
+			     (if (and format strictness)
+				 (handle method format strictness)
+				 (progn
+				   (setf (return-code*) +http-bad-request+)
+				   (setf (content-type*) nil))))
+			   (progn
+			     (setf (return-code*) +http-not-found+)
+			     (setf (content-type*) nil))))))))
 	(progn
-	  (setf (return-code*) +http-not-found+)
-	  (setf (content-type*) nil)))))
+	  (setf (return-code*) +http-length-required+
+		(content-type*) nil)))))
 
 (defmethod handle ((method (eql :options)) format strictness)
   (declare (ignore format strictness))
@@ -72,28 +95,39 @@
   (let ((message (raw-post-data :force-text t)))
     (if message
 	(call-next-method)
-	(setf (return-code*) +http-bad-request+))))
+	(setf (return-code*) +http-bad-request+
+	      (content-type*) nil
+	      (header-out "Server") nil))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :xml))
 		   (strictness (eql :none)))
   (let ((message (raw-post-data :force-text t)))
     (let* ((tempdir (temporary-directory))
-	   (article-path (merge-pathnames "article.miz" (format nil "~a/" tempdir))))
-      (write-string-into-file message article-path
-			      :if-exists :error
-			      :if-does-not-exist :create
-			      :external-format :ascii)
-      (if (accom article-path)
-	  (if (wsmparser article-path)
-	      (let ((wsx-path (merge-pathnames "article.wsx" (format nil "~a/" tempdir))))
-		(setf (return-code*) +http-ok+)
-		(setf (content-type*) "application/xml")
-		(file-as-string wsx-path))
-	      (setf (return-code*) +http-bad-request+
-		    (content-type*) nil))
-	  (setf (return-code*) +http-bad-request+
-		(content-type*) nil)))))
+	   (article (make-instance 'article
+				   :directory (pathname-as-directory (pathname tempdir))
+				   :name "article"
+				   :text message)))
+      (multiple-value-bind (accom-ok? accom-crashed?)
+	  (accom article)
+	(if accom-ok?
+	    (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
+		(wsmparser article)
+	      (if wsmparser-ok?
+		  (let ((wsx-path (file-with-extension article "wsx")))
+		    (setf (return-code*) +http-ok+)
+		    (setf (content-type*) "application/xml")
+		    (file-as-string wsx-path))
+		  (if wsmparser-crashed?
+		      (setf (return-code*) +http-internal-server-error+
+			    (content-type*) nil)
+		      (setf (return-code*) +http-bad-request+
+			    (content-type*) nil))))
+	    (if accom-crashed?
+		(setf (return-code*) +http-internal-server-error+
+		      (content-type*) nil)
+		(setf (return-code*) +http-bad-request+
+		      (content-type*) nil)))))))
 
 (defmethod acceptor-dispatch-request ((acceptor parser-acceptor) request)
   (let ((method (request-method request))

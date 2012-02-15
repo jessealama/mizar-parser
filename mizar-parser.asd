@@ -16,5 +16,6 @@
   :serial t
   :depends-on ("com.gigamonkeys.pathnames" "hunchentoot" "cl-who")
   :components ((:file "packages")
+	       (:file "utils")
 	       (:file "mizar")
 	       (:file "parse")))

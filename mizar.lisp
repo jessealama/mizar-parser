@@ -77,6 +77,8 @@
 		(or (not (file-exists-p (err-file article)))
 		    (empty-err-file? article))))))
   #-ccl
+  (error "We don't handle your Common Lisp.  Sorry.")
+  #-(or ccl sbcl)
   (error "We don't handle your Common Lisp.  Sorry."))
 
 (defmacro run-mizar-tool-with-standard-flags (tool article)

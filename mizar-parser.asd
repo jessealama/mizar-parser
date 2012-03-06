@@ -14,7 +14,7 @@
   :author "Jesse Alama <jesse.alama@gmail.com>"
   :maintainer "Jesse Alama <jesse.alama@gmail.com>"
   :serial t
-  :depends-on ("com.gigamonkeys.pathnames" "hunchentoot" "cl-who")
+  :depends-on ("com.gigamonkeys.pathnames" "trivial-garbage" "hunchentoot" "cl-who")
   :components ((:file "packages")
 	       (:file "utils")
 	       (:file "mizar")

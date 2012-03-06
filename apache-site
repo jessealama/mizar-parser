@@ -1,0 +1,21 @@
+# An HTTP interface to the WSM and MSM Mizar text normalization tools.                                                                                                                                         
+# It is the subject of
+#                                                                                                                                                                                                             
+#   "New developments in parsing Mizar", by Czeslaw Bylinski and Jesse Alama                                                                                                                                   
+#                                                                                                                                                                                                              
+# submitted to CICM 2012 Track E (Systems and Projects).                                                                                                                                                       
+#                                                                                                                                                                                                              
+# The URL provided in that paper is                                                                                                                                                                            
+#                                                                                                                                                                                                              
+#   http://mizar.cs.ualberta.ca/parsing                                                                                                                                                                        
+#                                                                                                                                                                                                              
+# The servie that implements this is a Common Lisp service running                                                                                                                                             
+# internally on port 4387.  The service is looking for URLs that look                                                                                                                                          
+# like "/"; we ask apache to map requests for the resource "/parsing",                                                                                                                                         
+# as documented in the paper, into the very simple request for "/".                                                                                                                                            
+
+<Proxy *>
+    allow from all
+</Proxy>
+ProxyPass /parsing http://127.0.0.1:4387/
+ProxyPassReverse /parsing http://127.0.0.1:4387/

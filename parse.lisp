@@ -15,7 +15,7 @@
     (with-html-output-to-string (dummy)
       (:head
        (:title "Parsing Mizar Texts")
-       (:link :rel "stylesheet" :href "parsing.css" :type "text/css" :media "screen"))
+       (:link :rel "stylesheet" :href "/parsing/parsing.css" :type "text/css" :media "screen"))
       (:body
        (:h1 "About this service")
        (:p "The intention behind this site is to facilitate programmatic access to Mizar parsing services.  At the moment no HTML-driven interface to the parser services is provided; you are now looking at the only HTML page that this service emits, which is entirely informational.")

@@ -443,6 +443,10 @@
 	  (t
 	   (handle method format strictness)))))
 
+(defmethod acceptor-status-message ((acceptor parser-acceptor) http-return-code &key &allow-other-keys)
+  (declare (ignore acceptor http-return-code))
+  nil)
+
 (defun launch-parsing-service ()
   "Launch the Mizar parsing service."
   (start *parser-acceptor*))

@@ -419,10 +419,10 @@
 	(format (get-parameter "format" request))
 	(strictness (get-parameter "strictness" request))
 	(uri (request-uri request)))
-    (cond ((string= uri "/parsing.css"))
-	  (handle-static-file #p"/home/mizar-items/mizar-parser/parsing.css" "text/css")
+    (cond ((string= uri "/parsing.css")
+	   (handle-static-file #p"/home/mizar-items/mizar-parser/parsing.css" "text/css"))
 	  ((string= uri "/favicon.ico")
-	   (handle-static-file #p"/home/mizar-items/mizar-parser/favion.ico" "image/png"))
+	   (handle-static-file #p"/home/mizar-items/mizar-parser/favicon.ico" "image/png"))
 	  (t
 	   (handle method format strictness)))))
 

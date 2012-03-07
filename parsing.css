@@ -16,6 +16,7 @@ code {
 
 blockquote.session {
 	font-family: "Courier New", Courier, mono;
+	background-color: black;
 }
 
 blockquote.session ol {
@@ -26,6 +27,10 @@ blockquote.session ol {
 
 blockquote.session ol li {
 	list-style-type: none;
+}
+
+blockquote.session ol li.command {
+	color: white;
 }
 
 blockquote.session ol li.command:before {
@@ -39,10 +44,11 @@ blockquote.session ol li.comment:before {
 blockquote.session ol li.comment {
 	font-weight: bold;
 	font-style: italic;
+	color: gray;
 }
 
 blockquote.session ol li.pseudo-response:before {
-	content: "--> (";
+	content: "==> (";
 }
 
 blockquote.session ol li.pseudo-response:after {
@@ -52,4 +58,5 @@ blockquote.session ol li.pseudo-response:after {
 blockquote.session ol li.pseudo-response {
 	font-weight: bold;
 	font-style: italic;
+	color: gray;
 }

@@ -15,6 +15,7 @@
   :maintainer "Jesse Alama <jesse.alama@gmail.com>"
   :serial t
   :depends-on ("com.gigamonkeys.pathnames"
+	       "cl-ppcre"
 	       "hunchentoot-utils"
 	       "trivial-garbage"
 	       "hunchentoot"

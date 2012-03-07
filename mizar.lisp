@@ -56,6 +56,83 @@
    (with-open-file (file (err-file article))
      (file-length file))))
 
+(defun message-file ()
+  (merge-pathnames "mizar.msg" (mizfiles)))
+
+(defgeneric explain-error (err-code)
+  (:documentation "Consult the mizar.msg file to explain the error code ERR-CODE."))
+
+(defmethod explain-error ((err-code-str string))
+  (let ((err-code (parse-integer err-code-str :junk-allowed nil)))
+    (explain-error err-code)))
+
+(let ((error-table (make-hash-table :test #'eql)))
+  (defmethod explain-error ((err-code integer))
+    (multiple-value-bind (known-value found?)
+	(gethash err-code error-table)
+      (if found?
+	  known-value
+	  (setf (gethash err-code error-table)
+		(let ((message-file (message-file)))
+		  (if (file-exists-p message-file)
+		      (let (explanation)
+			(with-open-file (messages message-file
+						  :direction :input
+						  :if-does-not-exist :error)
+			  (loop
+			     with pattern = (format nil "^# ~d$" err-code)
+			     for line = (read-line messages nil :eof)
+			     do
+			       (cond ((eq line :eof) (return))
+				     ((null line) (return))
+				     ((scan pattern line)
+				      (let ((explanation-line (read-line messages nil :eof)))
+					(cond ((eq explanation-line :eof) (return))
+					      ((null explanation-line) (return))
+					      (t
+					       (setf explanation explanation-line)
+					       (return))))))))
+			explanation)
+		      (error "The mizar error message file does not exist at the expected location~%~%  ~a~%" (namestring message-file))))))))
+  (defun error-table ()
+    error-table))
+
+(defgeneric explain-errors (article)
+  (:documentation "Explain the error file for ARTICLE."))
+
+(defmethod explain-errors :around ((article article))
+  (let ((err-file (file-with-extension article "err")))
+    (if (file-exists-p err-file)
+	(call-next-method)
+	(error "The article ~a has no .err file." article))))
+
+(defmethod explain-errors ((article article))
+  (let ((err-file (file-with-extension article "err"))
+	(explanation ""))
+    (with-open-file (errs err-file
+			  :if-does-not-exist :error
+			  :direction :input)
+      (loop
+	 with err-line-pattern = "^([0-9]+) ([0-9]+) ([0-9]+)$"
+	 for line = (read-line errs nil :eof)
+	 do
+	   (cond ((eq line :eof) (return))
+		 ((null line) (return))
+		 ((register-groups-bind (line-num col-num err-code)
+		      (err-line-pattern line)
+		    (let ((explanation-for-line (explain-error err-code)))
+		      (setf explanation
+			    (concatenate 'string
+					 explanation
+					 (format nil "~a ~a ~a ~a~%" line-num col-num err-code explanation-for-line))))))
+		 (t
+		  (setf explanation
+			(concatenate 'string
+				     explanation
+				     (format nil "[Error: unable to parse the error line \"~a\"~%" line)))
+		  (return)))))
+    explanation))
+
 (define-constant +mizar-system-version+
     "7.13.01"
   :test #'string=
@@ -89,7 +166,7 @@
 (defun mizfiles (&optional (mizar-system-version +mizar-system-version+)
 		           (mml-version +mml-version+))
   (let ((full-system-name (format nil "~a-~a" mizar-system-version mml-version)))
-    (pathname (format nil "~a~a"
+    (pathname (format nil "~a~a/"
 		      (namestring +mizar-release-root-dir+)
 		      full-system-name))))
 

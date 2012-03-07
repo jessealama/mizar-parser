@@ -102,7 +102,8 @@
 (defmethod handle (method format strictness)
   (declare (ignore method format strictness))
   (setf (return-code*) +http-bad-request+)
-  (setf (content-type*) nil))
+  (setf (content-type*) nil)
+  (setf (header-out "Server") "e"))
 
 (defmethod handle ((method symbol) (format null) (strictness string))
   (handle method "xml" strictness))
@@ -138,7 +139,8 @@
 				 (handle method format strictness)
 				 (progn
 				   (setf (return-code*) +http-bad-request+)
-				   (setf (content-type*) nil))))
+				   (setf (content-type*) nil)
+				   (setf (header-out "Server") "f"))))
 			   (progn
 			     (setf (return-code*) +http-not-found+)
 			     (setf (content-type*) nil))))))))
@@ -182,7 +184,8 @@
 	   (call-next-method))
 	  (t
 	   (setf (return-code*) +http-bad-request+
-		  (content-type*) nil)))))
+		  (content-type*) nil
+		  (header-out "Server") "g")))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :xml))
@@ -206,13 +209,21 @@
 		  (if wsmparser-crashed?
 		      (setf (return-code*) +http-internal-server-error+
 			    (content-type*) nil)
-		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil))))
+		      (progn
+			(setf (return-code*) +http-bad-request+
+			      (content-type*) "text/plain"
+			      (header-out "Server") "h")
+			"WSM returned errors."))))
 	    (if accom-crashed?
-		(setf (return-code*) +http-internal-server-error+
-		      (content-type*) nil)
-		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil)))))))
+		(progn
+		  (setf (return-code*) +http-internal-server-error+
+			(content-type*) "text/plain")
+		  "The supplied article killed the accommodator.")
+		(let ((error-explanation (explain-errors article)))
+		  (setf (return-code*) +http-bad-request+
+			(content-type*) "text/plain"
+			(header-out "Server") error-explanation)
+		  error-explanation)))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :text))
@@ -237,12 +248,14 @@
 		      (setf (return-code*) +http-internal-server-error+
 			    (content-type*) nil)
 		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil))))
+			    (content-type*) nil
+			    (header-out "Server") "j"))))
 	    (if accom-crashed?
 		(setf (return-code*) +http-internal-server-error+
 		      (content-type*) nil)
 		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil)))))))
+		      (content-type*) nil
+		      (header-out "Server") "k")))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :text))
@@ -397,22 +410,26 @@
 				    (setf (return-code*) +http-internal-server-error+
 					  (content-type*) nil)
 				    (setf (return-code*) +http-bad-request+
-					  (content-type*) nil)))))
+					  (content-type*) nil
+					  (header-out "Server") "a")))))
 			(if msmprocessor-crashed?
 			    (setf (return-code*) +http-internal-server-error+
 				  (content-type*) nil)
 			    (setf (return-code*) +http-bad-request+
-				  (content-type*) nil))))
+				  (content-type*) nil
+				  (header-out "Server") "b"))))
 		  (if wsmparser-crashed?
 		      (setf (return-code*) +http-internal-server-error+
 			    (content-type*) nil)
 		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil))))
+			    (content-type*) nil
+			    (header-out "Server") "c"))))
 	    (if accom-crashed?
 		(setf (return-code*) +http-internal-server-error+
 		      (content-type*) nil)
 		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil)))))))
+		      (content-type*) nil
+		      (header-out "Server") "d")))))))
 
 (defmethod acceptor-dispatch-request ((acceptor parser-acceptor) request)
   (let ((method (request-method request))

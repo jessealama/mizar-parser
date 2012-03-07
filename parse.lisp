@@ -15,11 +15,24 @@
     (with-html-output-to-string (dummy)
       (:head
        (:title "Parsing Mizar Texts")
-       (:link :rel "stylesheet" :href "parsing.css" :type "text/css" :media "screen"))
+       (:link :rel "stylesheet" :href "/parsing/parsing.css" :type "text/css" :media "screen"))
       (:body
        (:h1 "About this service")
        (:p "The intention behind this site is to facilitate programmatic access to Mizar parsing services.  At the moment no HTML-driven interface to the parser services is provided; you are now looking at the only HTML page that this service emits, which is entirely informational.")
-       (:h1 "HTTP resources")
+       (:h1 "Example usage")
+       (:p "One can use this service using any means that permit one to include a Mizar text in the body of an HTTP message.  As mentioned earlier, the service does not (at present) aim to provide a user-friendly, HTML interface to the Mizar parser tools.  Rather, one uses the service by submitting certain HTTP requests (" (:a :href "#http-resources" "as documented below") ").  One can use standard commandline tools such as " (:a :href "http://curl.haxx.se/" :title "cURL" "curl")  ", " (:a :href "http://www.gnu.org/software/wget/" :title "GNU Wget" "wget") ", and through HTTP interfaces such as " (:a :href "http://dvcs.w3.org/hg/xhr/raw-file/tip/Overview.html" :title "XMLHttpRequest" "XMLHttpRequest") " and HTTP libraries for " (:a :href "http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP.pm" :title "LWP (Perl)" "Perl") ", " (:a :href "http://docs.python.org/library/httplib.html" :title "httplib (Python library)" "Python") ", " (:a :href "http://hackage.haskell.org/package/HTTP" :title "HTTP (Haskell library)" "Haskell") ", " (:a :href "http://ruby-doc.org/stdlib-1.9.3/libdoc/net/http/rdoc/Net/HTTP.html" :title "HTTP (Ruby library)" "Ruby") ", " (:a :href "http://weitz.de/drakma/" :title "Drakma (Common Lisp)" "Common Lisp") ", " (:a :href "http://www.w3.org/Library/" :title "Libwww (C library)" "C") ", etc.")
+       (:p "With curl, for example, one can use the service in this way:")
+       ((:blockquote :class "session")
+         (:ol
+	  ((:li :class "command") "article=`cat article.miz`")
+	  ((:li :class "comment") "Note the escaping of the variable $article and the URI.")
+	  ((:li :class "comment") "Your browser may wrap the next command over multiple lines;")
+	  ((:li :class "comment") "keep in mind that the URI should not contain whitespace.")
+	  ((:li :class "command") "curl -X GET --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=wsm&amp;format=text'")
+	  ((:li :class "pseudo-response") "Weakly Strict Mizar form of the contents of article.miz, in plain text format.")
+	  ((:li :class "command") "curl -X GET --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=none&amp;format=xml'")
+	  ((:li :class "pseudo-response") "Parse tree for article.miz, in XML format.")))
+       ((:h1 :id "http-resources") "HTTP resources")
        (:p "At present, the Mizar parsing service handles requests for only one resource, " (:code "/parsing") ".  Accessing any other resource, with any HTTP method, will result in a " (:code "404 (Not Found)") " error.")
        (:ul
 	(:li (:p "Supported HTTP Methods: " (:strong "GET") ", " (:strong "HEAD") ", " (:strong "OPTIONS") "."))

@@ -14,7 +14,8 @@
 (define-constant +information-message+
     (with-html-output-to-string (dummy)
       (:head
-       (:title "Parsing Mizar Texts"))
+       (:title "Parsing Mizar Texts")
+       (:link :rel "stylesheet" :href "parsing.css" :type "text/css" :media "screen"))
       (:body
        (:h1 "About this service")
        (:p "The intention behind this site is to facilitate programmatic access to Mizar parsing services.  At the moment no HTML-driven interface to the parser services is provided; you are now looking at the only HTML page that this service emits, which is entirely informational.")
@@ -394,8 +395,11 @@
 (defmethod acceptor-dispatch-request ((acceptor parser-acceptor) request)
   (let ((method (request-method request))
 	(format (get-parameter "format" request))
-	(strictness (get-parameter "strictness" request)))
-    (handle method format strictness)))
+	(strictness (get-parameter "strictness" request))
+	(uri (request-uri request)))
+    (if (string= uri "/parsing.css")
+	(handle-static-file #p"/home/mizar-items/mizar-parser/parsing.css" "text/css")
+	(handle method format strictness))))
 
 (defun launch-parsing-service ()
   "Launch the Mizar parsing service."

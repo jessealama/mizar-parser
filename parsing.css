@@ -1,5 +1,6 @@
 body {
 	background-color: silver;
+	font-family: Georgia, "Times New Roman", Times, serif;
 }
 
 h1 {
@@ -11,4 +12,44 @@ h1 {
 
 code {
 	font-weight: bold;
+}
+
+blockquote.session {
+	font-family: "Courier New", Courier, mono;
+}
+
+blockquote.session ol {
+	font-weight: bold;
+	border-style: dotted;
+	padding-left: 0;
+}
+
+blockquote.session ol li {
+	list-style-type: none;
+}
+
+blockquote.session ol li.command:before {
+	content:"$ ";
+}
+
+blockquote.session ol li.comment:before {
+	content: "# ";
+}
+
+blockquote.session ol li.comment {
+	font-weight: bold;
+	font-style: italic;
+}
+
+blockquote.session ol li.pseudo-response:before {
+	content: "--> (";
+}
+
+blockquote.session ol li.pseudo-response:after {
+	content: ")";
+}
+
+blockquote.session ol li.pseudo-response {
+	font-weight: bold;
+	font-style: italic;
 }

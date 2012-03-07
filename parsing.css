@@ -1,0 +1,14 @@
+body {
+	background-color: silver;
+}
+
+h1 {
+	font-weight: bold;
+	font-style: italic;
+	text-align: center;
+	border-style: solid;
+}
+
+code {
+	font-weight: bold;
+}

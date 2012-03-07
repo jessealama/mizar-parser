@@ -77,10 +77,9 @@
 
 ;; By default, all requests are bad
 (defmethod handle (method format strictness)
-  (declare (ignore method))
+  (declare (ignore method format strictness))
   (setf (return-code*) +http-bad-request+)
-  (setf (content-type*) nil)
-  (setf (header-out "Server") (format nil "default bad; format = ~a and strictness = ~a (is a string? ~a)" format strictness (stringp strictness))))
+  (setf (content-type*) nil))
 
 (defmethod handle ((method symbol) (format null) (strictness string))
   (handle method "xml" strictness))
@@ -116,8 +115,7 @@
 				 (handle method format strictness)
 				 (progn
 				   (setf (return-code*) +http-bad-request+)
-				   (setf (content-type*) nil)
-				   (setf (header-out "Server") "weird strictness or format"))))
+				   (setf (content-type*) nil))))
 			   (progn
 			     (setf (return-code*) +http-not-found+)
 			     (setf (content-type*) nil))))))))
@@ -161,8 +159,7 @@
 	   (call-next-method))
 	  (t
 	   (setf (return-code*) +http-bad-request+
-		  (content-type*) nil
-		  (header-out "Server") "hello")))))
+		  (content-type*) nil)))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :xml))
@@ -187,14 +184,12 @@
 		      (setf (return-code*) +http-internal-server-error+
 			    (content-type*) nil)
 		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil
-			    (header-out "Server") "hi"))))
+			    (content-type*) nil))))
 	    (if accom-crashed?
 		(setf (return-code*) +http-internal-server-error+
 		      (content-type*) nil)
 		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil
-		      (header-out "Server") "hola")))))))
+		      (content-type*) nil)))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :text))
@@ -219,14 +214,12 @@
 		      (setf (return-code*) +http-internal-server-error+
 			    (content-type*) nil)
 		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil
-			    (header-out "Server") "hi"))))
+			    (content-type*) nil))))
 	    (if accom-crashed?
 		(setf (return-code*) +http-internal-server-error+
 		      (content-type*) nil)
 		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil
-		      (header-out "Server") "hola")))))))
+		      (content-type*) nil)))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :text))
@@ -251,14 +244,12 @@
 		      (setf (return-code*) +http-internal-server-error+
 			    (content-type*) nil)
 		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil
-			    (header-out "Server") "hi"))))
+			    (content-type*) nil))))
 	    (if accom-crashed?
 		(setf (return-code*) +http-internal-server-error+
 		      (content-type*) nil)
 		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil
-		      (header-out "Server") "hola")))))))
+		      (content-type*) nil)))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :xml))
@@ -294,27 +285,22 @@
 				    (setf (return-code*) +http-internal-server-error+
 					  (content-type*) nil)
 				    (setf (return-code*) +http-bad-request+
-					  (content-type*) nil
-					  (header-out "Server") "hi")))))
+					  (content-type*) nil)))))
 			(if msplit-crashed?
 			    (setf (return-code*) +http-internal-server-error+
-				  (content-type*) nil
-				  (header-out "Server") "msplit crashed")
+				  (content-type*) nil)
 			    (setf (return-code*) +http-bad-request+
-				  (content-type*) nil
-				  (header-out "Server") "msplit not ok, but didn't crash")))))
+				  (content-type*) nil)))))
 		  (if wsmparser-crashed?
 		      (setf (return-code*) +http-internal-server-error+
 			    (content-type*) nil)
 		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil
-			    (header-out "Server") "hi"))))
+			    (content-type*) nil))))
 	    (if accom-crashed?
 		(setf (return-code*) +http-internal-server-error+
 		      (content-type*) nil)
 		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil
-		      (header-out "Server") "hola")))))))
+		      (content-type*) nil)))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :text))
@@ -342,20 +328,17 @@
 			    (setf (return-code*) +http-internal-server-error+
 				  (content-type*) nil)
 			    (setf (return-code*) +http-bad-request+
-				  (content-type*) nil
-				  (header-out "Server") "hi"))))
+				  (content-type*) nil))))
 		  (if wsmparser-crashed?
 		      (setf (return-code*) +http-internal-server-error+
 			    (content-type*) nil)
 		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil
-			    (header-out "Server") "hi"))))
+			    (content-type*) nil))))
 	    (if accom-crashed?
 		(setf (return-code*) +http-internal-server-error+
 		      (content-type*) nil)
 		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil
-		      (header-out "Server") "hola")))))))
+		      (content-type*) nil)))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :xml))
@@ -391,26 +374,22 @@
 				    (setf (return-code*) +http-internal-server-error+
 					  (content-type*) nil)
 				    (setf (return-code*) +http-bad-request+
-					  (content-type*) nil
-					  (header-out "Server") "hi")))))
+					  (content-type*) nil)))))
 			(if msmprocessor-crashed?
 			    (setf (return-code*) +http-internal-server-error+
 				  (content-type*) nil)
 			    (setf (return-code*) +http-bad-request+
-				  (content-type*) nil
-				  (header-out "Server") "hi"))))
+				  (content-type*) nil))))
 		  (if wsmparser-crashed?
 		      (setf (return-code*) +http-internal-server-error+
 			    (content-type*) nil)
 		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil
-			    (header-out "Server") "hi"))))
+			    (content-type*) nil))))
 	    (if accom-crashed?
 		(setf (return-code*) +http-internal-server-error+
 		      (content-type*) nil)
 		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil
-		      (header-out "Server") "hola")))))))
+		      (content-type*) nil)))))))
 
 (defmethod acceptor-dispatch-request ((acceptor parser-acceptor) request)
   (let ((method (request-method request))

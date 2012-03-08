@@ -99,10 +99,6 @@
 		 :port +parser-port+)
   "The Hunchentoot acceptor that we use for the parser service.")
 
-(defmethod acceptor-status-message ((acceptor parser-acceptor) http-status-code &key &allow-other-keys)
-  (when (>= http-status-code 400)
-    ""))
-
 (defgeneric handle (method format strictness)
   (:documentation "Handle the current request, assuming that it was made using the HTTP method METHOD (e.g., GET, HEAD, PUT, OPTIONS, etc)."))
 
@@ -124,6 +120,10 @@
 (defmethod handle ((method symbol) (format string) (strictness null))
   (handle method format "none"))
 
+(defmacro empty-message-with-code (http-return-code)
+  `(setf (return-code*) ,http-return-code
+	 (content-type*) nil))
+
 ;; We don't handle anything requests except those for "/"
 (defmethod handle ((method symbol) (format string) (strictness string))
   (let ((message-length-header (header-in* "Content-Length")))
@@ -132,14 +132,11 @@
 				(error () nil))))
 	  (if (integerp message-length)
 	      (cond ((null message-length)
-		     (setf (return-code*) +http-length-required+
-			   (content-type*) nil))
+		     (empty-message-with-code +http-length-required+))
 		    ((< message-length 0)
-		     (setf (return-code*) +http-length-required+
-			   (content-type*) nil))
+		     (empty-message-with-code +http-length-required+))
 		    ((> message-length +biggest-article-length+)
-		     (setf (return-code*) +http-request-entity-too-large+
-			   (content-type*) nil))
+		     (empty-message-with-code +http-request-entity-too-large+))
 		    (t
 		     (let ((uri (script-name*)))
 		       (if (string= uri "/")
@@ -150,23 +147,14 @@
 						   ((string= strictness "msm") :msm))))
 			     (if (and format strictness)
 				 (handle method format strictness)
-				 (progn
-				   (setf (return-code*) +http-bad-request+)
-				   (setf (content-type*) nil)
-				   (setf (header-out "Server") "f"))))
-			   (progn
-			     (setf (return-code*) +http-not-found+)
-			     (setf (content-type*) nil))))))))
-	(progn
-	  (setf (return-code*) +http-length-required+
-		(content-type*) nil)))))
+				 (empty-message-with-code +http-bad-request+)))
+			   (empty-message-with-code +http-not-found+)))))))
+	(empty-message-with-code +http-length-required+))))
 
 (defmethod handle ((method (eql :options)) format strictness)
   (declare (ignore format strictness))
-  (setf (return-code*) +http-no-content+)
-  (setf (content-type*) nil)
   (setf (header-out "Accept") "OPTIONS, HEAD, GET")
-  "")
+  (empty-message-with-code +http-no-content+))
 
 (defmethod handle ((method (eql :head)) format strictness)
   (declare (ignore method))
@@ -193,12 +181,9 @@
 (defmethod handle :around ((method (eql :get)) format strictness)
   (declare (ignore format strictness))
   (let ((message (raw-post-data :force-text t)))
-    (cond (message
-	   (call-next-method))
-	  (t
-	   (setf (return-code*) +http-bad-request+
-		  (content-type*) nil
-		  (header-out "Server") "g")))))
+    (if message
+	(call-next-method)
+	(empty-message-with-code +http-bad-request+))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :xml))
@@ -220,18 +205,10 @@
 		    (setf (content-type*) "application/xml")
 		    (file-as-string wsx-path))
 		  (if wsmparser-crashed?
-		      (setf (return-code*) +http-internal-server-error+
-			    (content-type*) nil)
-		      (progn
-			(setf (return-code*) +http-bad-request+
-			      (content-type*) "text/plain"
-			      (header-out "Server") "h")
-			"WSM returned errors."))))
+		      (empty-message-with-code +http-internal-server-error+)
+		      (empty-message-with-code +http-bad-request+))))
 	    (if accom-crashed?
-		(progn
-		  (setf (return-code*) +http-internal-server-error+
-			(content-type*) "text/plain")
-		  "The supplied article killed the accommodator.")
+		(empty-message-with-code +http-internal-server-error+)
 		(let ((error-explanation (explain-errors article)))
 		  (setf (return-code*) +http-bad-request+
 			(content-type*) "text/plain"
@@ -258,17 +235,11 @@
 		    (setf (content-type*) "text/plain")
 		    (file-as-string miz-path))
 		  (if wsmparser-crashed?
-		      (setf (return-code*) +http-internal-server-error+
-			    (content-type*) nil)
-		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil
-			    (header-out "Server") "j"))))
+		      (empty-message-with-code +http-internal-server-error+)
+		      (empty-message-with-code +http-bad-request+))))
 	    (if accom-crashed?
-		(setf (return-code*) +http-internal-server-error+
-		      (content-type*) nil)
-		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil
-		      (header-out "Server") "k")))))))
+		(empty-message-with-code +http-internal-server-error+)
+		(empty-message-with-code +http-bad-request+)))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :text))
@@ -290,15 +261,11 @@
 		    (setf (content-type*) "text/plain")
 		    (file-as-string wsm-path))
 		  (if wsmparser-crashed?
-		      (setf (return-code*) +http-internal-server-error+
-			    (content-type*) nil)
-		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil))))
+		      (empty-message-with-code +http-internal-server-error+)
+		      (empty-message-with-code +http-bad-request+))))
 	    (if accom-crashed?
-		(setf (return-code*) +http-internal-server-error+
-		      (content-type*) nil)
-		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil)))))))
+		(empty-message-with-code +http-internal-server-error+)
+		(empty-message-with-code +http-bad-request+)))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :xml))
@@ -336,20 +303,14 @@
 				    (setf (return-code*) +http-bad-request+
 					  (content-type*) nil)))))
 			(if msplit-crashed?
-			    (setf (return-code*) +http-internal-server-error+
-				  (content-type*) nil)
-			    (setf (return-code*) +http-bad-request+
-				  (content-type*) nil)))))
+			    (empty-message-with-code +http-internal-server-error+)
+			    (empty-message-with-code +http-bad-request+)))))
 		  (if wsmparser-crashed?
-		      (setf (return-code*) +http-internal-server-error+
-			    (content-type*) nil)
-		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil))))
+		      (empty-message-with-code +http-internal-server-error+)
+		      (empty-message-with-code +http-bad-request+))))
 	    (if accom-crashed?
-		(setf (return-code*) +http-internal-server-error+
-		      (content-type*) nil)
-		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil)))))))
+		(empty-message-with-code +http-internal-server-error+)
+		(empty-message-with-code +http-bad-request+)))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :text))
@@ -374,20 +335,14 @@
 			  (setf (content-type*) "text/plain")
 			  (file-as-string msm-path))
 			(if msmprocessor-crashed?
-			    (setf (return-code*) +http-internal-server-error+
-				  (content-type*) nil)
-			    (setf (return-code*) +http-bad-request+
-				  (content-type*) nil))))
+			    (empty-message-with-code +http-internal-server-error+)
+			    (empty-message-with-code +http-bad-request+))))
 		  (if wsmparser-crashed?
-		      (setf (return-code*) +http-internal-server-error+
-			    (content-type*) nil)
-		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil))))
+		      (empty-message-with-code +http-internal-server-error+)
+		      (empty-message-with-code +http-bad-request+))))
 	    (if accom-crashed?
-		(setf (return-code*) +http-internal-server-error+
-		      (content-type*) nil)
-		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil)))))))
+		(empty-message-with-code +http-internal-server-error+)
+		(empty-message-with-code +http-bad-request+)))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :xml))
@@ -420,29 +375,17 @@
 				  (setf (content-type*) "application/xml")
 				  (file-as-string wsx-path))
 				(if wsmparser-crashed-again?
-				    (setf (return-code*) +http-internal-server-error+
-					  (content-type*) nil)
-				    (setf (return-code*) +http-bad-request+
-					  (content-type*) nil
-					  (header-out "Server") "a")))))
+				    (empty-message-with-code +http-internal-server-error+)
+				    (empty-message-with-code +http-bad-request+)))))
 			(if msmprocessor-crashed?
-			    (setf (return-code*) +http-internal-server-error+
-				  (content-type*) nil)
-			    (setf (return-code*) +http-bad-request+
-				  (content-type*) nil
-				  (header-out "Server") "b"))))
+			    (empty-message-with-code +http-internal-server-error+)
+			    (empty-message-with-code +http-bad-request+))))
 		  (if wsmparser-crashed?
-		      (setf (return-code*) +http-internal-server-error+
-			    (content-type*) nil)
-		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil
-			    (header-out "Server") "c"))))
+		      (empty-message-with-code +http-internal-server-error+)
+		      (empty-message-with-code +http-bad-request+))))
 	    (if accom-crashed?
-		(setf (return-code*) +http-internal-server-error+
-		      (content-type*) nil)
-		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil
-		      (header-out "Server") "d")))))))
+		(empty-message-with-code +http-internal-server-error+)
+		(empty-message-with-code +http-bad-request+)))))))
 
 (defmethod acceptor-dispatch-request ((acceptor parser-acceptor) request)
   (let ((method (request-method request))

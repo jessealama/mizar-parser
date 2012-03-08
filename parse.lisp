@@ -20,7 +20,7 @@
       (:body
        (:h1 "About this service")
        (:p "The intention behind this site is to facilitate programmatic access to Mizar parsing services.  At the moment no HTML-driven interface to the parser services is provided; you are now looking at the only HTML page that this service emits, which is entirely informational.")
-       (:p "This site documents some of the cutting-edge developments in Mizar text transformations.  The site was announced in the paper &lsquo;New developments in parsing Mizar&rsquo;, by Czes&#322;aw Bylinski and Jesse Alama (submitted to CICM 2012 Track E [Systems and Projects]).")
+       (:p "This site documents some of the cutting-edge developments in Mizar text transformations.  The site was announced in the paper &lsquo;New developments in parsing Mizar&rsquo;, by Czes&#322;aw Bylinski and Jesse Alama, which was submitted to " (:a :href "http://www.informatik.uni-bremen.de/cicm2012/cicm.php?event=sysproj&amp;menu=general" :title "Conference on Intelligent Computer Mathematics (CICM 2012) Track E: Systems and Projects" "CICM 2012 Track E (Systems and Projects)") ".")
        (:h1 "Example usage")
        (:p "One can use this service using any means that permit one to include a Mizar text in the body of an HTTP message.  As mentioned earlier, the service does not (at present) aim to provide a user-friendly, HTML interface to the Mizar parser tools.  Rather, one uses the service by submitting certain HTTP requests (" (:a :href "#http-resources" "as documented below") ").  One can use standard commandline tools such as " (:a :href "http://curl.haxx.se/" :title "cURL" "curl")  ", " (:a :href "http://www.gnu.org/software/wget/" :title "GNU Wget" "wget") ", and " (:a :href "http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP.pm" :title "libwww-perl" "lwp-request") ", as well as through HTTP interfaces such as " (:a :href "http://dvcs.w3.org/hg/xhr/raw-file/tip/Overview.html" :title "XMLHttpRequest" "XMLHttpRequest") " and HTTP libraries for " (:a :href "http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP.pm" :title "LWP (Perl)" "Perl") ", " (:a :href "http://docs.python.org/library/httplib.html" :title "httplib (Python library)" "Python") ", " (:a :href "http://hackage.haskell.org/package/HTTP" :title "HTTP (Haskell library)" "Haskell") ", " (:a :href "http://ruby-doc.org/stdlib-1.9.3/libdoc/net/http/rdoc/Net/HTTP.html" :title "HTTP (Ruby library)" "Ruby") ", " (:a :href "http://weitz.de/drakma/" :title "Drakma (Common Lisp)" "Common Lisp") ", " (:a :href "http://www.w3.org/Library/" :title "Libwww (C library)" "C") ", etc.")
        (:p "With curl, for example, one can use the service in this way at the commandline:")
@@ -62,7 +62,7 @@
 		    (:li (:p (:code "msm"))
 			 (:p "The More Strict Mizar transformation.")))
 		   (:p "The default is " (:code "none") "."))))
-	(:li (:p "Response (" (:strong "GET") "): An XML representation of the parse tree for the given Mizar text, if the text is parseable; the MIME type will be " (:code "application/xml") ". and the return code will be " (:code "200 (OK)") ".  If the text is not parsable, and if it can be determined that the error lies in the supplied text rather than with the Mizar tools themselves, then the return code will be " (:code "400 (Bad Request)") " and the response body will be a plain text listing (served with the MIME type " (:code "text/plain") ") of the errors in the supplied text.  More precisely, the response will be a list of lines each of which adheres to the format")
+	(:li (:p "Response (" (:strong "GET") "): An XML representation of the parse tree for the given Mizar text, if the text is parseable; the MIME type will be " (:code "application/xml") " and the return code will be " (:code "200 (OK)") ".  If the text is not parsable, and if it can be determined that the error lies in the supplied text rather than with the Mizar tools themselves, then the return code will be " (:code "400 (Bad Request)") " and the response body will be a plain text listing (served with the MIME type " (:code "text/plain") ") of the errors in the supplied text.  More precisely, the response will be a list of lines each of which adheres to the format")
 	     (:p (:code "line-number column-number error-number explanation"))
 	     (:p "where " (:code "line-number") ", " (:code "column-number") ", and " (:code "error-number") " are positive natural numbers, and " (:code "explanation") " is an natural language of the error.")
 	     (:p "If it can be determined that the supplied text is problematic because the Mizar tools themselves crash when operating on the text, then the return code will be " (:code "500 (Internal Server Error)") ", and there will be an empty response body."))
@@ -102,7 +102,8 @@
 (defmethod handle (method format strictness)
   (declare (ignore method format strictness))
   (setf (return-code*) +http-bad-request+)
-  (setf (content-type*) nil))
+  (setf (content-type*) nil)
+  (setf (header-out "Server") "e"))
 
 (defmethod handle ((method symbol) (format null) (strictness string))
   (handle method "xml" strictness))
@@ -138,7 +139,8 @@
 				 (handle method format strictness)
 				 (progn
 				   (setf (return-code*) +http-bad-request+)
-				   (setf (content-type*) nil))))
+				   (setf (content-type*) nil)
+				   (setf (header-out "Server") "f"))))
 			   (progn
 			     (setf (return-code*) +http-not-found+)
 			     (setf (content-type*) nil))))))))
@@ -182,7 +184,8 @@
 	   (call-next-method))
 	  (t
 	   (setf (return-code*) +http-bad-request+
-		  (content-type*) nil)))))
+		  (content-type*) nil
+		  (header-out "Server") "g")))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :xml))
@@ -206,13 +209,21 @@
 		  (if wsmparser-crashed?
 		      (setf (return-code*) +http-internal-server-error+
 			    (content-type*) nil)
-		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil))))
+		      (progn
+			(setf (return-code*) +http-bad-request+
+			      (content-type*) "text/plain"
+			      (header-out "Server") "h")
+			"WSM returned errors."))))
 	    (if accom-crashed?
-		(setf (return-code*) +http-internal-server-error+
-		      (content-type*) nil)
-		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil)))))))
+		(progn
+		  (setf (return-code*) +http-internal-server-error+
+			(content-type*) "text/plain")
+		  "The supplied article killed the accommodator.")
+		(let ((error-explanation (explain-errors article)))
+		  (setf (return-code*) +http-bad-request+
+			(content-type*) "text/plain"
+			(header-out "Server") error-explanation)
+		  error-explanation)))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :text))
@@ -237,12 +248,14 @@
 		      (setf (return-code*) +http-internal-server-error+
 			    (content-type*) nil)
 		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil))))
+			    (content-type*) nil
+			    (header-out "Server") "j"))))
 	    (if accom-crashed?
 		(setf (return-code*) +http-internal-server-error+
 		      (content-type*) nil)
 		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil)))))))
+		      (content-type*) nil
+		      (header-out "Server") "k")))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :text))
@@ -397,34 +410,42 @@
 				    (setf (return-code*) +http-internal-server-error+
 					  (content-type*) nil)
 				    (setf (return-code*) +http-bad-request+
-					  (content-type*) nil)))))
+					  (content-type*) nil
+					  (header-out "Server") "a")))))
 			(if msmprocessor-crashed?
 			    (setf (return-code*) +http-internal-server-error+
 				  (content-type*) nil)
 			    (setf (return-code*) +http-bad-request+
-				  (content-type*) nil))))
+				  (content-type*) nil
+				  (header-out "Server") "b"))))
 		  (if wsmparser-crashed?
 		      (setf (return-code*) +http-internal-server-error+
 			    (content-type*) nil)
 		      (setf (return-code*) +http-bad-request+
-			    (content-type*) nil))))
+			    (content-type*) nil
+			    (header-out "Server") "c"))))
 	    (if accom-crashed?
 		(setf (return-code*) +http-internal-server-error+
 		      (content-type*) nil)
 		(setf (return-code*) +http-bad-request+
-		      (content-type*) nil)))))))
+		      (content-type*) nil
+		      (header-out "Server") "d")))))))
 
 (defmethod acceptor-dispatch-request ((acceptor parser-acceptor) request)
   (let ((method (request-method request))
 	(format (get-parameter "format" request))
 	(strictness (get-parameter "strictness" request))
 	(uri (request-uri request)))
-    (cond ((string= uri "/parsing.css"))
-	  (handle-static-file #p"/home/mizar-items/mizar-parser/parsing.css" "text/css")
+    (cond ((string= uri "/parsing.css")
+	   (handle-static-file #p"/home/mizar-items/mizar-parser/parsing.css" "text/css"))
 	  ((string= uri "/favicon.ico")
-	   (handle-static-file #p"/home/mizar-items/mizar-parser/favion.ico" "image/png"))
+	   (handle-static-file #p"/home/mizar-items/mizar-parser/favicon.ico" "image/png"))
 	  (t
 	   (handle method format strictness)))))
+
+(defmethod acceptor-status-message ((acceptor parser-acceptor) http-return-code &key &allow-other-keys)
+  (declare (ignore acceptor http-return-code))
+  nil)
 
 (defun launch-parsing-service ()
   "Launch the Mizar parsing service."

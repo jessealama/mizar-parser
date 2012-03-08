@@ -168,7 +168,7 @@
 (defmethod handle :around ((method (eql :get)) (format null) (strictness null))
   (declare (ignore format strictness))
   (let ((message (raw-post-data :force-text t)))
-    (if message 
+    (if message
 	(call-next-method)
 	(progn
 	  (setf (content-type*) "application/xhtml+xml")
@@ -291,7 +291,7 @@
 	      (if wsmparser-ok?
 		  (let ((wsm-path (file-with-extension article "wsm"))
 			(tpr-path (file-with-extension article "tpr")))
-		    (multiple-value-bind (msplit-ok? msplit-crashed?) 
+		    (multiple-value-bind (msplit-ok? msplit-crashed?)
 			(msplit article)
 		      (if msplit-ok?
 			(progn

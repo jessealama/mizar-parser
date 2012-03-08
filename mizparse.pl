@@ -70,7 +70,7 @@ sub process_commandline {
     }
 
     if ($version) {
-        print $VERSION, "\N{CR}";
+        print $VERSION, "\N{LF}";
         exit 0;
     }
 
@@ -92,7 +92,7 @@ sub process_commandline {
 
     if ( !ensure_sensible_timeout() ) {
         print {*STDERR} 'Error: \'', $timeout,
-            '\' is not a sensible value for a timeout.', "\N{CR}";
+            '\' is not a sensible value for a timeout.', "\N{LF}";
         return 0;
     }
 
@@ -110,21 +110,21 @@ sub ensure_sensible_article {
 
     if ( !-e $path ) {
         print {*STDERR} 'Error: there is no file at the given path',
-            "\N{CR}", "\N{CR}", $TWO_SPACES, $path, "\N{CR}",
-            "\N{CR}";
+            "\N{LF}", "\N{LF}", $TWO_SPACES, $path, "\N{LF}",
+            "\N{LF}";
         return 0;
     }
 
     if ( -d $path ) {
-        print {*STDERR} 'Error: the supplied article', "\N{CR}",
-            "\N{CR}", $TWO_SPACES, $path, "\N{CR}", "\N{CR}",
+        print {*STDERR} 'Error: the supplied article', "\N{LF}",
+            "\N{LF}", $TWO_SPACES, $path, "\N{LF}", "\N{LF}",
             'is not a file but a directory.';
         return 0;
     }
 
     if ( !-r $path ) {
-        print {*STDERR} 'Error: the article file', "\N{CR}",
-            "\N{CR}", $TWO_SPACES, $path, "\N{CR}", "\N{CR}",
+        print {*STDERR} 'Error: the article file', "\N{LF}",
+            "\N{LF}", $TWO_SPACES, $path, "\N{LF}", "\N{LF}",
             'is unreadable.';
         return 0;
     }
@@ -157,7 +157,7 @@ $request->content_type('application/x-www-form-urlencoded');
 $request->content($article_content);
 
 if ($debug) {
-    print 'DEBUG: The request URI is: ', $request_uri, "\N{CR}";
+    print 'DEBUG: The request URI is: ', $request_uri, "\N{LF}";
 }
 
 # (Try to) send out the request
@@ -168,7 +168,7 @@ if ( defined $response ) {
     if ( $response->is_success() ) {
 
         my $response_content = $response->content();
-        print $response_content, "\N{CR}";
+        print $response_content, "\N{LF}";
 
         exit 0;
 
@@ -184,21 +184,21 @@ if ( defined $response ) {
 
             print {*STDERR}
                 'Error: the request was unsuccessful.  The parsing service returned:',
-                "\N{CR}", "\N{CR}", $TWO_SPACES, $status,
-                "\N{CR}", "\N{CR}";
+                "\N{LF}", "\N{LF}", $TWO_SPACES, $status,
+                "\N{LF}", "\N{LF}";
 
             if ( $response_content eq $EMPTY_STRING ) {
 
                 print {*STDERR}
                     'The message received from the parsing service is empty.',
-                    "\N{CR}";
+                    "\N{LF}";
 
             }
             else {
 
                 print {*STDERR} 'Here is the message we received:',
-                    "\N{CR}", "\N{CR}";
-                print {*STDERR} $response_content, "\N{CR}";
+                    "\N{LF}", "\N{LF}";
+                print {*STDERR} $response_content, "\N{LF}";
 
             }
 
@@ -207,9 +207,9 @@ if ( defined $response ) {
 
             print {*STDERR}
                 'Error: the request was unsuccessful, and it seems we did not even get a response from the server.',
-                "\N{CR}",
+                "\N{LF}",
                 '(Did the request timeout?  The value of the timeout was ',
-                $timeout, ' seconds.)', "\N{CR}";
+                $timeout, ' seconds.)', "\N{LF}";
 
         }
 
@@ -220,12 +220,12 @@ else {
     if ( defined $eval_request_message ) {
         print {*STDERR}
             'Error: the HTTP request failed.  Here is the message we got:',
-            "\N{CR}", $eval_request_message, "\N{CR}";
+            "\N{LF}", $eval_request_message, "\N{LF}";
     }
     else {
         print {*STDERR}
             'Error: the HTTP request failed badly; not even a failure message is available.',
-            "\N{CR}";
+            "\N{LF}";
     }
 }
 

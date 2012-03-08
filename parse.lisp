@@ -40,6 +40,17 @@
 	  ((:li :class "command") "curl -X GET --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=msm&amp;format=xml'")
 	  ((:li :class "pseudo-response") "XML parse tree of More Strict Mizar form of article.miz.")))
        (:p "Within a Javascript application, one could prepare a suitable HTTP request using the aforementioned XmlHttpRequest approach.  Java developers can use (for example) " (:a :href "http://hc.apache.org/httpcomponents-client-ga/" :title "HttpClient" "the Apache Foundation&apos;s HttpClient") " interface.")
+       (:h1 "Download")
+       (:p "A " (:a :href "/parsing/mizparse.pl" "simple Perl script") " is available to facilitate access to this service.  To get started, just do")
+       ((:blockquote :class "session")
+	(:ol
+	 ((:li :class "comment") "Get an XML parse tree for article.miz")
+	 ((:li :class "command") "mizparse.pl article.miz")
+	 ((:li :class "pseudo-response") "XML document apparing on standard input, if there were no errors.")
+	 ((:li :class "comment") "The plain text representation of the Weakly Strict Mizar form of article.miz")
+	 ((:li :class "command") "mizparse.pl --transform=wsm --format=text")
+	 ((:li :class "pseudo-response") "Plain text document on standard output")))
+       (:p "For more information, just do " (:code "mizparse.pl --man") ".")
        ((:h1 :id "http-resources") "HTTP resources")
        (:p "At present, the Mizar parsing service handles requests for only one resource, " (:code "/parsing") ".  Accessing any other resource, with any HTTP method, will result in a " (:code "404 (Not Found)") " error.")
        (:ul
@@ -440,10 +451,18 @@
 	   (handle-static-file #p"/home/mizar-items/mizar-parser/parsing.css" "text/css"))
 	  ((string= uri "/favicon.ico")
 	   (handle-static-file #p"/home/mizar-items/mizar-parser/favicon.ico" "image/png"))
+	  ((string= uri "/mizparse.pl")
+	   (handle-static-file #p"/home/mizar-items/mizar-parser/mizparse.pl" "text/plain"))
 	  (t
 	   (handle method format strictness)))))
 
 (defmethod acceptor-status-message ((acceptor parser-acceptor) http-return-code &key &allow-other-keys)
+  "This method enures that some method on the ACCEPTOR-STATUS-MESSAGE
+generic function is called on PARSER-ACCEPTOR object.  The value NIL
+ensures that whatever messages we prepare earlier are indeed returned.
+Without this method, it seems that hunchentoot tries to be clever and
+hijack from us, when the HTTP return code is >= 400, our carefully
+prepared message bodies."
   (declare (ignore acceptor http-return-code))
   nil)
 

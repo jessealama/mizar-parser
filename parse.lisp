@@ -124,37 +124,31 @@
   `(setf (return-code*) ,http-return-code
 	 (content-type*) nil))
 
-;; We don't handle anything requests except those for "/"
+(defmacro return-message (http-return-code &key (message "")
+					        (mime-type nil))
+  `(progn
+     (setf (return-code*) ,http-return-code
+	   (content-type*) ,mime-type)
+     ,message))
+
+(defun parse-integer-if-possible (integer-string)
+  (handler-case (parse-integer integer-string :junk-allowed nil)
+    (error () nil)))
+
 (defmethod handle ((method symbol) (format string) (strictness string))
-  (let ((message-length-header (header-in* "Content-Length")))
-    (if message-length-header
-	(let ((message-length (handler-case (parse-integer message-length-header :junk-allowed nil)
-				(error () nil))))
-	  (if (integerp message-length)
-	      (cond ((null message-length)
-		     (empty-message-with-code +http-length-required+))
-		    ((< message-length 0)
-		     (empty-message-with-code +http-length-required+))
-		    ((> message-length +biggest-article-length+)
-		     (empty-message-with-code +http-request-entity-too-large+))
-		    (t
-		     (let ((uri (script-name*)))
-		       (if (string= uri "/")
-			   (let ((format (cond ((string= format "text") :text)
-					       ((string= format "xml") :xml)))
-				 (strictness (cond ((string= strictness "none") :none)
-						   ((string= strictness "wsm") :wsm)
-						   ((string= strictness "msm") :msm))))
-			     (if (and format strictness)
-				 (handle method format strictness)
-				 (empty-message-with-code +http-bad-request+)))
-			   (empty-message-with-code +http-not-found+)))))))
-	(empty-message-with-code +http-length-required+))))
+  (let ((format (cond ((string= format "text") :text)
+		      ((string= format "xml") :xml)))
+	(strictness (cond ((string= strictness "none") :none)
+			  ((string= strictness "wsm") :wsm)
+			  ((string= strictness "msm") :msm))))
+    (if (and format strictness)
+	(handle method format strictness)
+	(return-message +http-bad-request+))))
 
 (defmethod handle ((method (eql :options)) format strictness)
   (declare (ignore format strictness))
   (setf (header-out "Accept") "OPTIONS, HEAD, GET")
-  (empty-message-with-code +http-no-content+))
+  (return-message +http-no-content+))
 
 (defmethod handle ((method (eql :head)) format strictness)
   (declare (ignore method))
@@ -182,8 +176,23 @@
   (declare (ignore format strictness))
   (let ((message (raw-post-data :force-text t)))
     (if message
-	(call-next-method)
-	(empty-message-with-code +http-bad-request+))))
+	(let* ((tempdir (temporary-directory))
+	       (article (make-instance 'article
+				       :directory (pathname-as-directory (pathname tempdir))
+				       :name "article"
+				       :text message)))
+	  (multiple-value-bind (accom-ok? accom-crashed?)
+	      (accom article)
+	    (if accom-ok?
+		(call-next-method)
+		(if accom-crashed?
+		    (return-message +http-internal-server-error+)
+		    (let ((error-explanation (explain-errors article)))
+		      (setf (return-code*) +http-bad-request+
+			    (content-type*) "text/plain"
+			    (header-out "Server") error-explanation)
+		      error-explanation)))))
+	(return-message +http-bad-request+))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :xml))
@@ -194,26 +203,16 @@
 				   :directory (pathname-as-directory (pathname tempdir))
 				   :name "article"
 				   :text message)))
-      (multiple-value-bind (accom-ok? accom-crashed?)
-	  (accom article)
-	(if accom-ok?
-	    (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
-		(wsmparser article)
-	      (if wsmparser-ok?
-		  (let ((wsx-path (file-with-extension article "wsx")))
-		    (setf (return-code*) +http-ok+)
-		    (setf (content-type*) "application/xml")
-		    (file-as-string wsx-path))
-		  (if wsmparser-crashed?
-		      (empty-message-with-code +http-internal-server-error+)
-		      (empty-message-with-code +http-bad-request+))))
-	    (if accom-crashed?
-		(empty-message-with-code +http-internal-server-error+)
-		(let ((error-explanation (explain-errors article)))
-		  (setf (return-code*) +http-bad-request+
-			(content-type*) "text/plain"
-			(header-out "Server") error-explanation)
-		  error-explanation)))))))
+      (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
+	  (wsmparser article)
+	(if wsmparser-ok?
+	    (let ((wsx-path (file-with-extension article "wsx")))
+	      (setf (return-code*) +http-ok+)
+	      (setf (content-type*) "application/xml")
+	      (file-as-string wsx-path))
+	    (if wsmparser-crashed?
+		(return-message +http-internal-server-error+)
+		(return-message +http-bad-request+)))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :text))
@@ -224,22 +223,10 @@
 				   :directory (pathname-as-directory (pathname tempdir))
 				   :name "article"
 				   :text message)))
-      (multiple-value-bind (accom-ok? accom-crashed?)
-	  (accom article)
-	(if accom-ok?
-	    (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
-		(wsmparser article)
-	      (if wsmparser-ok?
-		  (let ((miz-path (file-with-extension article "miz")))
-		    (setf (return-code*) +http-ok+)
-		    (setf (content-type*) "text/plain")
-		    (file-as-string miz-path))
-		  (if wsmparser-crashed?
-		      (empty-message-with-code +http-internal-server-error+)
-		      (empty-message-with-code +http-bad-request+))))
-	    (if accom-crashed?
-		(empty-message-with-code +http-internal-server-error+)
-		(empty-message-with-code +http-bad-request+)))))))
+      (let ((miz-path (file-with-extension article "miz")))
+	(setf (return-code*) +http-ok+)
+	(setf (content-type*) "text/plain")
+	(file-as-string miz-path)))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :text))
@@ -250,22 +237,16 @@
 				   :directory (pathname-as-directory (pathname tempdir))
 				   :name "article"
 				   :text message)))
-      (multiple-value-bind (accom-ok? accom-crashed?)
-	  (accom article)
-	(if accom-ok?
-	    (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
-		(wsmparser article)
-	      (if wsmparser-ok?
-		  (let ((wsm-path (file-with-extension article "wsm")))
-		    (setf (return-code*) +http-ok+)
-		    (setf (content-type*) "text/plain")
-		    (file-as-string wsm-path))
-		  (if wsmparser-crashed?
-		      (empty-message-with-code +http-internal-server-error+)
-		      (empty-message-with-code +http-bad-request+))))
-	    (if accom-crashed?
-		(empty-message-with-code +http-internal-server-error+)
-		(empty-message-with-code +http-bad-request+)))))))
+      (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
+	  (wsmparser article)
+	(if wsmparser-ok?
+	    (let ((wsm-path (file-with-extension article "wsm")))
+	      (setf (return-code*) +http-ok+)
+	      (setf (content-type*) "text/plain")
+	      (file-as-string wsm-path))
+	    (if wsmparser-crashed?
+		(return-message +http-internal-server-error+)
+		(return-message +http-bad-request+)))))))
 
 (defmethod handle ((method (eql :get))
 		   (format (eql :xml))
@@ -276,116 +257,98 @@
 				   :directory (pathname-as-directory (pathname tempdir))
 				   :name "article"
 				   :text message)))
-      (multiple-value-bind (accom-ok? accom-crashed?)
-	  (accom article)
-	(if accom-ok?
-	    (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
-		(wsmparser article)
-	      (if wsmparser-ok?
-		  (let ((wsm-path (file-with-extension article "wsm"))
+      (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
+	  (wsmparser article)
+	(if wsmparser-ok?
+	    (let ((wsm-path (file-with-extension article "wsm"))
+		  (tpr-path (file-with-extension article "tpr")))
+	      (multiple-value-bind (msplit-ok? msplit-crashed?)
+		  (msplit article)
+		(if msplit-ok?
+		    (progn
+		      (rename-file wsm-path tpr-path)
+		      (mglue article)
+		      (multiple-value-bind (wsmparser-ok-again? wsmparser-crashed-again?)
+			  (wsmparser article)
+			(if wsmparser-ok-again?
+			    (let ((wsx-path (file-with-extension article "wsx")))
+			      (setf (return-code*) +http-ok+)
+			      (setf (content-type*) "application/xml")
+			      (file-as-string wsx-path))
+			    (if wsmparser-crashed-again?
+				(setf (return-code*) +http-internal-server-error+
+				      (content-type*) nil)
+				(setf (return-code*) +http-bad-request+
+				      (content-type*) nil)))))
+		    (if msplit-crashed?
+			(return-message +http-internal-server-error+)
+			(return-message +http-bad-request+)))))
+	    (if wsmparser-crashed?
+		(return-message +http-internal-server-error+)
+		(return-message +http-bad-request+)))))))
+
+(defmethod handle ((method (eql :get))
+		   (format (eql :text))
+		   (strictness (eql :msm)))
+  (let ((message (raw-post-data :force-text t)))
+    (let* ((tempdir (temporary-directory))
+	   (article (make-instance 'article
+				   :directory (pathname-as-directory (pathname tempdir))
+				   :name "article"
+				   :text message)))
+      (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
+	  (wsmparser article)
+	(if wsmparser-ok?
+	    (multiple-value-bind (msmprocessor-ok? msmprocessor-crashed?)
+		(msmprocessor article)
+	      (if msmprocessor-ok?
+		  (let ((msm-path (file-with-extension article "msm")))
+		    (setf (return-code*) +http-ok+)
+		    (setf (content-type*) "text/plain")
+		    (file-as-string msm-path))
+		  (if msmprocessor-crashed?
+		      (return-message +http-internal-server-error+)
+		      (return-message +http-bad-request+))))
+	    (if wsmparser-crashed?
+		(return-message +http-internal-server-error+)
+		(return-message +http-bad-request+)))))))
+
+(defmethod handle ((method (eql :get))
+		   (format (eql :xml))
+		   (strictness (eql :msm)))
+  (let ((message (raw-post-data :force-text t)))
+    (let* ((tempdir (temporary-directory))
+	   (article (make-instance 'article
+				   :directory (pathname-as-directory (pathname tempdir))
+				   :name "article"
+				   :text message)))
+      (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
+	  (wsmparser article)
+	(if wsmparser-ok?
+	    (multiple-value-bind (msmprocessor-ok? msmprocessor-crashed?)
+		(msmprocessor article)
+	      (if msmprocessor-ok?
+		  (let ((msm-path (file-with-extension article "msm"))
 			(tpr-path (file-with-extension article "tpr")))
-		    (multiple-value-bind (msplit-ok? msplit-crashed?)
-			(msplit article)
-		      (if msplit-ok?
-			(progn
-			  (rename-file wsm-path tpr-path)
-			  (mglue article)
-			  (multiple-value-bind (wsmparser-ok-again? wsmparser-crashed-again?)
-			      (wsmparser article)
-			    (if wsmparser-ok-again?
-				(let ((wsx-path (file-with-extension article "wsx")))
-				  (setf (return-code*) +http-ok+)
-				  (setf (content-type*) "application/xml")
-				  (file-as-string wsx-path))
-				(if wsmparser-crashed-again?
-				    (setf (return-code*) +http-internal-server-error+
-					  (content-type*) nil)
-				    (setf (return-code*) +http-bad-request+
-					  (content-type*) nil)))))
-			(if msplit-crashed?
-			    (empty-message-with-code +http-internal-server-error+)
-			    (empty-message-with-code +http-bad-request+)))))
-		  (if wsmparser-crashed?
-		      (empty-message-with-code +http-internal-server-error+)
-		      (empty-message-with-code +http-bad-request+))))
-	    (if accom-crashed?
-		(empty-message-with-code +http-internal-server-error+)
-		(empty-message-with-code +http-bad-request+)))))))
-
-(defmethod handle ((method (eql :get))
-		   (format (eql :text))
-		   (strictness (eql :msm)))
-  (let ((message (raw-post-data :force-text t)))
-    (let* ((tempdir (temporary-directory))
-	   (article (make-instance 'article
-				   :directory (pathname-as-directory (pathname tempdir))
-				   :name "article"
-				   :text message)))
-      (multiple-value-bind (accom-ok? accom-crashed?)
-	  (accom article)
-	(if accom-ok?
-	    (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
-		(wsmparser article)
-	      (if wsmparser-ok?
-		  (multiple-value-bind (msmprocessor-ok? msmprocessor-crashed?)
-		      (msmprocessor article)
-		    (if msmprocessor-ok?
-			(let ((msm-path (file-with-extension article "msm")))
-			  (setf (return-code*) +http-ok+)
-			  (setf (content-type*) "text/plain")
-			  (file-as-string msm-path))
-			(if msmprocessor-crashed?
-			    (empty-message-with-code +http-internal-server-error+)
-			    (empty-message-with-code +http-bad-request+))))
-		  (if wsmparser-crashed?
-		      (empty-message-with-code +http-internal-server-error+)
-		      (empty-message-with-code +http-bad-request+))))
-	    (if accom-crashed?
-		(empty-message-with-code +http-internal-server-error+)
-		(empty-message-with-code +http-bad-request+)))))))
-
-(defmethod handle ((method (eql :get))
-		   (format (eql :xml))
-		   (strictness (eql :msm)))
-  (let ((message (raw-post-data :force-text t)))
-    (let* ((tempdir (temporary-directory))
-	   (article (make-instance 'article
-				   :directory (pathname-as-directory (pathname tempdir))
-				   :name "article"
-				   :text message)))
-      (multiple-value-bind (accom-ok? accom-crashed?)
-	  (accom article)
-	(if accom-ok?
-	    (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
-		(wsmparser article)
-	      (if wsmparser-ok?
-		  (multiple-value-bind (msmprocessor-ok? msmprocessor-crashed?)
-		      (msmprocessor article)
-		    (if msmprocessor-ok?
-			(let ((msm-path (file-with-extension article "msm"))
-			      (tpr-path (file-with-extension article "tpr")))
-			  (msplit article)
-			  (rename-file msm-path tpr-path)
-			  (mglue article)
-			  (multiple-value-bind (wsmparser-ok-again? wsmparser-crashed-again?)
-			      (wsmparser article)
-			    (if wsmparser-ok-again?
-				(let ((wsx-path (file-with-extension article "wsx")))
-				  (setf (return-code*) +http-ok+)
-				  (setf (content-type*) "application/xml")
-				  (file-as-string wsx-path))
-				(if wsmparser-crashed-again?
-				    (empty-message-with-code +http-internal-server-error+)
-				    (empty-message-with-code +http-bad-request+)))))
-			(if msmprocessor-crashed?
-			    (empty-message-with-code +http-internal-server-error+)
-			    (empty-message-with-code +http-bad-request+))))
-		  (if wsmparser-crashed?
-		      (empty-message-with-code +http-internal-server-error+)
-		      (empty-message-with-code +http-bad-request+))))
-	    (if accom-crashed?
-		(empty-message-with-code +http-internal-server-error+)
-		(empty-message-with-code +http-bad-request+)))))))
+		    (msplit article)
+		    (rename-file msm-path tpr-path)
+		    (mglue article)
+		    (multiple-value-bind (wsmparser-ok-again? wsmparser-crashed-again?)
+			(wsmparser article)
+		      (if wsmparser-ok-again?
+			  (let ((wsx-path (file-with-extension article "wsx")))
+			    (setf (return-code*) +http-ok+)
+			    (setf (content-type*) "application/xml")
+			    (file-as-string wsx-path))
+			  (if wsmparser-crashed-again?
+			      (return-message +http-internal-server-error+)
+			      (return-message +http-bad-request+)))))
+		  (if msmprocessor-crashed?
+		      (return-message +http-internal-server-error+)
+		      (return-message +http-bad-request+))))
+	    (if wsmparser-crashed?
+		(return-message +http-internal-server-error+)
+		(return-message +http-bad-request+)))))))
 
 (defmethod acceptor-dispatch-request ((acceptor parser-acceptor) request)
   (let ((method (request-method request))
@@ -393,13 +356,29 @@
 	(strictness (get-parameter "strictness" request))
 	(uri (request-uri request)))
     (cond ((string= uri "/parsing.css")
-	   (handle-static-file #p"/home/mizar-items/mizar-parser/parsing.css" "text/css"))
+	   (handle-static-file #p"/home/mizar-items/mizar-parser/parsing.css"
+			       "text/css"))
 	  ((string= uri "/favicon.ico")
-	   (handle-static-file #p"/home/mizar-items/mizar-parser/favicon.ico" "image/png"))
+	   (handle-static-file #p"/home/mizar-items/mizar-parser/favicon.ico"
+			       "image/png"))
 	  ((string= uri "/mizparse.pl")
-	   (handle-static-file #p"/home/mizar-items/mizar-parser/mizparse.pl" "text/plain"))
+	   (handle-static-file #p"/home/mizar-items/mizar-parser/mizparse.pl"
+			       "text/plain"))
+	  ((string= uri "/")
+	   (let ((message-length-header (header-in* "Content-Length")))
+	     (if message-length-header
+		 (let ((message-length (parse-integer-if-possible message-length-header)))
+		   (if (integerp message-length)
+		       (cond ((< message-length 0)
+			      (return-message +http-length-required+))
+			     ((> message-length +biggest-article-length+)
+			      (return-message +http-request-entity-too-large+))
+			     (t
+			      (handle method format strictness)))
+		       (return-message +http-length-required+)))
+		 (return-message +http-length-required+))))
 	  (t
-	   (handle method format strictness)))))
+	   (return-message +http-not-found+)))))
 
 (defmethod acceptor-status-message ((acceptor parser-acceptor) http-return-code &key &allow-other-keys)
   "This method enures that some method on the ACCEPTOR-STATUS-MESSAGE

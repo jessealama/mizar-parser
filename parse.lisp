@@ -2,11 +2,12 @@
 (in-package :mizar-parser)
 
 (define-constant +project-root-directory+
-    #p"/home/mizar-items/mizar-parser/"
-    :documentation "The directory under which any static data is stored.")
+    "/home/mizar-items/mizar-parser/"
+  :test #'string=
+  :documentation "The directory under which any static data is stored.")
 
 (defun file-in-project-directory (path)
-  (merge-pathnames path +project-root-directory+))
+  (merge-pathnames path (pathname +project-root-directory+)))
 
 (define-constant +parser-port+
     4387

@@ -324,7 +324,7 @@
   (let ((method (request-method request))
 	(format (get-parameter "format" request))
 	(strictness (get-parameter "strictness" request))
-	(uri (request-uri request)))
+	(uri (script-name request)))
     (cond ((string= uri "/parsing.css")
 	   (handle-static-file (file-in-project-directory "parsing.css")
 			       "text/css"))

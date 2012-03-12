@@ -357,7 +357,9 @@
 		     (return-message +http-length-required+))
 		 (emit-canned-message))))
 	  (t
-	   (return-message +http-not-found+)))))
+	   (return-message +http-not-found+
+			   :mime-type "text/plain"
+			   :message (format nil "Unknown resource ~a." uri))))))
 
 (defmethod acceptor-status-message ((acceptor parser-acceptor) http-return-code &key &allow-other-keys)
   "This method enures that some method on the ACCEPTOR-STATUS-MESSAGE

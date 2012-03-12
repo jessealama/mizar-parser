@@ -173,30 +173,40 @@
 (defgeneric run-mizar-tool (tool flags article))
 
 (defmethod run-mizar-tool :around (tool flags article)
+  (declare (ignore flags article))
   (let ((tool-path (path-for-tool tool)))
     (if (file-exists-p tool-path)
 	(call-next-method)
 	(error "We cannot find ~a at its expected location~%~%  ~a~%" tool tool-path))))
 
+(defmacro with-mizfiles (&body body)
+  #+ccl
+  (let ((old-mizfiles (gensym)))
+    `(let ((,old-mizfiles (ccl:getenv "MIZFILES")))
+       (ccl:setenv "MIZFILES" (namestring (mizfiles)))
+       ,@body
+       (ccl:setenv "MIZFILES" ,old-mizfiles))))
+
 (defmethod run-mizar-tool (tool flags (article article))
   #+ccl
-  (let* ((path (miz-file article))
-	 (tool-path (path-for-tool tool))
-	 (proc (ccl:run-program tool-path
-				(append flags (list (namestring path)))
-				:wait t
-				:input nil
-				:output nil
-				:error nil)))
-    (multiple-value-bind (status exit-code)
-	(ccl:external-process-status proc)
-      (declare (ignore status))
-      (values (and (numberp exit-code)
-		   (zerop exit-code))
-	      (when (and (numberp exit-code)
-			 (not (zerop exit-code)))
-		(or (not (file-exists-p (err-file article)))
-		    (empty-err-file? article))))))
+  (let ((path (miz-file article))
+	 (tool-path (path-for-tool tool)))
+    (with-mizfiles
+	(let ((proc (ccl:run-program tool-path
+				     (append flags (list (namestring path)))
+				     :wait t
+				     :input nil
+				     :output nil
+				     :error nil)))
+	  (multiple-value-bind (status exit-code)
+	      (ccl:external-process-status proc)
+	    (declare (ignore status))
+	    (values (and (numberp exit-code)
+			 (zerop exit-code))
+		    (when (and (numberp exit-code)
+			       (not (zerop exit-code)))
+		      (or (not (file-exists-p (err-file article)))
+			  (empty-err-file? article))))))))
   #+sbcl
   (let* ((path (miz-file article))
 	 (err-path (file-with-extension article "err"))
@@ -240,4 +250,3 @@
 
 (defmethod mglue ((article article))
   (run-mizar-tool-with-standard-flags "mglue" article))
-

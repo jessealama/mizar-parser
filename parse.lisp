@@ -243,10 +243,25 @@
   (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
       (wsmparser article)
     (if wsmparser-ok?
-	(let ((wsm-path (file-with-extension article "wsm")))
-	  (return-message +http-ok+
-			  :message (file-as-string wsm-path)
-			  :mime-type "text/plain"))
+	(multiple-value-bind (msplit-ok? msplit-crashed?)
+	    (msplit article)
+	  (if msplit-ok?
+	      (let ((wsm-path (file-with-extension article "wsm"))
+		    (tpr-path (file-with-extension article "tpr"))
+		    (miz-path (file-with-extension article "miz")))
+		(rename-file wsm-path tpr-path)
+		(multiple-value-bind (mglue-ok? mglue-crashed?)
+		    (mglue article)
+		  (if mglue-ok?
+		      (return-message +http-ok+
+				      :message (file-as-string miz-path)
+				      :mime-type "text/plain")
+		      (if mglue-crashed?
+			  (return-message +http-internal-server-error+)
+			  (return-message +http-bad-request+)))))
+	      (if msplit-crashed?
+		  (return-message +http-internal-server-error+)
+		  (return-message +http-bad-request+))))
 	(if wsmparser-crashed?
 	    (return-message +http-internal-server-error+)
 	    (return-message +http-bad-request+)))))
@@ -295,10 +310,26 @@
 	(multiple-value-bind (msmprocessor-ok? msmprocessor-crashed?)
 	    (msmprocessor article)
 	  (if msmprocessor-ok?
-	      (let ((msm-path (file-with-extension article "msm")))
-		(return-message +http-ok+
-				:message (file-as-string msm-path)
-				:mime-type "text/plain"))
+	      (let ((msm-path (file-with-extension article "msm"))
+		    (tpr-path (file-with-extension article "tpr"))
+		    (miz-path (file-with-extension article "miz")))
+		(multiple-value-bind (msplit-ok? msplit-crashed?)
+		    (msplit article)
+		  (if msplit-ok?
+		      (progn
+			(rename-file msm-path tpr-path)
+			(multiple-value-bind (mglue-ok? mglue-crashed?)
+			    (mglue article)
+			  (if mglue-ok?
+			      (return-message +http-ok+
+					      :message (file-as-string miz-path)
+					      :mime-type "text/plain")
+			      (if mglue-crashed?
+				  (return-message +http-internal-server-error+)
+				  (return-message +http-bad-request+)))))
+		      (if msplit-crashed?
+			  (return-message +http-internal-server-error+)
+			  (return-message +http-bad-request+)))))
 	      (if msmprocessor-crashed?
 		  (return-message +http-internal-server-error+)
 		  (return-message +http-bad-request+))))

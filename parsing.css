@@ -11,7 +11,7 @@ h1 {
 	color: gray;
 }
 
-body p {
+body > p {
 	text-indent: 36px;
 }
 

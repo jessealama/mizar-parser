@@ -1,13 +1,15 @@
 body {
-	background-color: silver;
-	font-family: Georgia, "Times New Roman", Times, serif;
+	background-color: white;
+        font-family: Georgia, "Times New Roman", Times, serif;
+	text-indent: 36px;
 }
 
 h1 {
 	font-weight: bold;
 	font-style: italic;
-	text-align: center;
-	border-style: solid;
+	text-align: right;
+	font-variant: small-caps;
+	color: #3d3b3b;
 }
 
 code {

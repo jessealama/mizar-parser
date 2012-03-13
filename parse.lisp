@@ -320,6 +320,17 @@
      (with-html (:doctype "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">")
        (str +information-message+))))
 
+(defmethod handle (method format strictness (article-text string))
+  (let* ((tempdir (temporary-directory))
+	 (article (make-instance 'article
+				 :directory (pathname-as-directory (pathname tempdir))
+				 :name "article"
+				 :text article-text)))
+    (prog1
+	(handle method format strictness article)
+      (delete-directory-and-files tempdir
+				  :if-does-not-exist :ignore))))
+
 (defmethod acceptor-dispatch-request ((acceptor parser-acceptor) request)
   (let ((method (request-method request))
 	(format (get-parameter "format" request))
@@ -347,12 +358,7 @@
 				 ((> message-length +biggest-article-length+)
 				  (return-message +http-request-entity-too-large+))
 				 (t
-				  (let* ((tempdir (temporary-directory))
-					 (article (make-instance 'article
-								 :directory (pathname-as-directory (pathname tempdir))
-								 :name "article"
-								 :text message)))
-				    (handle method format strictness article))))
+				  (handle method format strictness message)))
 			   (return-message +http-length-required+)))
 		     (return-message +http-length-required+))
 		 (emit-canned-message))))

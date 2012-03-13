@@ -115,12 +115,43 @@
   (declare (ignore method format strictness article))
   (setf (header-out "Server") nil))
 
+(defmacro return-message (http-return-code &key (message "")
+					        (mime-type nil))
+  `(progn
+     (setf (return-code*) ,http-return-code
+	   (content-type*) ,mime-type)
+     (setf (header-out "Server") nil)
+     (setf (header-out "Vary") nil)
+     ,message))
+
 ;; By default, all requests are bad
 (defmethod handle (method format strictness article)
-  (declare (ignore method format strictness article))
-  (setf (return-code*) +http-bad-request+)
-  (setf (content-type*) nil)
-  (setf (header-out "Server") "e"))
+  (let ((uri (request-uri*))
+	(method-symbol (request-method*))
+	(message (raw-post-data :force-text t)))
+    (if message
+	(return-message +http-bad-request+
+			:mime-type "text/plain"
+			:message (format nil "Your request for~%~%  ~a~%~%with the HTTP method~%~%  ~a~%~%with the message of length ~d could not be understood." uri (symbol-name method-symbol) (length message)))
+	(return-message +http-bad-request+
+			:mime-type "text/plain"
+			:message (format nil "Your request for~%~%  ~a~%~%with the HTTP method~%~%  ~a~%~%with an empty message could not be understood." uri (symbol-name method-symbol))))))
+
+(defmethod handle :around ((method symbol) format strictness article)
+  (declare (ignore format strictness article))
+  (let* ((method-name (symbol-name method))
+	(method-name-lc (format nil "~(~a~)" method-name)))
+    (cond ((string= method-name-lc "get")
+	   (call-next-method))
+	  ((string= method-name-lc "head")
+	   (call-next-method))
+	  ((string= method-name-lc "options")
+	   (call-next-method))
+	  (t
+	   (setf (header-out "Allow") "GET, HEAD, OPTIONS")
+	   (return-message +http-method-not-allowed+
+			   :mime-type "text/plain"
+			   :message "We support only the GET, HEAD, and OPTIONS HTTP methods.")))))
 
 (defmethod handle (method format strictness (article null))
   (declare (ignore method format strictness))
@@ -135,13 +166,6 @@
 (defmacro empty-message-with-code (http-return-code)
   `(setf (return-code*) ,http-return-code
 	 (content-type*) nil))
-
-(defmacro return-message (http-return-code &key (message "")
-					        (mime-type nil))
-  `(progn
-     (setf (return-code*) ,http-return-code
-	   (content-type*) ,mime-type)
-     ,message))
 
 (defun parse-integer-if-possible (integer-string)
   (handler-case (parse-integer integer-string :junk-allowed nil)
@@ -219,10 +243,25 @@
   (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
       (wsmparser article)
     (if wsmparser-ok?
-	(let ((wsm-path (file-with-extension article "wsm")))
-	  (return-message +http-ok+
-			  :message (file-as-string wsm-path)
-			  :mime-type "text/plain"))
+	(multiple-value-bind (msplit-ok? msplit-crashed?)
+	    (msplit article)
+	  (if msplit-ok?
+	      (let ((wsm-path (file-with-extension article "wsm"))
+		    (tpr-path (file-with-extension article "tpr"))
+		    (miz-path (file-with-extension article "miz")))
+		(rename-file wsm-path tpr-path)
+		(multiple-value-bind (mglue-ok? mglue-crashed?)
+		    (mglue article)
+		  (if mglue-ok?
+		      (return-message +http-ok+
+				      :message (file-as-string miz-path)
+				      :mime-type "text/plain")
+		      (if mglue-crashed?
+			  (return-message +http-internal-server-error+)
+			  (return-message +http-bad-request+)))))
+	      (if msplit-crashed?
+		  (return-message +http-internal-server-error+)
+		  (return-message +http-bad-request+))))
 	(if wsmparser-crashed?
 	    (return-message +http-internal-server-error+)
 	    (return-message +http-bad-request+)))))
@@ -271,10 +310,26 @@
 	(multiple-value-bind (msmprocessor-ok? msmprocessor-crashed?)
 	    (msmprocessor article)
 	  (if msmprocessor-ok?
-	      (let ((msm-path (file-with-extension article "msm")))
-		(return-message +http-ok+
-				:message (file-as-string msm-path)
-				:mime-type "text/plain"))
+	      (let ((msm-path (file-with-extension article "msm"))
+		    (tpr-path (file-with-extension article "tpr"))
+		    (miz-path (file-with-extension article "miz")))
+		(multiple-value-bind (msplit-ok? msplit-crashed?)
+		    (msplit article)
+		  (if msplit-ok?
+		      (progn
+			(rename-file msm-path tpr-path)
+			(multiple-value-bind (mglue-ok? mglue-crashed?)
+			    (mglue article)
+			  (if mglue-ok?
+			      (return-message +http-ok+
+					      :message (file-as-string miz-path)
+					      :mime-type "text/plain")
+			      (if mglue-crashed?
+				  (return-message +http-internal-server-error+)
+				  (return-message +http-bad-request+)))))
+		      (if msplit-crashed?
+			  (return-message +http-internal-server-error+)
+			  (return-message +http-bad-request+)))))
 	      (if msmprocessor-crashed?
 		  (return-message +http-internal-server-error+)
 		  (return-message +http-bad-request+))))

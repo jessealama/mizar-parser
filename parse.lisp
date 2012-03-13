@@ -115,12 +115,42 @@
   (declare (ignore method format strictness article))
   (setf (header-out "Server") nil))
 
+(defmacro return-message (http-return-code &key (message "")
+					        (mime-type nil))
+  `(progn
+     (setf (return-code*) ,http-return-code
+	   (content-type*) ,mime-type)
+     (setf (header-out "Server") nil)
+     (setf (header-out "Vary") nil)
+     ,message))
+
 ;; By default, all requests are bad
 (defmethod handle (method format strictness article)
-  (declare (ignore method format strictness article))
-  (setf (return-code*) +http-bad-request+)
-  (setf (content-type*) nil)
-  (setf (header-out "Server") "e"))
+  (let ((uri (request-uri*))
+	(method-symbol (request-method*))
+	(message (raw-post-data :force-text t)))
+    (if message
+	(return-message +http-bad-request+
+			:mime-type "text/plain"
+			:message (format nil "Your request for~%~%  ~a~%~%with the HTTP method~%~%  ~a~%~%with the message of length ~d could not be understood." uri (symbol-name method-symbol) (length message)))
+	(return-message +http-bad-request+
+			:mime-type "text/plain"
+			:message (format nil "Your request for~%~%  ~a~%~%with the HTTP method~%~%  ~a~%~%with an empty message could not be understood." uri (symbol-name method-symbol))))))
+
+(defmethod handle :around ((method symbol) format strictness article)
+  (declare (ignore format strictness article))
+  (let* ((method-name (symbol-name method))
+	(method-name-lc (format nil "~(~a~)" method-name)))
+    (cond ((string= method-name-lc "get")
+	   (call-next-method))
+	  ((string= method-name-lc "head")
+	   (call-next-method))
+	  ((string= method-name-lc "options")
+	   (call-next-method))
+	  (t
+	   (return-message +http-method-not-allowed+
+			   :mime-type "text/plain"
+			   :message "We support only the GET, HEAD, and OPTIONS HTTP methods.")))))
 
 (defmethod handle (method format strictness (article null))
   (declare (ignore method format strictness))
@@ -135,13 +165,6 @@
 (defmacro empty-message-with-code (http-return-code)
   `(setf (return-code*) ,http-return-code
 	 (content-type*) nil))
-
-(defmacro return-message (http-return-code &key (message "")
-					        (mime-type nil))
-  `(progn
-     (setf (return-code*) ,http-return-code
-	   (content-type*) ,mime-type)
-     ,message))
 
 (defun parse-integer-if-possible (integer-string)
   (handler-case (parse-integer integer-string :junk-allowed nil)

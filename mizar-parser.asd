@@ -14,7 +14,7 @@
   :author "Jesse Alama <jesse.alama@gmail.com>"
   :maintainer "Jesse Alama <jesse.alama@gmail.com>"
   :serial t
-  :depends-on ("com.gigamonkeys.pathnames"
+  :depends-on ("cl-fad"
 	       "cl-ppcre"
 	       "hunchentoot-utils"
 	       "trivial-garbage"

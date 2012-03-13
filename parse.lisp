@@ -93,7 +93,9 @@
        (:p "At the moment, this site works with Mizar texts according to system version " (:strong (str +mizar-system-version+)) " and MML version " (:strong (str +mml-version+)) ".")
        (:h1 "Related resources")
        (:ul
-	(:li (:p "For more information about Mizar, see " (:a :href "http://mizar.org" "the Mizar homepage") ".")))
+	(:li (:p "For more information about Mizar, see " (:a :href "http://mizar.org" "the Mizar homepage") "."))
+	(:li (:p "To learn more about how Mizar works, see &ldquo;" (:a :href "http://jfr.cib.unibo.it/article/view/1980" :title "Mizar in a nutshell" "Mizar in a nutshell") "&rdquo;, by Adam Grabowski, Artur Korni&#322;owicz, and Adam Naumowicz, " (:i "Journal of Formalized Reasoning") " " (:strong "3") "(2), 2010, pp. 153&ndash;245."))
+	(:li (:p "For a historical overview of Mizar, see &ldquo;" (:a :href "http://markun.cs.shinshu-u.ac.jp/mizar/mma.dir/2005/mma2005(2).pdf" :title "Special Issue on 30 Years of Mizar" "Mizar: The first 30 years") "&rdquo;, by Roman Matuszewski and Piotr Rudnicki, " (:i "Mechanized Mathematics and Its Applications") " " (:strong "4") "(1), March 2005, pp. 3&ndash;24.")))
        (:h1 "Contact")
        (:p "If you have any questions, comments, or bug reports, feel free to email " (:a :href "mailto:jesse.alama@gmail.com" "the site maintainer") ".")))
   :test #'string=

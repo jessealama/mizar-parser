@@ -7,13 +7,12 @@ use LWP;
 use Getopt::Long qw(:config gnu_compat);
 use Pod::Usage;
 use Readonly;
-use Perl6::Slurp;
 use charnames qw(:full);
 use English qw(-no_match_vars);
 use version;
 use Carp qw(croak);
 
-Readonly my $VERSION => qv('1.0');
+Readonly my $VERSION => qv('1.1');
 
 my $man       = 0;
 my $help      = 0;
@@ -131,6 +130,21 @@ sub ensure_sensible_article {
 
     return 1;
 
+}
+
+sub slurp {
+    my $path_or_fh = shift;
+
+    open (my $fh, '<', $path_or_fh)
+	or die 'Error: unable to open the file (or filehandle) ', $path_or_fh, '.';
+
+    my $contents;
+    { local $/; $contents = <$fh>; }
+
+    close $fh
+	or die 'Error: unable to close the file (or filehandle) ', $path_or_fh, '.';
+
+    return $contents;
 }
 
 process_commandline();
@@ -378,8 +392,6 @@ CPAN:
 =item L<Pod::Usage|http://search.cpan.org/~marekr/Pod-Parser-1.51/lib/Pod/Usage.pm>
 
 =item L<Readonly|http://search.cpan.org/~roode/Readonly-1.03/Readonly.pm>
-
-=item L<Perl6::Slurp|http://search.cpan.org/~dconway/Perl6-Slurp-0.050000/lib/Perl6/Slurp.pm>
 
 =item L<English|http://search.cpan.org/~flora/perl-5.14.2/lib/English.pm>
 

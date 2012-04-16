@@ -2,7 +2,38 @@
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="text"/>
-  <xsl:include href="die.xsl"/>
+
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <!-- Utilities -->
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <xsl:template name="die">
+    <xsl:param name="message"/>
+    <xsl:choose>
+      <xsl:when test="@line and @col">
+        <xsl:variable name="line" select="@line"/>
+        <xsl:variable name="col" select="@col"/>
+        <xsl:variable name="final_message" select="concat ($message, &quot; (line &quot;, $line, &quot;, column &quot;, $col, &quot;)&quot;)"/>
+        <xsl:message terminate="yes">
+          <xsl:value-of select="$final_message"/>
+        </xsl:message>
+      </xsl:when>
+      <xsl:when test="preceding::*[@line and @col]">
+        <xsl:variable name="nearest-with-line-and-col-info" select="preceding::*[@line and @col][1]"/>
+        <xsl:variable name="line" select="$nearest-with-line-and-col-info/@line"/>
+        <xsl:variable name="col" select="$nearest-with-line-and-col-info/@col"/>
+        <xsl:variable name="final_message" select="concat ($message, &quot; (we were unable to detemine line and column information for the current context node, but the nearest preceding node with line and column is at line &quot;, $line, &quot; and column &quot;, $col, &quot;)&quot;)"/>
+        <xsl:message terminate="yes">
+          <xsl:value-of select="$final_message"/>
+        </xsl:message>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:variable name="final_message" select="concat ($message, &quot; (unable to determine line and column information)&quot;)"/>
+        <xsl:message terminate="yes">
+          <xsl:value-of select="$final_message"/>
+        </xsl:message>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
 
   <!-- List utilities.  Stolen from Josef.  Thanks, Josef. -->
   <xsl:template name="list">
@@ -15,13 +46,20 @@
       </xsl:if>
     </xsl:for-each>
   </xsl:template>
-  <!-- Environment -->
   <xsl:variable name="lcletters">
     <xsl:text>abcdefghijklmnopqrstuvwxyz</xsl:text>
   </xsl:variable>
   <xsl:variable name="ucletters">
     <xsl:text>ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:text>
   </xsl:variable>
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <!-- Stylesheet parameters -->
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <!-- Whether labels should start on their own line -->
+  <xsl:param name="labels-on-own-line">
+    <xsl:text>0</xsl:text>
+  </xsl:param>
+  <!-- Environment -->
   <!-- name of current article (upper case) -->
   <xsl:param name="aname">
     <xsl:value-of select="string(/*/@articleid)"/>
@@ -1672,6 +1710,10 @@ and
 
   <xsl:template match="Label">
     <xsl:call-template name="ensure-spelling"/>
+    <xsl:if test="$labels-on-own-line = &quot;1&quot;">
+      <xsl:text>
+</xsl:text>
+    </xsl:if>
     <xsl:value-of select="@spelling"/>
     <xsl:text>:</xsl:text>
   </xsl:template>

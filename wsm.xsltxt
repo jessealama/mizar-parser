@@ -34,10 +34,17 @@ tpl list(#separ,#elems) {
   apply[.]; if [not(position()=last())] { copy-of $separ; } }
 }
 
-// Environment
-
 $lcletters= { "abcdefghijklmnopqrstuvwxyz"; }
 $ucletters= { "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; }
+
+//////////////////////////////////////////////////////////////////////
+// Stylesheet parameters
+//////////////////////////////////////////////////////////////////////
+
+// Whether labels should start on their own line
+#labels-on-own-line = { "0"; }
+
+// Environment
 
 // name of current article (upper case)
 #aname= { `string(/*/@articleid)`; }
@@ -1029,6 +1036,9 @@ tpl [Proposition] {
 
 tpl [Label] {
   ensure-spelling ();
+  if [$labels-on-own-line = "1"] {
+    "\n";
+  }
   `@spelling`; ":";
 }
 

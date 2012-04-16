@@ -3,6 +3,9 @@
 use strict;
 use warnings;
 
+require v5.10.0; # for the 'say' feature
+use feature 'say';
+
 use LWP;
 use Getopt::Long qw(:config gnu_compat);
 use Pod::Usage;
@@ -12,7 +15,8 @@ use English qw(-no_match_vars);
 use version;
 use Carp qw(croak);
 
-Readonly my $VERSION => qv('1.1');
+Readonly my $VERSION => qv('1.2');
+Readonly my $LF => "\N{LF}";
 
 my $man       = 0;
 my $help      = 0;
@@ -41,7 +45,7 @@ sub ensure_valid_format {
 }
 
 sub ensure_sensible_timeout {
-    return ( $timeout > 0 );
+    return ( defined $timeout && $timeout > 0 );
 }
 
 sub process_commandline {
@@ -69,7 +73,7 @@ sub process_commandline {
     }
 
     if ($version) {
-        print $VERSION, "\N{LF}";
+        say $VERSION;
         exit 0;
     }
 
@@ -90,8 +94,8 @@ sub process_commandline {
     }
 
     if ( !ensure_sensible_timeout() ) {
-        print {*STDERR} 'Error: \'', $timeout,
-            '\' is not a sensible value for a timeout.', "\N{LF}";
+        say {*STDERR} 'Error: \'', $timeout,
+            '\' is not a sensible value for a timeout.';
         return 0;
     }
 
@@ -108,22 +112,21 @@ sub ensure_sensible_article {
     }
 
     if ( !-e $path ) {
-        print {*STDERR} 'Error: there is no file at the given path',
-            "\N{LF}", "\N{LF}", $TWO_SPACES, $path, "\N{LF}",
-            "\N{LF}";
+        say {*STDERR} 'Error: there is no file at the given path',
+            $LF, $LF, $TWO_SPACES, $path, $LF;
         return 0;
     }
 
     if ( -d $path ) {
-        print {*STDERR} 'Error: the supplied article', "\N{LF}",
-            "\N{LF}", $TWO_SPACES, $path, "\N{LF}", "\N{LF}",
+        say {*STDERR} 'Error: the supplied article', $LF,
+            $LF, $TWO_SPACES, $path, $LF, $LF,
             'is not a file but a directory.';
         return 0;
     }
 
     if ( !-r $path ) {
-        print {*STDERR} 'Error: the article file', "\N{LF}",
-            "\N{LF}", $TWO_SPACES, $path, "\N{LF}", "\N{LF}",
+        say {*STDERR} 'Error: the article file', $LF,
+            $LF, $TWO_SPACES, $path, $LF, $LF,
             'is unreadable.';
         return 0;
     }
@@ -171,7 +174,7 @@ $request->content_type('application/x-www-form-urlencoded');
 $request->content($article_content);
 
 if ($debug) {
-    print 'DEBUG: The request URI is: ', $request_uri, "\N{LF}";
+    say {*STDERR} 'DEBUG: The request URI is: ', $request_uri;
 }
 
 # (Try to) send out the request
@@ -182,7 +185,7 @@ if ( defined $response ) {
     if ( $response->is_success() ) {
 
         my $response_content = $response->content();
-        print $response_content, "\N{LF}";
+        say $response_content;
 
         exit 0;
 
@@ -196,34 +199,32 @@ if ( defined $response ) {
             $response_content =
                 defined $response_content ? $response_content : $EMPTY_STRING;
 
-            print {*STDERR}
+            say {*STDERR}
                 'Error: the request was unsuccessful.  The parsing service returned:',
-                "\N{LF}", "\N{LF}", $TWO_SPACES, $status,
-                "\N{LF}", "\N{LF}";
+                $LF, $LF, $TWO_SPACES, $status,
+                $LF;
 
             if ( $response_content eq $EMPTY_STRING ) {
 
-                print {*STDERR}
-                    'The message received from the parsing service is empty.',
-                    "\N{LF}";
+                say {*STDERR}
+                    'The message received from the parsing service is empty.';
 
             }
             else {
 
-                print {*STDERR} 'Here is the message we received:',
-                    "\N{LF}", "\N{LF}";
-                print {*STDERR} $response_content, "\N{LF}";
+                say {*STDERR} 'Here is the message we received:', $LF;
+                say {*STDERR} $response_content;
 
             }
 
         }
         else {
 
-            print {*STDERR}
+            say {*STDERR}
                 'Error: the request was unsuccessful, and it seems we did not even get a response from the server.',
-                "\N{LF}",
+                $LF,
                 '(Did the request timeout?  The value of the timeout was ',
-                $timeout, ' seconds.)', "\N{LF}";
+                $timeout, ' seconds.)';
 
         }
 
@@ -232,14 +233,13 @@ if ( defined $response ) {
 }
 else {
     if ( defined $eval_request_message ) {
-        print {*STDERR}
+        say {*STDERR}
             'Error: the HTTP request failed.  Here is the message we got:',
-            "\N{LF}", $eval_request_message, "\N{LF}";
+            $LF, $eval_request_message;
     }
     else {
-        print {*STDERR}
-            'Error: the HTTP request failed badly; not even a failure message is available.',
-            "\N{LF}";
+        say {*STDERR}
+            'Error: the HTTP request failed badly; not even a failure message is available.';
     }
 }
 

@@ -435,6 +435,8 @@ that you can see in the CPAN URIs, but I have some hope that somewhat
 older versions of these modules suffice for the rather straightforward
 tasks that I require of them.
 
+In addition, we require Perl version 5.10 or newer.
+
 =head1 DIAGNOSTICS
 
 If you are not getting the output you expect, try executing the same

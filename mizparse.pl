@@ -91,6 +91,12 @@ sub process_commandline {
         pod2usage(1);
     }
 
+    my $article_path = $ARGV[0];
+
+    if ( !ensure_sensible_article($article_path) ) {
+	exit 1;
+    }
+
     if ($debug) {
         $verbose = 1;
     }
@@ -157,10 +163,6 @@ sub slurp {
 process_commandline();
 
 my $article_path = $ARGV[0];
-
-if ( !ensure_sensible_article($article_path) ) {
-    exit 1;
-}
 
 # Read the article
 my $article_content =

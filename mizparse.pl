@@ -33,6 +33,7 @@ Readonly my $EMPTY_STRING => q{};
 Readonly my $TWO_SPACES   => q{  };
 Readonly my $DASH         => q{-};
 Readonly my $LF           => "\N{LF}";
+Readonly my $HTTP_MESSAGE_BODY_MIME_TYPE => 'application/x-www-form-urlencoded';
 
 sub ensure_valid_transform {
     return (
@@ -48,6 +49,16 @@ sub ensure_valid_format {
 
 sub ensure_sensible_timeout {
     return ( defined $timeout && $timeout > 0 );
+}
+
+sub error_message {
+    my @message_parts = @_;
+    if (scalar @message_parts == 0) {
+	return 'Error: (no error message was supplied)';
+    } else {
+	my $message = join ($EMPTY_STRING, @message_parts);
+	return "Error: ${message}";
+    }
 }
 
 sub process_commandline {
@@ -102,8 +113,7 @@ sub process_commandline {
     }
 
     if ( !ensure_sensible_timeout() ) {
-        say {*STDERR} 'Error: \'', $timeout,
-            '\' is not a sensible value for a timeout.';
+        say {*STDERR} error_message ('\'', $timeout, '\' is not a sensible value for a timeout.');
         return 0;
     }
 
@@ -120,22 +130,18 @@ sub ensure_sensible_article {
     }
 
     if ( !-e $path ) {
-        say {*STDERR} 'Error: there is no file at the given path',
-            $LF, $LF, $TWO_SPACES, $path, $LF;
+        say {*STDERR} error_message ('There is no file at the given path',
+            $LF, $LF, $TWO_SPACES, $path, $LF);
         return 0;
     }
 
     if ( -d $path ) {
-        say {*STDERR} 'Error: the supplied article', $LF,
-            $LF, $TWO_SPACES, $path, $LF, $LF,
-            'is not a file but a directory.';
+        say {*STDERR} error_message ('The supplied article', $LF, $LF, $TWO_SPACES, $path, $LF, $LF, 'is not a file but a directory.');
         return 0;
     }
 
     if ( !-r $path ) {
-        say {*STDERR} 'Error: the article file', $LF,
-            $LF, $TWO_SPACES, $path, $LF, $LF,
-            'is unreadable.';
+        say {*STDERR} error_message ('The article file', $LF, $LF, $TWO_SPACES, $path, $LF, $LF, 'is unreadable.');
         return 0;
     }
 
@@ -147,17 +153,27 @@ sub slurp {
     my $path_or_fh = shift;
 
     open( my $fh, '<', $path_or_fh )
-        or die 'Error: unable to open the file (or filehandle) ', $path_or_fh,
-        '.';
+        or die error_message ('Unable to open the file (or filehandle) ', $path_or_fh, $FULL_STOP);
 
     my $contents;
     { local $/; $contents = <$fh>; }
 
     close $fh
-        or die 'Error: unable to close the file (or filehandle) ',
-        $path_or_fh, '.';
+        or die error_message ('Unable to close the file (or filehandle) ', $path_or_fh,$FULL_STOP);
 
     return $contents;
+}
+
+sub request_uri {
+    if (defined $transform) {
+	if (defined $format) {
+	    return "${MIZAR_PARSER_BASE_URI}?strictness=${transform}&format=${format}";
+	} else {
+	    die 'Error: the \'format\' parameter has an undefined value.';
+	}
+    } else {
+	die 'Error: the \'transform\' parameter has an undefined value.';
+    }
 }
 
 process_commandline();
@@ -173,10 +189,9 @@ my $article_content =
 my $agent = LWP::UserAgent->new( timeout => $timeout );
 
 # Prepare the HTTP request
-my $request_uri =
-    "${MIZAR_PARSER_BASE_URI}?strictness=${transform}&format=${format}";
+my $request_uri = request_uri ();
 my $request = HTTP::Request->new( GET => $request_uri );
-$request->content_type('application/x-www-form-urlencoded');
+$request->content_type($HTTP_MESSAGE_BODY_MIME_TYPE);
 $request->content($article_content);
 
 if ($debug) {
@@ -205,15 +220,11 @@ if ( defined $response ) {
             $response_content =
                 defined $response_content ? $response_content : $EMPTY_STRING;
 
-            say {*STDERR}
-                'Error: the request was unsuccessful.  The parsing service returned:',
-                $LF, $LF, $TWO_SPACES, $status,
-                $LF;
+            say {*STDERR} error_message ('The request was unsuccessful.  The parsing service returned:', $LF, $LF, $TWO_SPACES, $status, $LF);
 
             if ( $response_content eq $EMPTY_STRING ) {
 
-                say {*STDERR}
-                    'The message received from the parsing service is empty.';
+                say {*STDERR} warning_message ('The message received from the parsing service is empty.');
 
             }
             else {
@@ -226,11 +237,10 @@ if ( defined $response ) {
         }
         else {
 
-            say {*STDERR}
-                'Error: the request was unsuccessful, and it seems we did not even get a response from the server.',
+            say {*STDERR} error_message ('The request was unsuccessful, and it seems we did not even get a response from the server.',
                 $LF,
                 '(Did the request timeout?  The value of the timeout was ',
-                $timeout, ' seconds.)';
+                $timeout, ' seconds.)');
 
         }
 
@@ -239,13 +249,11 @@ if ( defined $response ) {
 }
 else {
     if ( defined $eval_request_message ) {
-        say {*STDERR}
-            'Error: the HTTP request failed.  Here is the message we got:',
-            $LF, $eval_request_message;
+        say {*STDERR} error_message ('The HTTP request failed.  Here is the message we got:',
+            $LF, $eval_request_message);
     }
     else {
-        say {*STDERR}
-            'Error: the HTTP request failed badly; not even a failure message is available.';
+        say {*STDERR} error_message ('The HTTP request failed badly; not even a failure message is available.');
     }
 }
 

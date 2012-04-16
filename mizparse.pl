@@ -461,7 +461,7 @@ the B<Mizar> file that you give to this program.
 
 =item L<The Mizar parsing service homepage|http://mizar.cs.ualberta.ca/parsing/>.
 
-The parsing service underlies this program.
+The parsing service on which this program is based.
 
 =item L<The Mizar homepage|http://mizar.org>
 

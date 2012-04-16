@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-require v5.10.0; # for the 'say' feature
+require v5.10.0;    # for the 'say' feature
 use feature 'say';
 
 use LWP;
@@ -16,7 +16,6 @@ use version;
 use Carp qw(croak);
 
 Readonly my $VERSION => qv('1.2');
-Readonly my $LF => "\N{LF}";
 
 my $man       = 0;
 my $help      = 0;
@@ -33,15 +32,18 @@ Readonly my $FULL_STOP    => q{.};
 Readonly my $EMPTY_STRING => q{};
 Readonly my $TWO_SPACES   => q{  };
 Readonly my $DASH         => q{-};
+Readonly my $LF           => "\N{LF}";
 
 sub ensure_valid_transform {
-    return (   $transform eq 'none'
+    return (
+        defined $transform && ( $transform eq 'none'
             || $transform eq 'wsm'
-            || $transform eq 'msm' );
+            || $transform eq 'msm' )
+    );
 }
 
 sub ensure_valid_format {
-    return ( $format eq 'text' || $format eq 'xml' );
+    return ( defined $format && ( $format eq 'text' || $format eq 'xml' ) );
 }
 
 sub ensure_sensible_timeout {
@@ -138,14 +140,16 @@ sub ensure_sensible_article {
 sub slurp {
     my $path_or_fh = shift;
 
-    open (my $fh, '<', $path_or_fh)
-	or die 'Error: unable to open the file (or filehandle) ', $path_or_fh, '.';
+    open( my $fh, '<', $path_or_fh )
+        or die 'Error: unable to open the file (or filehandle) ', $path_or_fh,
+        '.';
 
     my $contents;
     { local $/; $contents = <$fh>; }
 
     close $fh
-	or die 'Error: unable to close the file (or filehandle) ', $path_or_fh, '.';
+        or die 'Error: unable to close the file (or filehandle) ',
+        $path_or_fh, '.';
 
     return $contents;
 }

@@ -61,6 +61,16 @@ sub error_message {
     }
 }
 
+sub warning_message {
+    my @message_parts = @_;
+    if (scalar @message_parts == 0) {
+	return 'Warning: (no warning message was supplied)';
+    } else {
+	my $message = join ($EMPTY_STRING, @message_parts);
+	return "Warning: ${message}";
+    }
+}
+
 sub process_commandline {
 
     GetOptions(

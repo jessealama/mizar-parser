@@ -128,6 +128,7 @@
 
 ;; By default, all requests are bad
 (defmethod handle (method format strictness article)
+  (declare (ignore method format strictness article))
   (let ((uri (request-uri*))
 	(method-symbol (request-method*))
 	(message (raw-post-data :force-text t)))

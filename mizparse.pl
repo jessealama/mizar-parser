@@ -52,23 +52,27 @@ sub ensure_sensible_timeout {
 }
 
 sub error_message {
-    my @message_parts = @_;
-    if (scalar @message_parts == 0) {
-	return 'Error: (no error message was supplied)';
-    } else {
-	my $message = join ($EMPTY_STRING, @message_parts);
-	return "Error: ${message}";
-    }
+    my $message = join ($EMPTY_STRING, @_);
+    my $error_message = 'Error: ';
+    $error_message .=
+	($message eq $EMPTY_STRING ? '(no error message was supplied)' : $message);
+    return $error_message;
 }
 
 sub warning_message {
-    my @message_parts = @_;
-    if (scalar @message_parts == 0) {
-	return 'Warning: (no warning message was supplied)';
-    } else {
-	my $message = join ($EMPTY_STRING, @message_parts);
-	return "Warning: ${message}";
-    }
+    my $message = join ($EMPTY_STRING, @_);
+    my $warning_message = 'Error: ';
+    $warning_message .=
+	($message eq $EMPTY_STRING ? '(no warning message was supplied)' : $message);
+    return $warning_message;
+}
+
+sub debug_message {
+    my $message = join ($EMPTY_STRING, @_);
+    my $debug_message = 'Error: ';
+    $debug_message .=
+	($message eq $EMPTY_STRING ? '(no debug message was supplied)' : $message);
+    return $debug_message;
 }
 
 sub process_commandline {
@@ -205,7 +209,7 @@ $request->content_type($HTTP_MESSAGE_BODY_MIME_TYPE);
 $request->content($article_content);
 
 if ($debug) {
-    say {*STDERR} 'DEBUG: The request URI is: ', $request_uri;
+    say {*STDERR} debug_message ('The request URI is: ', $request_uri);
 }
 
 # (Try to) send out the request

@@ -86,9 +86,13 @@ tpl die(#message) {
 
 // List utilities.  Stolen from Josef.  Thanks, Josef.
 
-tpl list(#separ,#elems) {
- for-each [$elems] {
-  apply[.]; if [not(position()=last())] { copy-of $separ; } }
+tpl list (#separ, #elems) {
+  for-each [$elems] {
+    apply[.];
+    if [not(position()=last())] {
+      copy-of $separ;
+    }
+  }
 }
 
 $lcletters= { "abcdefghijklmnopqrstuvwxyz"; }

@@ -413,16 +413,16 @@ tpl [Item[@kind='Mode-Definition' and Mode-Pattern]] {
   }
 }
 
-tpl [Item[@kind='Predicate-Definition']] {
+tpl [Item[@kind='Predicate-Definition' and not(Predicate-Pattern)]] {
+  apply [.] (#message = "Predicate-Definition element lacks a Predicate-Pattern child!") mode="die";
+}
+
+tpl [Item[@kind='Predicate-Definition' and Predicate-Pattern]] {
   if [Redefine] {
     "redefine ";
   }
   "pred ";
-  if [Predicate-Pattern] {
-    apply [Predicate-Pattern[1]]; "\n";
-  } else {
-    apply [.] (#message = "Predicate-Definition element lacks a Predicate-Pattern child!") mode="die";
-  }
+  apply [Predicate-Pattern[1]]; "\n";
   if [Definiens] {
     "means"; "\n";
     apply [Definiens[1]]; "\n"; ";";

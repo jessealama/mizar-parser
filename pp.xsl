@@ -645,25 +645,22 @@ and
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Predicate-Definition&apos;]">
+  <xsl:template match="Item[@kind=&apos;Predicate-Definition&apos; and not(Predicate-Pattern)]">
+    <xsl:apply-templates select="." mode="die">
+      <xsl:with-param name="message">
+        <xsl:text>Predicate-Definition element lacks a Predicate-Pattern child!</xsl:text>
+      </xsl:with-param>
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="Item[@kind=&apos;Predicate-Definition&apos; and Predicate-Pattern]">
     <xsl:if test="Redefine">
       <xsl:text>redefine </xsl:text>
     </xsl:if>
     <xsl:text>pred </xsl:text>
-    <xsl:choose>
-      <xsl:when test="Predicate-Pattern">
-        <xsl:apply-templates select="Predicate-Pattern[1]"/>
-        <xsl:text>
+    <xsl:apply-templates select="Predicate-Pattern[1]"/>
+    <xsl:text>
 </xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:apply-templates select="." mode="die">
-          <xsl:with-param name="message">
-            <xsl:text>Predicate-Definition element lacks a Predicate-Pattern child!</xsl:text>
-          </xsl:with-param>
-        </xsl:apply-templates>
-      </xsl:otherwise>
-    </xsl:choose>
     <xsl:choose>
       <xsl:when test="Definiens">
         <xsl:text>means</xsl:text>

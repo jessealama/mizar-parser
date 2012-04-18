@@ -257,7 +257,7 @@ tpl [Item[@kind='Case-Block' and Block[@kind = "Case"]]] {
   apply [Block[@kind='Case'][1]];
 }
 
-tpl [Item[@kind='Case-Block' and not(child::Block[@kind = "Case"]) and not(child::Block[@kind = "Suppose"])]] {
+tpl [Item[@kind='Case-Block' and not(Block[@kind = "Case"]) and not(Block[@kind = "Suppose"])]] {
   apply [.] (#message = "Don't know how to deal with a Case-Block item that lacks both a Suppose block and Case block child!") mode="die";
 }
 
@@ -311,11 +311,11 @@ tpl [Item[@kind='Case-Head' and not(Single-Assumption) and not(Collective-Assump
   apply [.] (#message = "Don't know how to deal with a Case-Head item that lacks a Single-Assumption child and a Collective-Assumption child!") mode="die";
 }
 
-tpl [Item[@kind='Suppose-Head' and child::Single-Assumption]] {
+tpl [Item[@kind='Suppose-Head' and Single-Assumption]] {
   "suppose "; apply [Single-Assumption[1]]; ";"; "\n";
 }
 
-tpl [Item[@kind='Suppose-Head' and not(child::Single-Assumption)]] {
+tpl [Item[@kind='Suppose-Head' and not(Single-Assumption)]] {
   apply [.] (#message = "Don't know how to deal with a Suppose-Head item that lacks a Single-Assumption child!") mode="die";
 }
 
@@ -323,15 +323,15 @@ tpl [Item[@kind='Suppose-Head' and not(child::Single-Assumption)]] {
 // Schemes
 //////////////////////////////////////////////////////////////////////
 
-tpl [Item[@kind='Scheme-Block-Item' and child::Block[@kind = "Scheme-Block"]]] {
+tpl [Item[@kind='Scheme-Block-Item' and Block[@kind = "Scheme-Block"]]] {
   apply[Block[@kind='Scheme-Block'][1]];
 }
 
-tpl [Item[@kind='Scheme-Block-Item' and not(child::Block[@kind = "Scheme-Block"])]] {
+tpl [Item[@kind='Scheme-Block-Item' and not(Block[@kind = "Scheme-Block"])]] {
   apply [.] (#message = "Scheme-Block child of a Scheme-Block-Item is missing!") mode="die";
 }
 
-tpl [Block[@kind='Scheme-Block' and child::Item[@kind = "Scheme-Head"]]] {
+tpl [Block[@kind='Scheme-Block' and Item[@kind = "Scheme-Head"]]] {
   apply [Item[@kind='Scheme-Head'][1]];
   if [*[2]] { // I guess this is the proof
    "\n";
@@ -344,7 +344,7 @@ tpl [Block[@kind='Scheme-Block' and child::Item[@kind = "Scheme-Head"]]] {
   }
 }
 
-tpl [Block[@kind='Scheme-Block' and not(child::Item[@kind = "Scheme-Head"])]] {
+tpl [Block[@kind='Scheme-Block' and not(Item[@kind = "Scheme-Head"])]] {
   apply [.] (#message = "Scheme-Head child of Scheme-Block is missing!") mode="die";
 }
 
@@ -1062,21 +1062,21 @@ tpl [Item[@kind = "Property" and not(@property)]] {
   apply [.] (#message = "We expected a Property item to have a property attribute!") mode="die";
 }
 
-tpl [Item[@kind = "Property" and child::Block[@kind = "Proof"] and child::Straightforward-Justification]] {
+tpl [Item[@kind = "Property" and Block[@kind = "Proof"] and Straightforward-Justification]] {
   apply [.] (#message = "Don't know how to handle a Property item that has both a Proof block child and a Straightforward-Justificiation child!") mode="die";
 }
 
-tpl [Item[@kind = "Property" and @property and child::Block[@kind = "Proof"] and not(child::Straightforward-Justification)]] {
+tpl [Item[@kind = "Property" and @property and Block[@kind = "Proof"] and not(Straightforward-Justification)]] {
   `@property`; "\n";
    apply [Block[@kind='Proof'][1]];
 }
 
-tpl [Item[@kind = "Property" and @property and not(child::Block[@kind = "Proof"]) and child::Straightforward-Justification]] {
+tpl [Item[@kind = "Property" and @property and not(Block[@kind = "Proof"]) and Straightforward-Justification]] {
   `@property`; "\n";
   apply [Straightforward-Justification]; ";"; "\n";
 }
 
-tpl [Item[@kind = "Property" and @property and not(child::Straightforward-Justification) and not(child::Block[@kind = "Proof"])]] {
+tpl [Item[@kind = "Property" and @property and not(Straightforward-Justification) and not(Block[@kind = "Proof"])]] {
   ";"; "\n";
 }
 
@@ -1244,7 +1244,7 @@ tpl maybe-link {
   }
 }
 
-tpl [Item[@kind='Choice-Statement' and not(child::Conditions)]] {
+tpl [Item[@kind='Choice-Statement' and not(Conditions)]] {
   apply [.] (#message = "We expected to find a Conditions child of a Choice-Statement item, but none was found") mode="die";
 }
 
@@ -1260,14 +1260,14 @@ tpl [Item[@kind = "Choice-Statement" and Conditions]] {
   ";"; "\n";
 }
 
-tpl [Straightforward-Justification[child::Link]] {
+tpl [Straightforward-Justification[Link]] {
   if [*[2]] {
     " by ";
     list (#separ = " , ", #elems = `*[position() > 1]`);
   }
 }
 
-tpl [Straightforward-Justification[not(child::Link)]] {
+tpl [Straightforward-Justification[not(Link)]] {
   if [*[1]] {
     " by ";
     list (#separ = " , ", #elems = `*`);
@@ -1358,7 +1358,7 @@ tpl [Item[@kind='Existential-Assumption']] {
   }
 }
 
-tpl [Item[@kind = "Conclusion" and not(child::Iterative-Equality or child::Diffuse-Statement or child::Compact-Statement)]] {
+tpl [Item[@kind = "Conclusion" and not(Iterative-Equality or Diffuse-Statement or Compact-Statement)]] {
   apply [.] (#message = "Don't know how to deal with a Conclusion that is not an Iterative-Equality, Diffuse-Statement, nor a Compact-Statement") mode="die";
 }
 
@@ -1388,7 +1388,7 @@ tpl [Item[@kind='Conclusion' and @shape = "Iterative-Equality"]] {
   list (#separ = "\n.= ", #elems = `Iterative-Step`); ";"; "\n";
 }
 
-tpl [Item[@kind='Conclusion' and @shape = "Diffuse-Statement" and child::Block[@kind = "Hereby-Reasoning"]]] {
+tpl [Item[@kind='Conclusion' and @shape = "Diffuse-Statement" and Block[@kind = "Hereby-Reasoning"]]] {
 
   if [Straightforward-Justification/Link | Scheme-Justification/Link] {
     "hence ";
@@ -1397,7 +1397,7 @@ tpl [Item[@kind='Conclusion' and @shape = "Diffuse-Statement" and child::Block[@
   apply [Block[@kind='Hereby-Reasoning'][1]];
 }
 
-tpl [Item[@kind='Conclusion' and @shape = "Diffuse-Statement" and not(child::Block[@kind = "Hereby-Reasoning"])]] {
+tpl [Item[@kind='Conclusion' and @shape = "Diffuse-Statement" and not(Block[@kind = "Hereby-Reasoning"])]] {
 
   if [Straightforward-Justification/Link | Scheme-Justification/Link] {
     "hence ";
@@ -1414,7 +1414,7 @@ tpl [Item[@kind='Conclusion' and @shape = "Diffuse-Statement" and not(child::Blo
   apply [Block[1]];
 }
 
-tpl [Item[@kind='Conclusion' and @shape = "Compact-Statement" and child::Block[@kind = "Proof"]]] {
+tpl [Item[@kind='Conclusion' and @shape = "Compact-Statement" and Block[@kind = "Proof"]]] {
 
   if [Straightforward-Justification/Link | Scheme-Justification/Link] {
     "hence ";
@@ -1430,7 +1430,7 @@ tpl [Item[@kind='Conclusion' and @shape = "Compact-Statement" and child::Block[@
   apply [Block[@kind='Proof'][1]]; "\n";
 }
 
-tpl [Item[@kind='Conclusion' and @shape = "Compact-Statement" and not(child::Block[@kind = "Proof"])]] {
+tpl [Item[@kind='Conclusion' and @shape = "Compact-Statement" and not(Block[@kind = "Proof"])]] {
 
   if [Straightforward-Justification/Link | Scheme-Justification/Link] {
     "hence ";
@@ -1575,11 +1575,11 @@ tpl [Item[@kind='Regular-Statement' and @shape = "Iterative-Equality"]] {
   ".= "; list (#separ = "\n.= ", #elems = `Iterative-Step`); ";"; "\n";
 }
 
-tpl [Item[@kind='Regular-Statement' and @shape = "Diffuse-Statement" and not(child::Block[@kind = "Now-Reasoning"] or child::Block[@kind = "Hereby-Reasoning"])]] {
+tpl [Item[@kind='Regular-Statement' and @shape = "Diffuse-Statement" and not(Block[@kind = "Now-Reasoning"] or Block[@kind = "Hereby-Reasoning"])]] {
   apply [.] (#message = "Don't know how to handle this piece of diffuse reasoning it is neither a 'now' nor a 'hereby' block.") mode="die";
 }
 
-tpl [Item[@kind='Regular-Statement' and @shape = "Diffuse-Statement" and (child::Block[@kind = "Now-Reasoning"] or child::Block[@kind = "Hereby-Reasoning"])]] {
+tpl [Item[@kind='Regular-Statement' and @shape = "Diffuse-Statement" and (Block[@kind = "Now-Reasoning"] or Block[@kind = "Hereby-Reasoning"])]] {
   maybe-link ();
   if [Label] {
     apply [Label[1]];

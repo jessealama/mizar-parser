@@ -395,7 +395,7 @@
     <xsl:apply-templates select="Block[@kind=&apos;Case&apos;][1]"/>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Case-Block&apos; and not(child::Block[@kind = &quot;Case&quot;]) and not(child::Block[@kind = &quot;Suppose&quot;])]">
+  <xsl:template match="Item[@kind=&apos;Case-Block&apos; and not(Block[@kind = &quot;Case&quot;]) and not(Block[@kind = &quot;Suppose&quot;])]">
     <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Don&apos;t know how to deal with a Case-Block item that lacks both a Suppose block and Case block child!</xsl:text>
@@ -498,7 +498,7 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Suppose-Head&apos; and child::Single-Assumption]">
+  <xsl:template match="Item[@kind=&apos;Suppose-Head&apos; and Single-Assumption]">
     <xsl:text>suppose </xsl:text>
     <xsl:apply-templates select="Single-Assumption[1]"/>
     <xsl:text>;</xsl:text>
@@ -506,7 +506,7 @@ and
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Suppose-Head&apos; and not(child::Single-Assumption)]">
+  <xsl:template match="Item[@kind=&apos;Suppose-Head&apos; and not(Single-Assumption)]">
     <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Don&apos;t know how to deal with a Suppose-Head item that lacks a Single-Assumption child!</xsl:text>
@@ -517,11 +517,11 @@ and
   <!-- //////////////////////////////////////////////////////////////////// -->
   <!-- Schemes -->
   <!-- //////////////////////////////////////////////////////////////////// -->
-  <xsl:template match="Item[@kind=&apos;Scheme-Block-Item&apos; and child::Block[@kind = &quot;Scheme-Block&quot;]]">
+  <xsl:template match="Item[@kind=&apos;Scheme-Block-Item&apos; and Block[@kind = &quot;Scheme-Block&quot;]]">
     <xsl:apply-templates select="Block[@kind=&apos;Scheme-Block&apos;][1]"/>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Scheme-Block-Item&apos; and not(child::Block[@kind = &quot;Scheme-Block&quot;])]">
+  <xsl:template match="Item[@kind=&apos;Scheme-Block-Item&apos; and not(Block[@kind = &quot;Scheme-Block&quot;])]">
     <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Scheme-Block child of a Scheme-Block-Item is missing!</xsl:text>
@@ -529,7 +529,7 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Block[@kind=&apos;Scheme-Block&apos; and child::Item[@kind = &quot;Scheme-Head&quot;]]">
+  <xsl:template match="Block[@kind=&apos;Scheme-Block&apos; and Item[@kind = &quot;Scheme-Head&quot;]]">
     <xsl:apply-templates select="Item[@kind=&apos;Scheme-Head&apos;][1]"/>
     <xsl:if test="*[2]">
       <!-- I guess this is the proof -->
@@ -546,7 +546,7 @@ and
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="Block[@kind=&apos;Scheme-Block&apos; and not(child::Item[@kind = &quot;Scheme-Head&quot;])]">
+  <xsl:template match="Block[@kind=&apos;Scheme-Block&apos; and not(Item[@kind = &quot;Scheme-Head&quot;])]">
     <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Scheme-Head child of Scheme-Block is missing!</xsl:text>
@@ -1755,7 +1755,7 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Item[@kind = &quot;Property&quot; and child::Block[@kind = &quot;Proof&quot;] and child::Straightforward-Justification]">
+  <xsl:template match="Item[@kind = &quot;Property&quot; and Block[@kind = &quot;Proof&quot;] and Straightforward-Justification]">
     <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Don&apos;t know how to handle a Property item that has both a Proof block child and a Straightforward-Justificiation child!</xsl:text>
@@ -1763,14 +1763,14 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Item[@kind = &quot;Property&quot; and @property and child::Block[@kind = &quot;Proof&quot;] and not(child::Straightforward-Justification)]">
+  <xsl:template match="Item[@kind = &quot;Property&quot; and @property and Block[@kind = &quot;Proof&quot;] and not(Straightforward-Justification)]">
     <xsl:value-of select="@property"/>
     <xsl:text>
 </xsl:text>
     <xsl:apply-templates select="Block[@kind=&apos;Proof&apos;][1]"/>
   </xsl:template>
 
-  <xsl:template match="Item[@kind = &quot;Property&quot; and @property and not(child::Block[@kind = &quot;Proof&quot;]) and child::Straightforward-Justification]">
+  <xsl:template match="Item[@kind = &quot;Property&quot; and @property and not(Block[@kind = &quot;Proof&quot;]) and Straightforward-Justification]">
     <xsl:value-of select="@property"/>
     <xsl:text>
 </xsl:text>
@@ -1780,7 +1780,7 @@ and
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="Item[@kind = &quot;Property&quot; and @property and not(child::Straightforward-Justification) and not(child::Block[@kind = &quot;Proof&quot;])]">
+  <xsl:template match="Item[@kind = &quot;Property&quot; and @property and not(Straightforward-Justification) and not(Block[@kind = &quot;Proof&quot;])]">
     <xsl:text>;</xsl:text>
     <xsl:text>
 </xsl:text>
@@ -2034,7 +2034,7 @@ and
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Choice-Statement&apos; and not(child::Conditions)]">
+  <xsl:template match="Item[@kind=&apos;Choice-Statement&apos; and not(Conditions)]">
     <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>We expected to find a Conditions child of a Choice-Statement item, but none was found</xsl:text>
@@ -2066,7 +2066,7 @@ and
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="Straightforward-Justification[child::Link]">
+  <xsl:template match="Straightforward-Justification[Link]">
     <xsl:if test="*[2]">
       <xsl:text> by </xsl:text>
       <xsl:call-template name="list">
@@ -2078,7 +2078,7 @@ and
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="Straightforward-Justification[not(child::Link)]">
+  <xsl:template match="Straightforward-Justification[not(Link)]">
     <xsl:if test="*[1]">
       <xsl:text> by </xsl:text>
       <xsl:call-template name="list">
@@ -2244,7 +2244,7 @@ and
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="Item[@kind = &quot;Conclusion&quot; and not(child::Iterative-Equality or child::Diffuse-Statement or child::Compact-Statement)]">
+  <xsl:template match="Item[@kind = &quot;Conclusion&quot; and not(Iterative-Equality or Diffuse-Statement or Compact-Statement)]">
     <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Don&apos;t know how to deal with a Conclusion that is not an Iterative-Equality, Diffuse-Statement, nor a Compact-Statement</xsl:text>
@@ -2288,14 +2288,14 @@ and
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Conclusion&apos; and @shape = &quot;Diffuse-Statement&quot; and child::Block[@kind = &quot;Hereby-Reasoning&quot;]]">
+  <xsl:template match="Item[@kind=&apos;Conclusion&apos; and @shape = &quot;Diffuse-Statement&quot; and Block[@kind = &quot;Hereby-Reasoning&quot;]]">
     <xsl:if test="Straightforward-Justification/Link | Scheme-Justification/Link">
       <xsl:text>hence </xsl:text>
     </xsl:if>
     <xsl:apply-templates select="Block[@kind=&apos;Hereby-Reasoning&apos;][1]"/>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Conclusion&apos; and @shape = &quot;Diffuse-Statement&quot; and not(child::Block[@kind = &quot;Hereby-Reasoning&quot;])]">
+  <xsl:template match="Item[@kind=&apos;Conclusion&apos; and @shape = &quot;Diffuse-Statement&quot; and not(Block[@kind = &quot;Hereby-Reasoning&quot;])]">
     <xsl:if test="Straightforward-Justification/Link | Scheme-Justification/Link">
       <xsl:text>hence </xsl:text>
     </xsl:if>
@@ -2313,7 +2313,7 @@ and
     <xsl:apply-templates select="Block[1]"/>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Conclusion&apos; and @shape = &quot;Compact-Statement&quot; and child::Block[@kind = &quot;Proof&quot;]]">
+  <xsl:template match="Item[@kind=&apos;Conclusion&apos; and @shape = &quot;Compact-Statement&quot; and Block[@kind = &quot;Proof&quot;]]">
     <xsl:if test="Straightforward-Justification/Link | Scheme-Justification/Link">
       <xsl:text>hence </xsl:text>
     </xsl:if>
@@ -2331,7 +2331,7 @@ and
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Conclusion&apos; and @shape = &quot;Compact-Statement&quot; and not(child::Block[@kind = &quot;Proof&quot;])]">
+  <xsl:template match="Item[@kind=&apos;Conclusion&apos; and @shape = &quot;Compact-Statement&quot; and not(Block[@kind = &quot;Proof&quot;])]">
     <xsl:if test="Straightforward-Justification/Link | Scheme-Justification/Link">
       <xsl:text>hence </xsl:text>
     </xsl:if>
@@ -2596,7 +2596,7 @@ and
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Regular-Statement&apos; and @shape = &quot;Diffuse-Statement&quot; and not(child::Block[@kind = &quot;Now-Reasoning&quot;] or child::Block[@kind = &quot;Hereby-Reasoning&quot;])]">
+  <xsl:template match="Item[@kind=&apos;Regular-Statement&apos; and @shape = &quot;Diffuse-Statement&quot; and not(Block[@kind = &quot;Now-Reasoning&quot;] or Block[@kind = &quot;Hereby-Reasoning&quot;])]">
     <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Don&apos;t know how to handle this piece of diffuse reasoning it is neither a &apos;now&apos; nor a &apos;hereby&apos; block.</xsl:text>
@@ -2604,7 +2604,7 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Regular-Statement&apos; and @shape = &quot;Diffuse-Statement&quot; and (child::Block[@kind = &quot;Now-Reasoning&quot;] or child::Block[@kind = &quot;Hereby-Reasoning&quot;])]">
+  <xsl:template match="Item[@kind=&apos;Regular-Statement&apos; and @shape = &quot;Diffuse-Statement&quot; and (Block[@kind = &quot;Now-Reasoning&quot;] or Block[@kind = &quot;Hereby-Reasoning&quot;])]">
     <xsl:call-template name="maybe-link"/>
     <xsl:if test="Label">
       <xsl:apply-templates select="Label[1]"/>

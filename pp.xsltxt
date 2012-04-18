@@ -171,6 +171,26 @@ tpl apply-proposition {
   apply [Proposition[1]];
 }
 
+tpl ensure-term {
+  if [not(Infix-Term | Simple-Term | Circumfix-Term | Private-Functor-Term | Fraenkel-Term | Aggregate-Term | Numeral-Term | Placeholder-Term | it-Term | Selector-Term | Forgetful-Functor-Term | Qualification-Term | Global-Choice-Term)] {
+    apply [.] (#message = "A term was expected, but one was not given") mode="die";
+  }
+}
+
+tpl apply-term {
+  apply [(Infix-Term | Simple-Term | Circumfix-Term | Private-Functor-Term | Fraenkel-Term | Aggregate-Term | Numeral-Term | Placeholder-Term | it-Term | Selector-Term | Forgetful-Functor-Term | Qualification-Term | Global-Choice-Term)[1]];
+}
+
+tpl ensure-formula {
+  if [not(Predicative-Formula | Private-Predicate-Formula | Negated-Formula | Conjunctive-Formula | Contradiction | Disjunctive-Formula | Conditional-Formula | Biconditional-Formula | Existential-Quantifier-Formula | Universal-Quantifier-Formula | Attributive-Formula | Qualifying-Formula)] {
+    apply [.] (#message = "A formula was expected, but one was not given") mode="die";
+  }
+}
+
+tpl apply-formula {
+  apply [(Predicative-Formula | Private-Predicate-Formula | Negated-Formula | Conjunctive-Formula | Contradiction | Disjunctive-Formula | Conditional-Formula | Biconditional-Formula | Existential-Quantifier-Formula | Universal-Quantifier-Formula | Attributive-Formula | Qualifying-Formula)[1]];
+}
+
 //////////////////////////////////////////////////////////////////////
 // Element templates
 //////////////////////////////////////////////////////////////////////
@@ -431,16 +451,17 @@ tpl [Item[@kind='Predicate-Definition' and Predicate-Pattern]] {
   }
 }
 
+tpl [Item[@kind='Functor-Definition' and not(Operation-Functor-Pattern) and not(Bracket-Functor-Pattern)]] {
+  apply [.] (#message = "Functor-Definition lacks both an Operation-Functor-Pattern child and a Bracket-Functor-Pattern child!") mode="die";
+}
+
 tpl [Item[@kind='Functor-Definition']] {
   if [Redefine] {
     "redefine ";
   }
   "func ";
-  if [Operation-Functor-Pattern | Bracket-Functor-Pattern] {
-    apply [(Operation-Functor-Pattern | Bracket-Functor-Pattern)[1]]; // always exists?
-  } else {
-    apply [.] (#message = "Functor-Definition lacks both an Operation-Functor-Pattern child and a Bracket-Functor-Pattern child!") mode="die";
-  }
+
+  apply [(Operation-Functor-Pattern | Bracket-Functor-Pattern)[1]]; // always exists?
 
   if [Type-Specification] {
     " -> "; apply [Type-Specification[1]];
@@ -475,15 +496,13 @@ tpl [Item[@kind='Functor-Definition']] {
 
 }
 
-tpl [Predicate-Pattern] {
+tpl [Predicate-Pattern[not(Loci[2])]] {
+  apply [.] (#message = "Predicate-Pattern does not have two Loci children!") mode="die";
+}
+
+tpl [Predicate-Pattern[Loci[2]]] {
   ensure-spelling ();
-  if [Loci[2]] {
-    apply [Loci[1]];
-    " ";  `@spelling`;  " ";
-    apply [Loci[2]];
-  } else {
-    apply [.] (#message = "Predicate-Pattern does not have two Loci children!") mode="die";
-  }
+  apply [Loci[1]]; " ";  `@spelling`;  " "; apply [Loci[2]];
 }
 
 tpl [Mode-Pattern] {
@@ -496,30 +515,30 @@ tpl [Mode-Pattern] {
   }
 }
 
+tpl [Operation-Functor-Pattern[not(Loci[2])]] {
+  apply [.] (#message = "Operation-Functor-Pattern lacks two Loci children!") mode="die";
+}
+
 tpl [Operation-Functor-Pattern] {
   ensure-spelling ();
   // If either the first or the second Loci children have multiple
   // arguments, put parentheses around them.
-  if [Loci[2]] {
-    if [Loci[1]/*[2]] {
-      apply [Loci[1]](#parentheses = "1");
-    } else {
-      apply [Loci[1]];
-    }
-    if [Loci[1]/*[1]] {
-       " ";
-     }
-     `@spelling`;
-    if [Loci[2]/*[1]] {
-       " ";
-     }
-    if [Loci[2]/*[2]] {
-      apply [Loci[2]](#parentheses = "1");
-    } else {
-      apply [Loci[2]];
-    }
+  if [Loci[1]/*[2]] {
+    apply [Loci[1]](#parentheses = "1");
   } else {
-    apply [.] (#message = "Operation-Functor-Pattern lacks two Loci children!") mode="die";
+    apply [Loci[1]];
+  }
+  if [Loci[1]/*[1]] {
+     " ";
+  }
+  `@spelling`;
+  if [Loci[2]/*[1]] {
+     " ";
+   }
+  if [Loci[2]/*[2]] {
+    apply [Loci[2]](#parentheses = "1");
+  } else {
+    apply [Loci[2]];
   }
 }
 
@@ -539,21 +558,20 @@ tpl [Block[@kind='Registration-Block']] {
   "end"; ";"; "\n";
 }
 
+tpl [Item[@kind='Identify' and not((Operation-Functor-Pattern | Bracket-Functor-Pattern)[2]])] {
+  apply [.] (#message = "Identify item lacks two Operation-Functor-Pattern/Bracket-Functor-Pattern children!") mode="die";
+}
+
 tpl [Item[@kind='Identify']] {
   "identify ";
-  if [(Operation-Functor-Pattern | Bracket-Functor-Pattern)[2]] {
-    apply [(Operation-Functor-Pattern | Bracket-Functor-Pattern)[2]];
-    " with ";
-    apply [(Operation-Functor-Pattern | Bracket-Functor-Pattern)[1]];
-    if [*[3]] { // conditions for the identification
-      " when ";
-      list (#separ = " , ", #elems = `*[position() > 2]`); // assuming that the two patterns are the first two children of this Identify item
-    }
-    ";"; "\n";
-  } else {
-    apply [.] (#message = "Identify item lacks two Operation-Functor-Pattern/Bracket-Functor-Pattern children!") mode="die";
+  apply [(Operation-Functor-Pattern | Bracket-Functor-Pattern)[2]];
+  " with ";
+  apply [(Operation-Functor-Pattern | Bracket-Functor-Pattern)[1]];
+  if [*[3]] { // conditions for the identification
+    " when ";
+    list (#separ = " , ", #elems = `*[position() > 2]`); // assuming that the two patterns are the first two children of this Identify item
   }
-
+  ";"; "\n";
 }
 
 tpl [Item[@kind = "Reduction"]] {
@@ -630,37 +648,33 @@ tpl [Existential-Registration] {
   apply-type (); ";"; "\n";
 }
 
-tpl [Functorial-Registration] {
+tpl [Functorial-Registration[not(Adjective-Cluster)]] {
+    apply [.] (#message = "Functorial-Registation lacks an Adjective-Cluster child!") mode="die";
+}
+
+tpl [Functorial-Registration[Adjective-Cluster]] {
   "cluster ";
-  if [*[1]] {
-    apply [*[1]];
-    " -> ";
-    if [Adjective-Cluster] {
-      apply [Adjective-Cluster[1]];
-      if [Standard-Type | Clustered-Type | Struct-Type] {
-        " for "; apply-type ();
-      }
-      ";"; "\n";
-    } else {
-      apply [.] (#message = "Functorial-Registation lacks an Adjective-Cluster child!") mode="die";
-    }
-  } else {
-    apply [.] (#message = "Functorial-Registration lacks a child!") mode="die";
+  apply [*[1]];
+  " -> ";
+  apply [Adjective-Cluster[1]];
+  if [Standard-Type | Clustered-Type | Struct-Type] {
+    " for "; apply-type ();
   }
+  ";"; "\n";
+}
+
+tpl [Conditional-Registration[not(Adjective-Cluster[2])]] {
+  apply [.] (#message = "Conditional-Registration lacks two Adjective-Cluster children!") mode="die";
 }
 
 tpl [Conditional-Registration] {
   "cluster ";
-  if [Adjective-Cluster[2]] {
-    apply [Adjective-Cluster[1]];
-    " -> ";
-    apply [Adjective-Cluster[2]];
-    " for ";
-    apply [*[3]]; // this is the type, hopefully
-    ";"; "\n";
-  } else {
-    apply [.] (#message = "Conditional-Registration lacks two Adjective-Cluster children!") mode="die";
-  }
+  apply [Adjective-Cluster[1]];
+  " -> ";
+  apply [Adjective-Cluster[2]];
+  " for ";
+  apply [*[3]]; // this is the type, hopefully
+  ";"; "\n";
 }
 
 tpl [Item[@kind='Loci-Declaration']] {
@@ -718,20 +732,20 @@ tpl [Negated-Formula] {
   "("; "not "; apply [*[1]]; ")";
 }
 
+tpl [Item[@kind='Attribute-Definition' and not(Definiens)]] {
+  apply [.] (#message = "Attribute-Definition item lacks a Definiens child!") mode="die";
+}
+
 tpl [Item[@kind='Attribute-Definition']] {
   if [Redefine] {
     "redefine ";
   }
   "attr ";
   apply [Attribute-Pattern[1]]; // is this always present?
-  if [Definiens] {
-    "\n";
-    "means";
-    "\n";
-    apply [Definiens[1]]; ";"; "\n";
-  } else {
-    apply [.] (#message = "Attribute-Definition item lacks a Definiens child!") mode="die";
-  }
+  "\n";
+  "means";
+  "\n";
+  apply [Definiens[1]]; ";"; "\n";
 }
 
 tpl [Loci](#parentheses) {
@@ -766,30 +780,30 @@ tpl [Type-List] {
   list (#separ = " , ", #elems = `Standard-Type | Clustered-Type | Struct-Type`);
 }
 
-tpl [Functor-Segment] {
-  ensure-variables ();
-  variable-list ();
-  if [Type-List] {
-    "("; apply [Type-List[1]]; ")";
-    if [Type-Specification] {
-      " -> ";
-      apply [Type-Specification[1]];
-    } else {
-      apply [.] (#message = "Missing Type-Specification child of a Functor-Segment element!") mode="die";
-    }
-  } else {
-    apply [.] (#message = "Missing Type-List child of a Functor-Segment element!") mode="die";
-  }
+tpl [Functor-Segment[not(Type-List)]] {
+  apply [.] (#message = "Missing Type-List child of a Functor-Segment element!") mode="die";
 }
 
-tpl [Predicate-Segment] {
+tpl [Functor-Segment[not(Type-Specification)]] {
+  apply [.] (#message = "Missing Type-Specification child of a Functor-Segment element!") mode="die";
+}
+
+tpl [Functor-Segment[Type-List and Type-Specification]] {
   ensure-variables ();
   variable-list ();
-  if [Type-List] {
-    "["; apply [Type-List[1]]; "]";
-  } else {
-    apply [.] (#message = "Type-List child of Predicate-Segment is missing!") mode="die";
-  }
+  "("; apply [Type-List[1]]; ")";
+  " -> ";
+  apply [Type-Specification[1]];
+}
+
+tpl [Predicate-Segment[not(Type-List)]] {
+  apply [.] (#message = "Type-List child of Predicate-Segment is missing!") mode="die";
+}
+
+tpl [Predicate-Segment[Type-List]] {
+  ensure-variables ();
+  variable-list ();
+  "["; apply [Type-List[1]]; "]";
 }
 
 tpl [Scheme] {
@@ -807,14 +821,14 @@ tpl [Selector] {
   `@spelling`;
 }
 
+tpl [Field-Segment[not(Selector)]] {
+  apply [.] (#message = "Don't know how to deal with a Field-Segment element that lacks a Selector child!") mode="die";
+}
+
 tpl [Field-Segment] {
-  if [Selector] {
-    list (#separ = " , ", #elems = `Selector`);
-    ensure-type ();
-    " -> "; apply-type ();
-  } else {
-    apply [.] (#message = "Don't know how to deal with a Field-Segment element that lacks a Selector child!") mode="die";
-  }
+  list (#separ = " , ", #elems = `Selector`);
+  ensure-type ();
+  " -> "; apply-type ();
 }
 
 tpl [Structure-Pattern] {
@@ -834,20 +848,20 @@ tpl [Ancestors] {
   list (#separ = " , ", #elems = `*`);
 }
 
+tpl [Item[@kind='Structure-Definition' and not(Ancestors)]] {
+  apply [.] (#message = "Don't know how to deal with a Structure-Definition item that lacks an Ancestors child!") mode="die";
+}
+
+tpl [Item[@kind='Structure-Definition' and not(Structure-Pattern)]] {
+  apply [.] (#message = "Don't know how to deal with a Structure-Definition that lacks a Structure-Pattern") mode="die";
+}
+
 tpl [Item[@kind='Structure-Definition']] {
   "struct ";
-  if [Ancestors] {
-    if [Ancestors/*[1]] {
-      "("; apply [Ancestors[1]]; ") ";
-    }
-    if [Structure-Pattern] {
-      apply [Structure-Pattern[1]]; ";"; "\n";
-    } else {
-      apply [.] (#message = "Don't know how to deal with a Structure-Definition that lacks a Structure-Pattern") mode="die";
-    }
-  } else {
-    apply [.] (#message = "Don't know how to deal with a Structure-Definition item that lacks an Ancestors child!") mode="die";
+  if [Ancestors/*[1]] {
+    "("; apply [Ancestors[1]]; ") ";
   }
+  apply [Structure-Pattern[1]]; ";"; "\n";
 }
 
 tpl [Explicitly-Qualified-Segment](#verb) {
@@ -888,12 +902,12 @@ tpl [Arguments] {
   list (#separ = " , ", #elems = `*`);
 }
 
-tpl [Numeral-Term] {
-  if [@number] {
-    `@number`;
-  } else {
-    apply [.] (#message = "Numeral-Term lacks a number!") mode="die";
-  }
+tpl [Numeral-Term[not[@number]]] {
+  apply [.] (#message = "Numeral-Term lacks a number!") mode="die";
+}
+
+tpl [Numeral-Term[@number]] {
+  `@number`;
 }
 
 tpl [Private-Functor-Term] {
@@ -920,14 +934,14 @@ tpl [Struct-Type] {
   }
 }
 
-tpl [Clustered-Type] {
-  if [Adjective-Cluster] {
-    apply [Adjective-Cluster[1]]; // adjectives
-    " ";
-    apply [*[2]]; // the type that the adjectives modity
-  } else {
-    apply [.] (#message = "Clustered-Type lacks an Adjective-Cluster child!") mode="die";
-  }
+tpl [Clustered-Type[not(Adjective-Cluster)]] {
+  apply [.] (#message = "Clustered-Type lacks an Adjective-Cluster child!") mode="die";
+}
+
+tpl [Clustered-Type[Adjective-Cluster]] {
+  apply [Adjective-Cluster[1]]; // adjectives
+  " ";
+  apply [*[2]]; // the type that the adjectives modity
 }
 
 tpl [Item[@kind='Constant-Definition']] {
@@ -946,33 +960,34 @@ tpl [Item[@kind='Private-Functor-Definition']] {
   " = "; apply [*[3]]; ";"; "\n"; // doesn't feel safe to me
 }
 
-tpl [Item[@kind='Private-Predicate-Definition']] {
+tpl [Item[@kind='Private-Predicate-Definition' and not(Type-List)]] {
+  apply [.] (#message = "Private-Predicate-Definition lacks a Type-List child!") mode="die";
+}
+
+tpl [Item[@kind='Private-Predicate-Definition' and Type-List]] {
   ensure-variable ();
   "defpred "; apply-variable ();
   // sanity check: Type-List is present
-  if [Type-List] {
-    "[ "; list(#separ = " , ", #elems = `Type-List[1]/*`); " ]"; "\n";
-    " means"; "\n";
-    apply [*[3]]; ";"; "\n";
-  } else {
-    apply [.] (#message = "Private-Predicate-Definition lacks a Type-List child!") mode="die";
-  }
+  "[ "; list(#separ = " , ", #elems = `Type-List[1]/*`); " ]"; "\n";
+  " means"; "\n";
+  apply [*[3]]; ";"; "\n";
 }
 
-tpl [Theorem-Reference] {
-  ensure-spelling ();
-  if [@number] {
-    `@spelling`; ":"; `@number`;
-  } else {
-    apply [.] (#message = "Theorem-Reference lacks a number attribute!") mode="die";
-  }
+tpl [Theorem-Reference[not(@number)]] {
+  apply [.] (#message = "Theorem-Reference lacks a number attribute!") mode="die";
 }
 
-tpl [Definition-Reference] {
+tpl [Theorem-Reference[@number]] {
   ensure-spelling ();
-  if [not(@number)] {
-    apply [.] (#message = "Definition-Reference lacks a number attribute!") mode="die";
-  }
+  `@spelling`; ":"; `@number`;
+}
+
+tpl [Definition-Reference[not(@number)]] {
+  apply [.] (#message = "Definition-Reference lacks a number attribute!") mode="die";
+}
+
+tpl [Definition-Reference[@number]] {
+  ensure-spelling ();
   `@spelling`; ":def "; `@number`;
 }
 
@@ -999,15 +1014,15 @@ tpl [Private-Predicate-Formula] {
   `@spelling`; "[ "; list (#separ = " , ", #elems = `*`); " ]";
 }
 
+tpl [Conjunctive-Formula[*[3]]] {
+  apply [.] (#message = "Don't know how to handle a Conjunctive-Formula that has more than two children!") mode="die";
+}
+tpl [Conjunctive-Formula[not(*[2])]] {
+  apply [.] (#message = "Don't know how to handle a Conjunctive-Formula that has fewer than two children!") mode="die";
+}
+
 tpl [Conjunctive-Formula] {
-  if [*[3]] {
-    apply [.] (#message = "Don't know how to handle a Conjunctive-Formula that has more than two children!") mode="die";
-  }
-  if [*[2]] {
-    "("; apply [*[1]]; " & "; apply [*[2]]; ")";
-  } else {
-    apply [.] (#message = "Don't know how to handle a Conjunctive-Formula that has fewer than two children!") mode="die";
-  }
+  "("; apply [*[1]]; " & "; apply [*[2]]; ")";
 }
 
 tpl [Disjunctive-Formula] {
@@ -1108,28 +1123,26 @@ tpl [Local-Reference] {
   `@spelling`;
 }
 
-tpl [Scheme-Justification] {
-  if [@spelling and @idnr and @nr] {
-    " from "; `@spelling`;
-    if [@nr > "0"] {
-      ":sch "; `@idnr`;
-    }
-    if [*[1]] { // there are scheme arguments
-    "("; list (#separ = " , ", #elems = `*`); ")";
-    }
-  } else {
-    apply [.] (#message = "Scheme-Justification lacks either a spelling, idnr, or nr attribute!") mode="die";
-  }
+tpl [Scheme-Justification[not(@spelling) or not(@idnr) or not(@nr)]] {
+  apply [.] (#message = "Scheme-Justification lacks either a spelling, idnr, or nr attribute!") mode="die";
+}
 
+tpl [Scheme-Justification[@spelling and @idnr and @nr]] {
+  " from "; `@spelling`;
+  if [@nr > "0"] {
+    ":sch "; `@idnr`;
+  }
+  if [*[1]] { // there are scheme arguments
+  "("; list (#separ = " , ", #elems = `*`); ")";
+  }
+}
+
+tpl [Infix-Term[not(Arguments[2])]] {
+  apply [.] (#message = "Infix-Term lacks two Arguments children!") mode="die";
 }
 
 tpl [Infix-Term] {
   ensure-spelling ();
-
-  if [not(Arguments[2])] {
-    apply [.] (#message = "Infix-Term lacks two Arguments children!") mode="die";
-  }
-
 
   // Troublesome example: "M#".  "(M #)" is bad, "M #" is fine.
   // Solution: write "( M # )"
@@ -1160,39 +1173,19 @@ tpl [Infix-Term] {
 
 }
 
+tpl [Bracket-Functor-Pattern[not(Loci)]] {
+  apply [.] (#message = "Bracket-Functor-Pattern lacks a Loci child!") mode="die";
+}
+
+tpl [Bracket-Functor-Pattern[not(Right-Cirumflex-Symbol)]] {
+  apply [.] (#message = "Bracket-Functor-Pattern lacks a Right-Circumflex-Symbol child!") mode="die";
+}
+
 tpl [Bracket-Functor-Pattern] {
   ensure-spelling ();
-  if [Right-Circumflex-Symbol] {
-    if [Loci] {
-      `@spelling`;
-       list (#separ = " , ", #elems = `Loci/Locus`);
-       apply [Right-Circumflex-Symbol[1]];
-    } else {
-      apply [.] (#message = "Bracket-Functor-Pattern lacks a Loci child!") mode="die";
-    }
-  } else {
-    apply [.] (#message = "Bracket-Functor-Pattern lacks a Right-Circumflex-Symbol child!") mode="die";
-  }
-}
-
-tpl ensure-term {
-  if [not(Infix-Term | Simple-Term | Circumfix-Term | Private-Functor-Term | Fraenkel-Term | Aggregate-Term | Numeral-Term | Placeholder-Term | it-Term | Selector-Term | Forgetful-Functor-Term | Qualification-Term | Global-Choice-Term)] {
-    apply [.] (#message = "A term was expected, but one was not given") mode="die";
-  }
-}
-
-tpl apply-term {
-  apply [(Infix-Term | Simple-Term | Circumfix-Term | Private-Functor-Term | Fraenkel-Term | Aggregate-Term | Numeral-Term | Placeholder-Term | it-Term | Selector-Term | Forgetful-Functor-Term | Qualification-Term | Global-Choice-Term)[1]];
-}
-
-tpl ensure-formula {
-  if [not(Predicative-Formula | Private-Predicate-Formula | Negated-Formula | Conjunctive-Formula | Contradiction | Disjunctive-Formula | Conditional-Formula | Biconditional-Formula | Existential-Quantifier-Formula | Universal-Quantifier-Formula | Attributive-Formula | Qualifying-Formula)] {
-    apply [.] (#message = "A formula was expected, but one was not given") mode="die";
-  }
-}
-
-tpl apply-formula {
-  apply [(Predicative-Formula | Private-Predicate-Formula | Negated-Formula | Conjunctive-Formula | Contradiction | Disjunctive-Formula | Conditional-Formula | Biconditional-Formula | Existential-Quantifier-Formula | Universal-Quantifier-Formula | Attributive-Formula | Qualifying-Formula)[1]];
+  `@spelling`;
+   list (#separ = " , ", #elems = `Loci/Locus`);
+   apply [Right-Circumflex-Symbol[1]];
 }
 
 tpl [Fraenkel-Term] {
@@ -1216,13 +1209,12 @@ tpl [Fraenkel-Term] {
   " }";
 }
 
+tpl [Circumfix-Term[not(Right-Circumflex-Symbol)]] {
+  apply (#message = "Circumfix-Term lacks a right-Circumflex-Symbol child!") mode="die";
+}
+
 tpl [Circumfix-Term] {
   ensure-spelling ();
-
-  if [not(Right-Circumflex-Symbol)] {
-    apply (#message = "Circumfix-Term lacks a right-Circumflex-Symbol child!") mode="die";
-  }
-
   `@spelling`;
   " ";
   list (#separ = " , ", #elems = `*[position() > 1]`); // everything after the Right-Circumflex-Symbol
@@ -1327,13 +1319,13 @@ tpl apply-justification-if-present(#end) {
   }
 }
 
+tpl [Collective-Assumption[not(Conditions)]] {
+  apply [.] (#message = "Collective-Assumption elements must have a Conditions child") mode="die";
+}
+
 tpl [Collective-Assumption] {
-  if [Conditions] {
-    "assume that"; "\n";
-    list (#separ = "\nand\n", #elems = `Conditions/Proposition`); ";"; "\n";
-  } else {
-    apply [.] (#message = "Collective-Assumption elements must have a Conditions child") mode="die";
-  }
+  "assume that"; "\n";
+  list (#separ = "\nand\n", #elems = `Conditions/Proposition`); ";"; "\n";
 }
 
 
@@ -1341,21 +1333,20 @@ tpl [Conditions] {
   list (#separ = "\nand\n", #elems = `Proposition`); ";"; "\n";
 }
 
+tpl [Item[@kind='Existential-Assumption' and not(Implicitly-Qualifed-Segment | Explicitly-Qualified-Segment)]] {
+  apply [.] (#message = "Existential-Assumption item lacks an Implicitly-QualifiedSegment child and an Explicitly-Qualified-Segment child!") mode="die";
+}
+
+tpl [Item[@kind='Existential-Assumption' and not(Conditions)]] {
+  apply [.] (#message = "Don't know how to deal with an Existential-Assumption item that lacks a Conditions child!") mode="die";
+}
+
 tpl [Item[@kind='Existential-Assumption']] {
-  if [Implicitly-Qualified-Segment | Explicitly-Qualified-Segment] {
-    "given ";
-    list (#separ = " , ", #elems = `Implicitly-Qualified-Segment | Explicitly-Qualified-Segment`);
-    " such that"; "\n";
-    if [Conditions] {
-      apply [Conditions[1]];
-    } else {
-      apply [.] (#message = "Don't know how to deal with an Existential-Assumption item that lacks a Conditions child!") mode="die";
-    }
-    apply-justification-if-present ();
-    "\n";
-  } else {
-    apply [.] (#message = "Existential-Assumption item lacks an Implicitly-QualifiedSegment child and an Explicitly-Qualified-Segment child!") mode="die";
-  }
+  "given ";
+  list (#separ = " , ", #elems = `Implicitly-Qualified-Segment | Explicitly-Qualified-Segment`);
+  " such that"; "\n";
+  apply [Conditions[1]];
+  apply-justification-if-present (); "\n";
 }
 
 tpl [Item[@kind = "Conclusion" and not(Iterative-Equality or Diffuse-Statement or Compact-Statement)]] {
@@ -1454,64 +1445,64 @@ tpl [Item[@kind='Conclusion' and not(@shape = "Compact-Statement" or @shape = "D
   apply [.] (#message = $message) mode="die";
 }
 
+tpl [Item[@kind='Mode-Synonym' and not(Mode-Pattern[2])]] {
+  apply [.] (#message = "Mode-Synonym item missing two Mode-Pattern children!") mode="die";
+}
+
 tpl [Item[@kind='Mode-Synonym']] {
-  if [Mode-Pattern[2]] {
-    "synonym ";
-     apply [Mode-Pattern[2]]; " for ";
-     apply [Mode-Pattern[1]]; ";"; "\n"; // aren't these backwards?
-  } else {
-    apply [.] (#message = "Mode-Synonym item missing two Mode-Pattern children!") mode="die";
-  }
+  "synonym ";
+   apply [Mode-Pattern[2]]; " for ";
+   apply [Mode-Pattern[1]]; ";"; "\n"; // aren't these backwards?
+}
+
+tpl [Item[@kind='Func-Synonym' and not([Operation-Functor-Pattern | Bracket-Functor-Pattern][2])]] {
+  apply [.] (#message = "Func-Synonym item missing two Operation-Functor-Pattern children!") mode="die";
 }
 
 tpl [Item[@kind='Func-Synonym']] {
-  if [(Operation-Functor-Pattern | Bracket-Functor-Pattern)[2]] {
-    "synonym ";
-     apply [(Operation-Functor-Pattern | Bracket-Functor-Pattern)[2]]; " for ";
-     apply [(Operation-Functor-Pattern | Bracket-Functor-Pattern)[1]]; ";"; "\n"; // aren't these backwards?
-  } else {
-    apply [.] (#message = "Func-Synonym item missing two Operation-Functor-Pattern children!") mode="die";
-  }
+  "synonym ";
+   apply [(Operation-Functor-Pattern | Bracket-Functor-Pattern)[2]]; " for ";
+   apply [(Operation-Functor-Pattern | Bracket-Functor-Pattern)[1]]; ";"; "\n"; // aren't these backwards?
+}
+
+tpl [Item[@kind='Attr-Synonym' and not(Attribute-Pattern[2])]] {
+  apply [.] (#message = "Attr-Synonym item missing two Attribute-Pattern children!") mode="die";
 }
 
 tpl [Item[@kind='Attr-Synonym']] {
-  if [Attribute-Pattern[2]] {
-    "synonym ";
-     apply [Attribute-Pattern[2]]; " for ";
-     apply [Attribute-Pattern[1]]; ";"; "\n"; // aren't these backwards?
-  } else {
-    apply [.] (#message = "Attr-Synonym item missing two Attribute-Pattern children!") mode="die";
-  }
+  "synonym ";
+   apply [Attribute-Pattern[2]]; " for ";
+   apply [Attribute-Pattern[1]]; ";"; "\n"; // aren't these backwards?
+}
+
+tpl [Item[@kind='Pred-Synonym' and not(Predicate-Synonym[2])]] {
+  apply [.] (#message = "Predicate-Synonym item missing two Predicate-Pattern children!") mode="die";
 }
 
 tpl [Item[@kind='Pred-Synonym']] {
-  if [Predicate-Pattern[2]] {
-    "synonym ";
-     apply [Predicate-Pattern[2]]; " for ";
-     apply [Predicate-Pattern[1]]; ";"; "\n"; // aren't these backwards?
-  } else {
-    apply [.] (#message = "Predicate-Synonym item missing two Predicate-Pattern children!") mode="die";
-  }
+  "synonym ";
+   apply [Predicate-Pattern[2]]; " for ";
+   apply [Predicate-Pattern[1]]; ";"; "\n"; // aren't these backwards?
+}
+
+tpl [Item[@kind='Attr-Antonym' and not(Attribute-Pattern[2])]] {
+  apply [.] (#message = "Attr-Antonym item missing two Attribute-Pattern children!") mode="die";
 }
 
 tpl [Item[@kind='Attr-Antonym']] {
-  if [Attribute-Pattern[2]] {
-    "antonym ";
-     apply [Attribute-Pattern[2]]; " for ";
-     apply [Attribute-Pattern[1]]; ";"; "\n"; // aren't these backwards?
-  } else {
-    apply [.] (#message = "Attr-Antonym item missing two Attribute-Pattern children!") mode="die";
-  }
+  "antonym ";
+   apply [Attribute-Pattern[2]]; " for ";
+   apply [Attribute-Pattern[1]]; ";"; "\n"; // aren't these backwards?
+}
+
+tpl [Item[@kind='Pred-Antonym' and not(Predicate-Pattern[2])]] {
+  apply [.] (#message = "Pred-Antonym item missing two Predicate-Pattern children!") mode="die";
 }
 
 tpl [Item[@kind='Pred-Antonym']] {
-  if [Predicate-Pattern[2]] {
-    "antonym ";
-     apply [Predicate-Pattern[2]]; " for ";
-     apply [Predicate-Pattern[1]]; ";"; "\n"; // aren't these backwards?
-  } else {
-    apply [.] (#message = "Pred-Antonym item missing two Predicate-Pattern children!") mode="die";
-  }
+  "antonym ";
+   apply [Predicate-Pattern[2]]; " for ";
+   apply [Predicate-Pattern[1]]; ";"; "\n"; // aren't these backwards?
 }
 
 tpl [Block[@kind='Notation-Block']] {
@@ -1615,25 +1606,23 @@ tpl [Provisional-Formulas] {
   }
 }
 
-tpl [Item[@kind='Scheme-Head']] {
+tpl [Item[@kind='Scheme-Head' and Scheme[2]]] {
+  apply [.] (#message = "More than one Scheme child of a Scheme-Head element!") mode="die";
+}
 
-  // sanity check: one and only one Scheme child
-  if [Scheme] {
-    if [Scheme[2]] {
-      apply [.] (#message = "More than one Scheme child of a Scheme-Head element!") mode="die";
-    } else {
-      apply [Scheme[1]];
-      " { ";
-      apply [Schematic-Variables[1]];
-      " } : ";
-      apply [*[3]]; // the scheme formula
-      if [Provisional-Formulas] {
-        "\n"; "provided"; "\n";
-        apply [Provisional-Formulas[1]];
-      }
-    }
-  } else {
-    apply [.] (#message = "Scheme child of a Scheme-Head item is missing!") mode="die";
+tpl [Item[@kind='Scheme-Head' and not(Scheme)]] {
+  apply [.] (#message = "Scheme child of a Scheme-Head item is missing!") mode="die";
+}
+
+tpl [Item[@kind='Scheme-Head']] {
+  apply [Scheme[1]];
+  " { ";
+  apply [Schematic-Variables[1]];
+  " } : ";
+  apply [*[3]]; // the scheme formula
+  if [Provisional-Formulas] {
+    "\n"; "provided"; "\n";
+    apply [Provisional-Formulas[1]];
   }
 }
 

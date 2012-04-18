@@ -602,25 +602,22 @@ and
     <xsl:call-template name="apply-type"/>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Mode-Definition&apos;]">
+  <xsl:template match="Item[@kind=&apos;Mode-Definition&apos; and not(Mode-Pattern)]">
+    <xsl:apply-templates select="." mode="die">
+      <xsl:with-param name="message">
+        <xsl:text>Mode-Definition element lacks a Mode-Pattern child!</xsl:text>
+      </xsl:with-param>
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="Item[@kind=&apos;Mode-Definition&apos; and Mode-Pattern]">
     <xsl:if test="Redefine">
       <xsl:text>redefine </xsl:text>
     </xsl:if>
     <xsl:text>mode </xsl:text>
-    <xsl:choose>
-      <xsl:when test="Mode-Pattern">
-        <xsl:apply-templates select="Mode-Pattern[1]"/>
-        <xsl:text>
+    <xsl:apply-templates select="Mode-Pattern[1]"/>
+    <xsl:text>
 </xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:apply-templates select="." mode="die">
-          <xsl:with-param name="message">
-            <xsl:text>Mode-Definition element lacks a Mode-Pattern child!</xsl:text>
-          </xsl:with-param>
-        </xsl:apply-templates>
-      </xsl:otherwise>
-    </xsl:choose>
     <xsl:if test="Standard-Mode/Type-Specification">
       <xsl:text> -&gt; </xsl:text>
       <xsl:apply-templates select="Standard-Mode/Type-Specification[1]"/>

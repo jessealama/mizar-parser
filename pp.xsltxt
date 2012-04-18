@@ -386,16 +386,16 @@ tpl [Expandable-Mode] {
   " is "; apply-type ();
 }
 
-tpl [Item[@kind='Mode-Definition']] {
+tpl [Item[@kind='Mode-Definition' and not(Mode-Pattern)]] {
+  apply [.] (#message = "Mode-Definition element lacks a Mode-Pattern child!") mode="die";
+}
+
+tpl [Item[@kind='Mode-Definition' and Mode-Pattern]] {
   if [Redefine] {
     "redefine ";
   }
   "mode ";
-  if [Mode-Pattern] {
-    apply [Mode-Pattern[1]]; "\n";
-  } else {
-    apply [.] (#message = "Mode-Definition element lacks a Mode-Pattern child!") mode="die";
-  }
+  apply [Mode-Pattern[1]]; "\n";
   if [Standard-Mode/Type-Specification] {
     " -> "; apply [Standard-Mode/Type-Specification[1]];
     if [Standard-Mode/Definiens] {

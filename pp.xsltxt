@@ -46,6 +46,9 @@ tpl list(#separ,#elems) {
 $lcletters= { "abcdefghijklmnopqrstuvwxyz"; }
 $ucletters= { "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; }
 
+tpl lc (#s) { `translate($s, $ucletters, $lcletters)`; }
+tpl uc (#s) { `translate($s, $lcletters, $ucletters)`; }
+
 //////////////////////////////////////////////////////////////////////
 // Stylesheet parameters
 //////////////////////////////////////////////////////////////////////
@@ -70,9 +73,6 @@ $ucletters= { "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; }
 // suppress printing the environment.  Set this to 1 to skip printing
 // the environment.
 #suppress-environment = { ""; }
-
-tpl lc(#s) { `translate($s, $ucletters, $lcletters)`; }
-tpl uc(#s) { `translate($s, $lcletters, $ucletters)`; }
 
 tpl [Environ] {
   "environ"; "\n";

@@ -2,6 +2,31 @@ stylesheet "1.0";
 output method="text";
 
 //////////////////////////////////////////////////////////////////////
+// Stylesheet parameters
+//////////////////////////////////////////////////////////////////////
+
+// Whether labels should start on their own line
+#labels-on-own-line = { "0"; }
+
+// Environment
+
+// name of current article (upper case)
+#aname= { `string(/*/@articleid)`; }
+
+// name of current article (lower case)
+#anamelc= { `translate($aname, $ucletters, $lcletters)`; }
+
+// .idx file with identifier names
+#evl = { `concat($anamelc, '.evl')`; }
+
+// prefix given to all variables
+#variable-prefix = { ""; }
+
+// suppress printing the environment.  Set this to 1 to skip printing
+// the environment.
+#suppress-environment = { ""; }
+
+//////////////////////////////////////////////////////////////////////
 // Utilities
 //////////////////////////////////////////////////////////////////////
 
@@ -48,31 +73,6 @@ $ucletters= { "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; }
 
 tpl lc (#s) { `translate($s, $ucletters, $lcletters)`; }
 tpl uc (#s) { `translate($s, $lcletters, $ucletters)`; }
-
-//////////////////////////////////////////////////////////////////////
-// Stylesheet parameters
-//////////////////////////////////////////////////////////////////////
-
-// Whether labels should start on their own line
-#labels-on-own-line = { "0"; }
-
-// Environment
-
-// name of current article (upper case)
-#aname= { `string(/*/@articleid)`; }
-
-// name of current article (lower case)
-#anamelc= { `translate($aname, $ucletters, $lcletters)`; }
-
-// .idx file with identifier names
-#evl = { `concat($anamelc, '.evl')`; }
-
-// prefix given to all variables
-#variable-prefix = { ""; }
-
-// suppress printing the environment.  Set this to 1 to skip printing
-// the environment.
-#suppress-environment = { ""; }
 
 tpl [Environ] {
   "environ"; "\n";

@@ -170,6 +170,19 @@ tpl apply-formula {
 // Element templates
 //////////////////////////////////////////////////////////////////////
 
+// By default, if we don't handle something explicitly, abort! abort!
+tpl [*] {
+  apply [.] (#message = "Unexpected element.  How did we arrive here?") mode="die";
+}
+
+tpl [/] {
+  if [Text-Proper] {
+    apply [Text-Proper];
+  } else {
+    apply [.] (#message = "The Text-Proper document element is missing.") mode="die";
+  }
+}
+
 tpl [Environ] {
   "environ"; "\n";
   apply [*];
@@ -1239,18 +1252,6 @@ tpl [Straightforward-Justification[not(Link)]] {
     " by ";
     list (#separ = " , ", #elems = `*`);
   }
-}
-
-tpl [Compact-Statement] {
-  apply [.] (#message = "We are somehow applying the template for a Compact-Statement element, but this is an error because we aren't supposed to directly handle such elements.  How did we get here?") mode="die";
-}
-
-tpl [Diffuse-Statement] {
-  apply [.] (#message = "We are somehow applying the template for a Diffuse-Statement element, but this is an error because we aren't supposed to directly handle such elements.  How did we get here?") mode="die";
-}
-
-tpl [Iterative-Equality] {
-  apply [.] (#message = "We are somehow applying the template for an Iterative-Equality element, but this is an error because we aren't supposed to directly handle such elements.  How did we get here?") mode="die";
 }
 
 tpl [Single-Assumption] {

@@ -255,6 +255,30 @@
   <!-- //////////////////////////////////////////////////////////////////// -->
   <!-- Element templates -->
   <!-- //////////////////////////////////////////////////////////////////// -->
+  <!-- By default, if we don't handle something explicitly, abort! abort! -->
+  <xsl:template match="*">
+    <xsl:apply-templates select="." mode="die">
+      <xsl:with-param name="message">
+        <xsl:text>Unexpected element.  How did we arrive here?</xsl:text>
+      </xsl:with-param>
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="/">
+    <xsl:choose>
+      <xsl:when test="Text-Proper">
+        <xsl:apply-templates select="Text-Proper"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="." mode="die">
+          <xsl:with-param name="message">
+            <xsl:text>The Text-Proper document element is missing.</xsl:text>
+          </xsl:with-param>
+        </xsl:apply-templates>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
   <xsl:template match="Environ">
     <xsl:text>environ</xsl:text>
     <xsl:text>
@@ -1962,30 +1986,6 @@ and
         <xsl:with-param name="elems" select="*"/>
       </xsl:call-template>
     </xsl:if>
-  </xsl:template>
-
-  <xsl:template match="Compact-Statement">
-    <xsl:apply-templates select="." mode="die">
-      <xsl:with-param name="message">
-        <xsl:text>We are somehow applying the template for a Compact-Statement element, but this is an error because we aren&apos;t supposed to directly handle such elements.  How did we get here?</xsl:text>
-      </xsl:with-param>
-    </xsl:apply-templates>
-  </xsl:template>
-
-  <xsl:template match="Diffuse-Statement">
-    <xsl:apply-templates select="." mode="die">
-      <xsl:with-param name="message">
-        <xsl:text>We are somehow applying the template for a Diffuse-Statement element, but this is an error because we aren&apos;t supposed to directly handle such elements.  How did we get here?</xsl:text>
-      </xsl:with-param>
-    </xsl:apply-templates>
-  </xsl:template>
-
-  <xsl:template match="Iterative-Equality">
-    <xsl:apply-templates select="." mode="die">
-      <xsl:with-param name="message">
-        <xsl:text>We are somehow applying the template for an Iterative-Equality element, but this is an error because we aren&apos;t supposed to directly handle such elements.  How did we get here?</xsl:text>
-      </xsl:with-param>
-    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Single-Assumption">

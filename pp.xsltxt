@@ -74,33 +74,9 @@ $ucletters= { "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; }
 tpl lc (#s) { `translate($s, $ucletters, $lcletters)`; }
 tpl uc (#s) { `translate($s, $lcletters, $ucletters)`; }
 
-tpl [Environ] {
-  "environ"; "\n";
-  apply [*];
-}
-
-tpl [Ident] {
-  `@name`;
-}
-
-tpl [Directive] {
-  $name_lc = lc (#s = `@name`);
-  if [Ident[not(@name = "HIDDEN")]] {
-    $name_lc; " "; list (#separ = ",", #elems = `Ident[not(@name = "HIDDEN")]`); ";"; "\n";
-  }
-}
-
-
-tpl [Text-Proper] {
-  if [not($suppress-environment = "1")] {
-    for-each [document ($evl, /)] {
-      apply [*];
-    }
-  }
-  for-each [Item] {
-    apply [.];
-  }
-}
+//////////////////////////////////////////////////////////////////////
+// Utility templates
+//////////////////////////////////////////////////////////////////////
 
 tpl ensure-spelling {
   if [not(@spelling)] {
@@ -140,6 +116,48 @@ tpl variable-list {
   }
 }
 
+tpl ensure-type {
+  if [not(Standard-Type | Clustered-Type | Struct-Type)] {
+    die (#message = "A type was expected, but we didn't get one");
+  }
+}
+
+tpl apply-type {
+  apply [(Standard-Type | Clustered-Type | Struct-Type)[1]];
+}
+
+//////////////////////////////////////////////////////////////////////
+// Element templates
+//////////////////////////////////////////////////////////////////////
+
+tpl [Environ] {
+  "environ"; "\n";
+  apply [*];
+}
+
+tpl [Ident] {
+  `@name`;
+}
+
+tpl [Directive] {
+  $name_lc = lc (#s = `@name`);
+  if [Ident[not(@name = "HIDDEN")]] {
+    $name_lc; " "; list (#separ = ",", #elems = `Ident[not(@name = "HIDDEN")]`); ";"; "\n";
+  }
+}
+
+
+tpl [Text-Proper] {
+  if [not($suppress-environment = "1")] {
+    for-each [document ($evl, /)] {
+      apply [*];
+    }
+  }
+  for-each [Item] {
+    apply [.];
+  }
+}
+
 tpl [Variables] {
   list (#separ = " , ", #elems = `Variable`);
 }
@@ -164,16 +182,6 @@ tpl [Standard-Type] {
   } else {
     `@spelling`;
   }
-}
-
-tpl ensure-type {
-  if [not(Standard-Type | Clustered-Type | Struct-Type)] {
-    die (#message = "A type was expected, but we didn't get one");
-  }
-}
-
-tpl apply-type {
-  apply [(Standard-Type | Clustered-Type | Struct-Type)[1]];
 }
 
 tpl [Item[@kind='Reservation']] {

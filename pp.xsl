@@ -89,50 +89,6 @@
     </xsl:message>
   </xsl:template>
 
-  <xsl:template name="die">
-    <xsl:param name="message"/>
-    <xsl:choose>
-      <xsl:when test="@line and @col">
-        <xsl:variable name="line" select="@line"/>
-        <xsl:variable name="col" select="@col"/>
-        <xsl:variable name="final_message" select="concat ($message, &quot; (line &quot;, $line, &quot;, column &quot;, $col, &quot;)&quot;)"/>
-        <xsl:variable name="with-version-info">
-          <xsl:call-template name="pad-version-info">
-            <xsl:with-param name="s" select="$final_message"/>
-          </xsl:call-template>
-        </xsl:variable>
-        <xsl:message terminate="yes">
-          <xsl:value-of select="$with-version-info"/>
-        </xsl:message>
-      </xsl:when>
-      <xsl:when test="preceding::*[@line and @col]">
-        <xsl:variable name="nearest-with-line-and-col-info" select="preceding::*[@line and @col][1]"/>
-        <xsl:variable name="line" select="$nearest-with-line-and-col-info/@line"/>
-        <xsl:variable name="col" select="$nearest-with-line-and-col-info/@col"/>
-        <xsl:variable name="final_message" select="concat ($message, &quot; (we were unable to detemine line and column information for the current context node, but the nearest preceding node with line and column is at line &quot;, $line, &quot; and column &quot;, $col, &quot;)&quot;)"/>
-        <xsl:variable name="with-version-info">
-          <xsl:call-template name="pad-version-info">
-            <xsl:with-param name="s" select="$final_message"/>
-          </xsl:call-template>
-        </xsl:variable>
-        <xsl:message terminate="yes">
-          <xsl:value-of select="$with-version-info"/>
-        </xsl:message>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:variable name="final_message" select="concat ($message, &quot; (unable to determine line and column information)&quot;)"/>
-        <xsl:variable name="with-version-info">
-          <xsl:call-template name="pad-version-info">
-            <xsl:with-param name="s" select="$final_message"/>
-          </xsl:call-template>
-        </xsl:variable>
-        <xsl:message terminate="yes">
-          <xsl:value-of select="$with-version-info"/>
-        </xsl:message>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-
   <!-- List utilities.  Stolen from Josef.  Thanks, Josef. -->
   <xsl:template name="list">
     <xsl:param name="separ"/>

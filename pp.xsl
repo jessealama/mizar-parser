@@ -2,10 +2,20 @@
 
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="text"/>
-
   <!-- //////////////////////////////////////////////////////////////////// -->
   <!-- Utilities -->
   <!-- //////////////////////////////////////////////////////////////////// -->
+  <xsl:variable name="supported-version">
+    <xsl:text>7.13.01</xsl:text>
+  </xsl:variable>
+
+  <xsl:template name="pad-version-info">
+    <xsl:param name="s"/>
+    <xsl:value-of select="concat ($s, &quot;
+&quot;, &quot;This stylesheet is known to support version &quot;, $supported-version, &quot; of the Mizar system.&quot;, &quot;
+&quot;, &quot;It may not support earlier or later versions.&quot;)"/>
+  </xsl:template>
+
   <xsl:template name="die">
     <xsl:param name="message"/>
     <xsl:choose>
@@ -13,8 +23,13 @@
         <xsl:variable name="line" select="@line"/>
         <xsl:variable name="col" select="@col"/>
         <xsl:variable name="final_message" select="concat ($message, &quot; (line &quot;, $line, &quot;, column &quot;, $col, &quot;)&quot;)"/>
+        <xsl:variable name="with-version-info">
+          <xsl:call-template name="pad-version-info">
+            <xsl:with-param name="s" select="$final_message"/>
+          </xsl:call-template>
+        </xsl:variable>
         <xsl:message terminate="yes">
-          <xsl:value-of select="$final_message"/>
+          <xsl:value-of select="$with-version-info"/>
         </xsl:message>
       </xsl:when>
       <xsl:when test="preceding::*[@line and @col]">
@@ -22,14 +37,24 @@
         <xsl:variable name="line" select="$nearest-with-line-and-col-info/@line"/>
         <xsl:variable name="col" select="$nearest-with-line-and-col-info/@col"/>
         <xsl:variable name="final_message" select="concat ($message, &quot; (we were unable to detemine line and column information for the current context node, but the nearest preceding node with line and column is at line &quot;, $line, &quot; and column &quot;, $col, &quot;)&quot;)"/>
+        <xsl:variable name="with-version-info">
+          <xsl:call-template name="pad-version-info">
+            <xsl:with-param name="s" select="$final_message"/>
+          </xsl:call-template>
+        </xsl:variable>
         <xsl:message terminate="yes">
-          <xsl:value-of select="$final_message"/>
+          <xsl:value-of select="$with-version-info"/>
         </xsl:message>
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="final_message" select="concat ($message, &quot; (unable to determine line and column information)&quot;)"/>
+        <xsl:variable name="with-version-info">
+          <xsl:call-template name="pad-version-info">
+            <xsl:with-param name="s" select="$final_message"/>
+          </xsl:call-template>
+        </xsl:variable>
         <xsl:message terminate="yes">
-          <xsl:value-of select="$final_message"/>
+          <xsl:value-of select="$with-version-info"/>
         </xsl:message>
       </xsl:otherwise>
     </xsl:choose>

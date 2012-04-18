@@ -574,33 +574,26 @@ and
     <xsl:text>it</xsl:text>
   </xsl:template>
 
-  <!-- Standard-Mode elements suck -->
-  <xsl:template match="Standard-Mode">
-    <xsl:choose>
-      <xsl:when test="Definiens">
-        <xsl:apply-templates select="Definiens[1]"/>
-        <xsl:text>;</xsl:text>
-        <xsl:text>
+  <xsl:template match="Standard-Mode[Definiens]">
+    <xsl:apply-templates select="Definiens[1]"/>
+    <xsl:text>;</xsl:text>
+    <xsl:text>
 </xsl:text>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:choose>
-          <xsl:when test="Type-Specification">
-            <xsl:apply-templates select="Type-Specification[1]"/>
-            <xsl:text>;</xsl:text>
-            <xsl:text>
+  </xsl:template>
+
+  <xsl:template match="Standard-Mode[Type-Specification]">
+    <xsl:apply-templates select="Type-Specification[1]"/>
+    <xsl:text>;</xsl:text>
+    <xsl:text>
 </xsl:text>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:apply-templates select="." mode="die">
-              <xsl:with-param name="message">
-                <xsl:text>Don&apos;t know how to deal with a Standard-Mode element that lacks a Definiens child!</xsl:text>
-              </xsl:with-param>
-            </xsl:apply-templates>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:otherwise>
-    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template match="Standard-Mode[not(Definiens) and not(Type-Specification)]">
+    <xsl:apply-templates select="." mode="die">
+      <xsl:with-param name="message">
+        <xsl:text>Don&apos;t know how to deal with a Standard-Mode element that lacks a Definiens child!</xsl:text>
+      </xsl:with-param>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Expandable-Mode">

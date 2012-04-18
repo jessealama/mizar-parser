@@ -368,17 +368,17 @@ tpl [it-Term] {
   "it";
 }
 
-// Standard-Mode elements suck
-tpl [Standard-Mode] {
-  if [Definiens] {
-    apply [Definiens[1]]; ";"; "\n";
-  } else {
-    if [Type-Specification] {
-      apply [Type-Specification[1]]; ";"; "\n";
-    } else {
-      apply [.] (#message = "Don't know how to deal with a Standard-Mode element that lacks a Definiens child!") mode="die";
-    }
-  }
+
+tpl [Standard-Mode[Definiens]] {
+  apply [Definiens[1]]; ";"; "\n";
+}
+
+tpl [Standard-Mode[Type-Specification]] {
+  apply [Type-Specification[1]]; ";"; "\n";
+}
+
+tpl [Standard-Mode[not(Definiens) and not(Type-Specification)]] {
+  apply [.] (#message = "Don't know how to deal with a Standard-Mode element that lacks a Definiens child!") mode="die";
 }
 
 tpl [Expandable-Mode] {

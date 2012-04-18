@@ -1268,8 +1268,6 @@ tpl [Item[@kind='Assumption']] {
   }
 }
 
-
-
 tpl [Iterative-Step] {
   ensure-term ();
   apply-term ();

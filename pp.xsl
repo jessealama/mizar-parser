@@ -3,6 +3,35 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="text"/>
   <!-- //////////////////////////////////////////////////////////////////// -->
+  <!-- Stylesheet parameters -->
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <!-- Whether labels should start on their own line -->
+  <xsl:param name="labels-on-own-line">
+    <xsl:text>0</xsl:text>
+  </xsl:param>
+  <!-- Environment -->
+  <!-- name of current article (upper case) -->
+  <xsl:param name="aname">
+    <xsl:value-of select="string(/*/@articleid)"/>
+  </xsl:param>
+  <!-- name of current article (lower case) -->
+  <xsl:param name="anamelc">
+    <xsl:value-of select="translate($aname, $ucletters, $lcletters)"/>
+  </xsl:param>
+  <!-- .idx file with identifier names -->
+  <xsl:param name="evl">
+    <xsl:value-of select="concat($anamelc, &apos;.evl&apos;)"/>
+  </xsl:param>
+  <!-- prefix given to all variables -->
+  <xsl:param name="variable-prefix">
+    <xsl:text/>
+  </xsl:param>
+  <!-- suppress printing the environment.  Set this to 1 to skip printing -->
+  <!-- the environment. -->
+  <xsl:param name="suppress-environment">
+    <xsl:text/>
+  </xsl:param>
+  <!-- //////////////////////////////////////////////////////////////////// -->
   <!-- Utilities -->
   <!-- //////////////////////////////////////////////////////////////////// -->
   <xsl:variable name="supported-version">
@@ -14,6 +43,50 @@
     <xsl:value-of select="concat ($s, &quot;
 &quot;, &quot;This stylesheet is known to support version &quot;, $supported-version, &quot; of the Mizar system.&quot;, &quot;
 &quot;, &quot;It may not support earlier or later versions.&quot;)"/>
+  </xsl:template>
+
+  <xsl:template match="*[@line and @col]" mode="die">
+    <xsl:param name="message"/>
+    <xsl:variable name="line" select="@line"/>
+    <xsl:variable name="col" select="@col"/>
+    <xsl:variable name="final_message" select="concat ($message, &quot; (line &quot;, $line, &quot;, column &quot;, $col, &quot;)&quot;)"/>
+    <xsl:variable name="with-version-info">
+      <xsl:call-template name="pad-version-info">
+        <xsl:with-param name="s" select="$final_message"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:message terminate="yes">
+      <xsl:value-of select="$with-version-info"/>
+    </xsl:message>
+  </xsl:template>
+
+  <xsl:template match="*[not(@line) or not(@col) and preceding::*[@line and @col]]" mode="die">
+    <xsl:param name="message"/>
+    <xsl:variable name="nearest-with-line-and-col-info" select="preceding::*[@line and @col][1]"/>
+    <xsl:variable name="line" select="$nearest-with-line-and-col-info/@line"/>
+    <xsl:variable name="col" select="$nearest-with-line-and-col-info/@col"/>
+    <xsl:variable name="final_message" select="concat ($message, &quot; (we were unable to detemine line and column information for the current context node, but the nearest preceding node with line and column is at line &quot;, $line, &quot; and column &quot;, $col, &quot;)&quot;)"/>
+    <xsl:variable name="with-version-info">
+      <xsl:call-template name="pad-version-info">
+        <xsl:with-param name="s" select="$final_message"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:message terminate="yes">
+      <xsl:value-of select="$with-version-info"/>
+    </xsl:message>
+  </xsl:template>
+
+  <xsl:template match="*[not(@line) and not(@col) and not(preceding::*[@line and @col])]" mode="die">
+    <xsl:param name="message"/>
+    <xsl:variable name="final_message" select="concat ($message, &quot; (unable to determine line and column information)&quot;)"/>
+    <xsl:variable name="with-version-info">
+      <xsl:call-template name="pad-version-info">
+        <xsl:with-param name="s" select="$final_message"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:message terminate="yes">
+      <xsl:value-of select="$with-version-info"/>
+    </xsl:message>
   </xsl:template>
 
   <xsl:template name="die">
@@ -77,35 +150,6 @@
   <xsl:variable name="ucletters">
     <xsl:text>ABCDEFGHIJKLMNOPQRSTUVWXYZ</xsl:text>
   </xsl:variable>
-  <!-- //////////////////////////////////////////////////////////////////// -->
-  <!-- Stylesheet parameters -->
-  <!-- //////////////////////////////////////////////////////////////////// -->
-  <!-- Whether labels should start on their own line -->
-  <xsl:param name="labels-on-own-line">
-    <xsl:text>0</xsl:text>
-  </xsl:param>
-  <!-- Environment -->
-  <!-- name of current article (upper case) -->
-  <xsl:param name="aname">
-    <xsl:value-of select="string(/*/@articleid)"/>
-  </xsl:param>
-  <!-- name of current article (lower case) -->
-  <xsl:param name="anamelc">
-    <xsl:value-of select="translate($aname, $ucletters, $lcletters)"/>
-  </xsl:param>
-  <!-- .idx file with identifier names -->
-  <xsl:param name="evl">
-    <xsl:value-of select="concat($anamelc, &apos;.evl&apos;)"/>
-  </xsl:param>
-  <!-- prefix given to all variables -->
-  <xsl:param name="variable-prefix">
-    <xsl:text/>
-  </xsl:param>
-  <!-- suppress printing the environment.  Set this to 1 to skip printing -->
-  <!-- the environment. -->
-  <xsl:param name="suppress-environment">
-    <xsl:text/>
-  </xsl:param>
 
   <xsl:template name="lc">
     <xsl:param name="s"/>
@@ -117,6 +161,116 @@
     <xsl:value-of select="translate($s, $lcletters, $ucletters)"/>
   </xsl:template>
 
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <!-- Utility templates -->
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <xsl:template name="ensure-spelling">
+    <xsl:if test="not(@spelling)">
+      <xsl:variable name="n" select="name ()"/>
+      <xsl:variable name="message" select="concat (&quot;We expected an element (&quot;, $n, &quot;) to have a spelling attribute, but it lacks one&quot;)"/>
+      <xsl:apply-templates select="." mode="die">
+        <xsl:with-param name="message" select="$message"/>
+      </xsl:apply-templates>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="ensure-shape">
+    <xsl:if test="not(@shape)">
+      <xsl:apply-templates select="." mode="die">
+        <xsl:with-param name="message">
+          <xsl:text>We expected to find an element with a shape attribute</xsl:text>
+        </xsl:with-param>
+      </xsl:apply-templates>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="ensure-variable">
+    <xsl:if test="not(Variable)">
+      <xsl:apply-templates select="." mode="die">
+        <xsl:with-param name="message">
+          <xsl:text>A variable was expected, but none was found!</xsl:text>
+        </xsl:with-param>
+      </xsl:apply-templates>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="ensure-variables">
+    <xsl:if test="not(Variables)">
+      <xsl:apply-templates select="." mode="die">
+        <xsl:with-param name="message">
+          <xsl:text>A variables list was expected, but none was found!</xsl:text>
+        </xsl:with-param>
+      </xsl:apply-templates>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="apply-variable">
+    <xsl:apply-templates select="Variable[1]"/>
+  </xsl:template>
+
+  <xsl:template name="variable-list">
+    <xsl:choose>
+      <xsl:when test="Variables">
+        <xsl:call-template name="list">
+          <xsl:with-param name="separ">
+            <xsl:text> , </xsl:text>
+          </xsl:with-param>
+          <xsl:with-param name="elems" select="Variables/Variable"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:call-template name="list">
+          <xsl:with-param name="separ">
+            <xsl:text> , </xsl:text>
+          </xsl:with-param>
+          <xsl:with-param name="elems" select="Variable"/>
+        </xsl:call-template>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:template name="ensure-type">
+    <xsl:if test="not(Standard-Type | Clustered-Type | Struct-Type)">
+      <xsl:apply-templates select="." mode="die">
+        <xsl:with-param name="message">
+          <xsl:text>A type was expected, but we didn&apos;t get one</xsl:text>
+        </xsl:with-param>
+      </xsl:apply-templates>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="apply-type">
+    <xsl:apply-templates select="(Standard-Type | Clustered-Type | Struct-Type)[1]"/>
+  </xsl:template>
+
+  <xsl:template name="ensure-proposition">
+    <xsl:if test="not(Proposition)">
+      <xsl:variable name="n" select="name ()"/>
+      <xsl:choose>
+        <xsl:when test="@kind">
+          <xsl:variable name="k" select="@kind"/>
+          <xsl:variable name="message" select="concat (&quot;We expected an element (&quot;, $n, &quot;) of kind &quot;, $k, &quot; to have a Proposition child, but it doesn&apos;t&quot;)"/>
+          <xsl:call-template name="die">
+            <xsl:with-param name="message" select="$message"/>
+          </xsl:call-template>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:variable name="message" select="concat (&quot;We expected an element (&quot;, $n, &quot;) to have a Proposition child, but it doesn&apos;t&quot;)"/>
+          <xsl:call-template name="die">
+            <xsl:with-param name="message" select="$message"/>
+          </xsl:call-template>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template name="apply-proposition">
+    <xsl:apply-templates select="Proposition[1]"/>
+  </xsl:template>
+
+  <!-- //////////////////////////////////////////////////////////////////// -->
+  <!-- Element templates -->
+  <!-- //////////////////////////////////////////////////////////////////// -->
   <xsl:template match="Environ">
     <xsl:text>environ</xsl:text>
     <xsl:text>
@@ -158,71 +312,6 @@
     <xsl:for-each select="Item">
       <xsl:apply-templates select="."/>
     </xsl:for-each>
-  </xsl:template>
-
-  <xsl:template name="ensure-spelling">
-    <xsl:if test="not(@spelling)">
-      <xsl:variable name="n" select="name ()"/>
-      <xsl:variable name="message" select="concat (&quot;We expected an element (&quot;, $n, &quot;) to have a spelling attribute, but it lacks one&quot;)"/>
-      <xsl:call-template name="die">
-        <xsl:with-param name="message" select="$message"/>
-      </xsl:call-template>
-    </xsl:if>
-  </xsl:template>
-
-  <xsl:template name="ensure-shape">
-    <xsl:if test="not(@shape)">
-      <xsl:call-template name="die">
-        <xsl:with-param name="message">
-          <xsl:text>We expected to find an element with a shape attribute</xsl:text>
-        </xsl:with-param>
-      </xsl:call-template>
-    </xsl:if>
-  </xsl:template>
-
-  <xsl:template name="ensure-variable">
-    <xsl:if test="not(Variable)">
-      <xsl:call-template name="die">
-        <xsl:with-param name="message">
-          <xsl:text>A variable was expected, but none was found!</xsl:text>
-        </xsl:with-param>
-      </xsl:call-template>
-    </xsl:if>
-  </xsl:template>
-
-  <xsl:template name="ensure-variables">
-    <xsl:if test="not(Variables)">
-      <xsl:call-template name="die">
-        <xsl:with-param name="message">
-          <xsl:text>A variables list was expected, but none was found!</xsl:text>
-        </xsl:with-param>
-      </xsl:call-template>
-    </xsl:if>
-  </xsl:template>
-
-  <xsl:template name="apply-variable">
-    <xsl:apply-templates select="Variable[1]"/>
-  </xsl:template>
-
-  <xsl:template name="variable-list">
-    <xsl:choose>
-      <xsl:when test="Variables">
-        <xsl:call-template name="list">
-          <xsl:with-param name="separ">
-            <xsl:text> , </xsl:text>
-          </xsl:with-param>
-          <xsl:with-param name="elems" select="Variables/Variable"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:call-template name="list">
-          <xsl:with-param name="separ">
-            <xsl:text> , </xsl:text>
-          </xsl:with-param>
-          <xsl:with-param name="elems" select="Variable"/>
-        </xsl:call-template>
-      </xsl:otherwise>
-    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="Variables">
@@ -268,20 +357,6 @@
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template name="ensure-type">
-    <xsl:if test="not(Standard-Type | Clustered-Type | Struct-Type)">
-      <xsl:call-template name="die">
-        <xsl:with-param name="message">
-          <xsl:text>A type was expected, but we didn&apos;t get one</xsl:text>
-        </xsl:with-param>
-      </xsl:call-template>
-    </xsl:if>
-  </xsl:template>
-
-  <xsl:template name="apply-type">
-    <xsl:apply-templates select="(Standard-Type | Clustered-Type | Struct-Type)[1]"/>
-  </xsl:template>
-
   <xsl:template match="Item[@kind=&apos;Reservation&apos;]">
     <xsl:text>reserve </xsl:text>
     <xsl:call-template name="variable-list"/>
@@ -321,11 +396,11 @@
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Case-Block&apos; and not(child::Block[@kind = &quot;Case&quot;]) and not(child::Block[@kind = &quot;Suppose&quot;])]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Don&apos;t know how to deal with a Case-Block item that lacks both a Suppose block and Case block child!</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Block[@kind=&apos;Case&apos; and Item[@kind = &quot;Case-Head&quot;]]">
@@ -360,11 +435,11 @@ and
   </xsl:template>
 
   <xsl:template match="Block[@kind=&apos;Case&apos; and not(Item[@kind = &quot;Case-Head&quot;])]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Don&apos;t know how to deal with a Case block that lacks a Case-Head item child!</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Block[@kind=&apos;Suppose&apos; and Item[@kind = &quot;Suppose-Head&quot;]]">
@@ -398,11 +473,11 @@ and
   </xsl:template>
 
   <xsl:template match="Block[@kind=&apos;Suppose&apos; and not(Item[@kind = &quot;Suppose-Head&quot;])]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Don&apos;t know how to deal with a Suppose block that lacks a Suppose-Head child!</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Case-Head&apos; and Single-Assumption]">
@@ -416,11 +491,11 @@ and
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Case-Head&apos; and not(Single-Assumption) and not(Collective-Assumption)]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Don&apos;t know how to deal with a Case-Head item that lacks a Single-Assumption child and a Collective-Assumption child!</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Suppose-Head&apos; and child::Single-Assumption]">
@@ -432,11 +507,11 @@ and
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Suppose-Head&apos; and not(child::Single-Assumption)]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Don&apos;t know how to deal with a Suppose-Head item that lacks a Single-Assumption child!</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <!-- //////////////////////////////////////////////////////////////////// -->
@@ -447,11 +522,11 @@ and
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Scheme-Block-Item&apos; and not(child::Block[@kind = &quot;Scheme-Block&quot;])]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Scheme-Block child of a Scheme-Block-Item is missing!</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Block[@kind=&apos;Scheme-Block&apos; and child::Item[@kind = &quot;Scheme-Head&quot;]]">
@@ -472,11 +547,11 @@ and
   </xsl:template>
 
   <xsl:template match="Block[@kind=&apos;Scheme-Block&apos; and not(child::Item[@kind = &quot;Scheme-Head&quot;])]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Scheme-Head child of Scheme-Block is missing!</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Definition-Item&apos;]">
@@ -517,11 +592,11 @@ and
 </xsl:text>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:call-template name="die">
+            <xsl:apply-templates select="." mode="die">
               <xsl:with-param name="message">
                 <xsl:text>Don&apos;t know how to deal with a Standard-Mode element that lacks a Definiens child!</xsl:text>
               </xsl:with-param>
-            </xsl:call-template>
+            </xsl:apply-templates>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:otherwise>
@@ -546,11 +621,11 @@ and
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Mode-Definition element lacks a Mode-Pattern child!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:if test="Standard-Mode/Type-Specification">
@@ -592,11 +667,11 @@ and
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Predicate-Definition element lacks a Predicate-Pattern child!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:choose>
@@ -627,11 +702,11 @@ and
         <xsl:apply-templates select="(Operation-Functor-Pattern | Bracket-Functor-Pattern)[1]"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Functor-Definition lacks both an Operation-Functor-Pattern child and a Bracket-Functor-Pattern child!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
     <xsl:if test="Type-Specification">
@@ -655,11 +730,11 @@ and
           <xsl:text>;</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:call-template name="die">
+          <xsl:apply-templates select="." mode="die">
             <xsl:with-param name="message">
               <xsl:text>Functor-Definition defined by an equation lacks a Definiens child!</xsl:text>
             </xsl:with-param>
-          </xsl:call-template>
+          </xsl:apply-templates>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
@@ -673,11 +748,11 @@ and
           <xsl:text>;</xsl:text>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:call-template name="die">
+          <xsl:apply-templates select="." mode="die">
             <xsl:with-param name="message">
               <xsl:text>Functor-Definition defined by a formula lacks a Definiens child!</xsl:text>
             </xsl:with-param>
-          </xsl:call-template>
+          </xsl:apply-templates>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
@@ -696,11 +771,11 @@ and
         <xsl:apply-templates select="Loci[2]"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Predicate-Pattern does not have two Loci children!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -755,11 +830,11 @@ and
         </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Operation-Functor-Pattern lacks two Loci children!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -808,11 +883,11 @@ and
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Identify item lacks two Operation-Functor-Pattern/Bracket-Functor-Pattern children!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -863,11 +938,11 @@ and
   </xsl:template>
 
   <xsl:template match="Item[@kind = &quot;Correctness-Condition&quot; and not(@condition)]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Correctness-Condition items must have a condition attribute</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind = &quot;Correctness-Condition&quot; and @condition]">
@@ -953,20 +1028,20 @@ and
 </xsl:text>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:call-template name="die">
+            <xsl:apply-templates select="." mode="die">
               <xsl:with-param name="message">
                 <xsl:text>Functorial-Registation lacks an Adjective-Cluster child!</xsl:text>
               </xsl:with-param>
-            </xsl:call-template>
+            </xsl:apply-templates>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Functorial-Registration lacks a child!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -986,11 +1061,11 @@ and
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Conditional-Registration lacks two Adjective-Cluster children!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1087,11 +1162,11 @@ and
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Attribute-Definition item lacks a Definiens child!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1151,20 +1226,20 @@ and
             <xsl:apply-templates select="Type-Specification[1]"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:call-template name="die">
+            <xsl:apply-templates select="." mode="die">
               <xsl:with-param name="message">
                 <xsl:text>Missing Type-Specification child of a Functor-Segment element!</xsl:text>
               </xsl:with-param>
-            </xsl:call-template>
+            </xsl:apply-templates>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Missing Type-List child of a Functor-Segment element!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1179,11 +1254,11 @@ and
         <xsl:text>]</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Type-List child of Predicate-Segment is missing!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1218,11 +1293,11 @@ and
         <xsl:call-template name="apply-type"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Don&apos;t know how to deal with a Field-Segment element that lacks a Selector child!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1272,20 +1347,20 @@ and
 </xsl:text>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:call-template name="die">
+            <xsl:apply-templates select="." mode="die">
               <xsl:with-param name="message">
                 <xsl:text>Don&apos;t know how to deal with a Structure-Definition that lacks a Structure-Pattern</xsl:text>
               </xsl:with-param>
-            </xsl:call-template>
+            </xsl:apply-templates>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Don&apos;t know how to deal with a Structure-Definition item that lacks an Ancestors child!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1368,11 +1443,11 @@ and
         <xsl:value-of select="@number"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Numeral-Term lacks a number!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1423,11 +1498,11 @@ and
         <xsl:apply-templates select="*[2]"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Clustered-Type lacks an Adjective-Cluster child!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1492,11 +1567,11 @@ and
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Private-Predicate-Definition lacks a Type-List child!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1510,11 +1585,11 @@ and
         <xsl:value-of select="@number"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Theorem-Reference lacks a number attribute!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1522,11 +1597,11 @@ and
   <xsl:template match="Definition-Reference">
     <xsl:call-template name="ensure-spelling"/>
     <xsl:if test="not(@number)">
-      <xsl:call-template name="die">
+      <xsl:apply-templates select="." mode="die">
         <xsl:with-param name="message">
           <xsl:text>Definition-Reference lacks a number attribute!</xsl:text>
         </xsl:with-param>
-      </xsl:call-template>
+      </xsl:apply-templates>
     </xsl:if>
     <xsl:value-of select="@spelling"/>
     <xsl:text>:def </xsl:text>
@@ -1576,11 +1651,11 @@ and
 
   <xsl:template match="Conjunctive-Formula">
     <xsl:if test="*[3]">
-      <xsl:call-template name="die">
+      <xsl:apply-templates select="." mode="die">
         <xsl:with-param name="message">
           <xsl:text>Don&apos;t know how to handle a Conjunctive-Formula that has more than two children!</xsl:text>
         </xsl:with-param>
-      </xsl:call-template>
+      </xsl:apply-templates>
     </xsl:if>
     <xsl:choose>
       <xsl:when test="*[2]">
@@ -1591,11 +1666,11 @@ and
         <xsl:text>)</xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Don&apos;t know how to handle a Conjunctive-Formula that has fewer than two children!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1673,19 +1748,19 @@ and
   <!-- Properties -->
   <!-- //////////////////////////////////////////////////////////////////// -->
   <xsl:template match="Item[@kind = &quot;Property&quot; and not(@property)]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>We expected a Property item to have a property attribute!</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind = &quot;Property&quot; and child::Block[@kind = &quot;Proof&quot;] and child::Straightforward-Justification]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Don&apos;t know how to handle a Property item that has both a Proof block child and a Straightforward-Justificiation child!</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind = &quot;Property&quot; and @property and child::Block[@kind = &quot;Proof&quot;] and not(child::Straightforward-Justification)]">
@@ -1770,11 +1845,11 @@ and
         </xsl:if>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Scheme-Justification lacks either a spelling, idnr, or nr attribute!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -1782,11 +1857,11 @@ and
   <xsl:template match="Infix-Term">
     <xsl:call-template name="ensure-spelling"/>
     <xsl:if test="not(Arguments[2])">
-      <xsl:call-template name="die">
+      <xsl:apply-templates select="." mode="die">
         <xsl:with-param name="message">
           <xsl:text>Infix-Term lacks two Arguments children!</xsl:text>
         </xsl:with-param>
-      </xsl:call-template>
+      </xsl:apply-templates>
     </xsl:if>
     <!-- Troublesome example: "M#".  "(M #)" is bad, "M #" is fine. -->
     <!-- Solution: write "( M # )" -->
@@ -1847,31 +1922,31 @@ and
             <xsl:apply-templates select="Right-Circumflex-Symbol[1]"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:call-template name="die">
+            <xsl:apply-templates select="." mode="die">
               <xsl:with-param name="message">
                 <xsl:text>Bracket-Functor-Pattern lacks a Loci child!</xsl:text>
               </xsl:with-param>
-            </xsl:call-template>
+            </xsl:apply-templates>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Bracket-Functor-Pattern lacks a Right-Circumflex-Symbol child!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
   <xsl:template name="ensure-term">
     <xsl:if test="not(Infix-Term | Simple-Term | Circumfix-Term | Private-Functor-Term | Fraenkel-Term | Aggregate-Term | Numeral-Term | Placeholder-Term | it-Term | Selector-Term | Forgetful-Functor-Term | Qualification-Term | Global-Choice-Term)">
-      <xsl:call-template name="die">
+      <xsl:apply-templates select="." mode="die">
         <xsl:with-param name="message">
           <xsl:text>A term was expected, but one was not given</xsl:text>
         </xsl:with-param>
-      </xsl:call-template>
+      </xsl:apply-templates>
     </xsl:if>
   </xsl:template>
 
@@ -1881,11 +1956,11 @@ and
 
   <xsl:template name="ensure-formula">
     <xsl:if test="not(Predicative-Formula | Private-Predicate-Formula | Negated-Formula | Conjunctive-Formula | Contradiction | Disjunctive-Formula | Conditional-Formula | Biconditional-Formula | Existential-Quantifier-Formula | Universal-Quantifier-Formula | Attributive-Formula | Qualifying-Formula)">
-      <xsl:call-template name="die">
+      <xsl:apply-templates select="." mode="die">
         <xsl:with-param name="message">
           <xsl:text>A formula was expected, but one was not given</xsl:text>
         </xsl:with-param>
-      </xsl:call-template>
+      </xsl:apply-templates>
     </xsl:if>
   </xsl:template>
 
@@ -1921,11 +1996,11 @@ and
   <xsl:template match="Circumfix-Term">
     <xsl:call-template name="ensure-spelling"/>
     <xsl:if test="not(Right-Circumflex-Symbol)">
-      <xsl:call-template name="die">
+      <xsl:apply-templates mode="die">
         <xsl:with-param name="message">
           <xsl:text>Circumfix-Term lacks a right-Circumflex-Symbol child!</xsl:text>
         </xsl:with-param>
-      </xsl:call-template>
+      </xsl:apply-templates>
     </xsl:if>
     <xsl:value-of select="@spelling"/>
     <xsl:text> </xsl:text>
@@ -1960,11 +2035,11 @@ and
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Choice-Statement&apos; and not(child::Conditions)]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>We expected to find a Conditions child of a Choice-Statement item, but none was found</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind = &quot;Choice-Statement&quot; and Conditions]">
@@ -2015,87 +2090,28 @@ and
     </xsl:if>
   </xsl:template>
 
-  <!-- Constructor properties -->
-  <!-- tpl [Item[@kind = "Property"]] { -->
-  <!-- die (#message = "Don't know how to deal with this property item"); -->
-  <!-- } -->
-  <!-- tpl [Item[@kind = "Property" and @property = "projectivity"]] { -->
-  <!-- "projectivity"; -->
-  <!-- } -->
-  <!-- tpl [Item[@kind = "Property" and @property = "involutiveness"]] { -->
-  <!-- "involutiveness"; -->
-  <!-- } -->
-  <!-- tpl [Item[@kind = "Property" and @property = "idempotence"]] { -->
-  <!-- "idempotence"; -->
-  <!-- } -->
-  <!-- tpl [Item[@kind = "Property" and @property = "commutativity"]] { -->
-  <!-- "commutativity"; -->
-  <!-- } -->
-  <!-- tpl [Item[@kind = "Property" and @property = "reflexivity"]] { -->
-  <!-- "reflexivity"; -->
-  <!-- } -->
-  <!-- tpl [Item[@kind = "Property" and @property = "irreflexivity"]] { -->
-  <!-- "irreflexivity"; -->
-  <!-- } -->
-  <!-- tpl [Item[@kind = "Property" and @property = "symmetry"]] { -->
-  <!-- "symmetry"; -->
-  <!-- } -->
-  <!-- tpl [Item[@kind = "Property" and @property = "asymmetry"]] { -->
-  <!-- "asymmetry"; -->
-  <!-- } -->
-  <!-- tpl [Item[@kind = "Property" and @property = "connectedness"]] { -->
-  <!-- "connectedness"; -->
-  <!-- } -->
-  <!-- tpl [Item[@kind = "Property" and @property = "sethood"]] { -->
-  <!-- "sethood"; -->
-  <!-- } -->
   <xsl:template match="Compact-Statement">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>We are somehow applying the template for a Compact-Statement element, but this is an error because we aren&apos;t supposed to directly handle such elements.  How did we get here?</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Diffuse-Statement">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>We are somehow applying the template for a Diffuse-Statement element, but this is an error because we aren&apos;t supposed to directly handle such elements.  How did we get here?</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Iterative-Equality">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>We are somehow applying the template for an Iterative-Equality element, but this is an error because we aren&apos;t supposed to directly handle such elements.  How did we get here?</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
-
-  <xsl:template name="ensure-proposition">
-    <xsl:if test="not(Proposition)">
-      <xsl:variable name="n" select="name ()"/>
-      <xsl:choose>
-        <xsl:when test="@kind">
-          <xsl:variable name="k" select="@kind"/>
-          <xsl:variable name="message" select="concat (&quot;We expected an element (&quot;, $n, &quot;) of kind &quot;, $k, &quot; to have a Proposition child, but it doesn&apos;t&quot;)"/>
-          <xsl:call-template name="die">
-            <xsl:with-param name="message" select="$message"/>
-          </xsl:call-template>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:variable name="message" select="concat (&quot;We expected an element (&quot;, $n, &quot;) to have a Proposition child, but it doesn&apos;t&quot;)"/>
-          <xsl:call-template name="die">
-            <xsl:with-param name="message" select="$message"/>
-          </xsl:call-template>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:if>
-  </xsl:template>
-
-  <xsl:template name="apply-proposition">
-    <xsl:apply-templates select="Proposition[1]"/>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Single-Assumption">
@@ -2166,11 +2182,11 @@ and
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Collective-Assumption elements must have a Conditions child</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -2207,11 +2223,11 @@ and
             <xsl:apply-templates select="Conditions[1]"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:call-template name="die">
+            <xsl:apply-templates select="." mode="die">
               <xsl:with-param name="message">
                 <xsl:text>Don&apos;t know how to deal with an Existential-Assumption item that lacks a Conditions child!</xsl:text>
               </xsl:with-param>
-            </xsl:call-template>
+            </xsl:apply-templates>
           </xsl:otherwise>
         </xsl:choose>
         <xsl:call-template name="apply-justification-if-present"/>
@@ -2219,29 +2235,29 @@ and
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Existential-Assumption item lacks an Implicitly-QualifiedSegment child and an Explicitly-Qualified-Segment child!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
 
   <xsl:template match="Item[@kind = &quot;Conclusion&quot; and not(child::Iterative-Equality or child::Diffuse-Statement or child::Compact-Statement)]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Don&apos;t know how to deal with a Conclusion that is not an Iterative-Equality, Diffuse-Statement, nor a Compact-Statement</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind = &quot;Conclusion&quot; and not(@shape)]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>We expected to find an element with a shape attribute</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Conclusion&apos; and @shape = &quot;Iterative-Equality&quot;]">
@@ -2336,9 +2352,9 @@ and
 
   <xsl:template match="Item[@kind=&apos;Conclusion&apos; and not(@shape = &quot;Compact-Statement&quot; or @shape = &quot;Diffuse-Statement&quot; or @shape = &quot;Iterative-Equality&quot;)]">
     <xsl:variable name="message" select="concat (&quot;Don&apos;t know how to deal with a Conclusion item whose shape is &apos;&quot;, $shape, &quot;&apos;&quot;)"/>
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message" select="$message"/>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Mode-Synonym&apos;]">
@@ -2353,11 +2369,11 @@ and
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Mode-Synonym item missing two Mode-Pattern children!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -2374,11 +2390,11 @@ and
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Func-Synonym item missing two Operation-Functor-Pattern children!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -2395,11 +2411,11 @@ and
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Attr-Synonym item missing two Attribute-Pattern children!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -2416,11 +2432,11 @@ and
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Predicate-Synonym item missing two Predicate-Pattern children!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -2437,11 +2453,11 @@ and
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Attr-Antonym item missing two Attribute-Pattern children!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -2458,11 +2474,11 @@ and
 </xsl:text>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Pred-Antonym item missing two Predicate-Pattern children!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
@@ -2553,11 +2569,11 @@ and
   </xsl:template>
 
   <xsl:template match="Item[@kind = &quot;Regular-Statement&quot; and not(@shape)]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>We expected to find an element with a shape attribute</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Regular-Statement&apos; and @shape = &quot;Iterative-Equality&quot;]">
@@ -2581,11 +2597,11 @@ and
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Regular-Statement&apos; and @shape = &quot;Diffuse-Statement&quot; and not(child::Block[@kind = &quot;Now-Reasoning&quot;] or child::Block[@kind = &quot;Hereby-Reasoning&quot;])]">
-    <xsl:call-template name="die">
+    <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Don&apos;t know how to handle this piece of diffuse reasoning it is neither a &apos;now&apos; nor a &apos;hereby&apos; block.</xsl:text>
       </xsl:with-param>
-    </xsl:call-template>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Regular-Statement&apos; and @shape = &quot;Diffuse-Statement&quot; and (child::Block[@kind = &quot;Now-Reasoning&quot;] or child::Block[@kind = &quot;Hereby-Reasoning&quot;])]">
@@ -2657,11 +2673,11 @@ and
       <xsl:when test="Scheme">
         <xsl:choose>
           <xsl:when test="Scheme[2]">
-            <xsl:call-template name="die">
+            <xsl:apply-templates select="." mode="die">
               <xsl:with-param name="message">
                 <xsl:text>More than one Scheme child of a Scheme-Head element!</xsl:text>
               </xsl:with-param>
-            </xsl:call-template>
+            </xsl:apply-templates>
           </xsl:when>
           <xsl:otherwise>
             <xsl:apply-templates select="Scheme[1]"/>
@@ -2682,11 +2698,11 @@ and
         </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="die">
+        <xsl:apply-templates select="." mode="die">
           <xsl:with-param name="message">
             <xsl:text>Scheme child of a Scheme-Head item is missing!</xsl:text>
           </xsl:with-param>
-        </xsl:call-template>
+        </xsl:apply-templates>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>

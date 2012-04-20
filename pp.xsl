@@ -38,6 +38,20 @@
     <xsl:text>7.13.01</xsl:text>
   </xsl:variable>
 
+  <xsl:template match="*" mode="trace">
+    <xsl:variable name="n" select="name (.)"/>
+    <xsl:variable name="position" select="count (preceding-sibling::*[name() = $n]) + 1"/>
+    <xsl:if test="parent::*">
+      <xsl:apply-templates select=".." mode="trace"/>
+    </xsl:if>
+    <xsl:value-of select="$n"/>
+    <xsl:text>[</xsl:text>
+    <xsl:value-of select="$position"/>
+    <xsl:text>]</xsl:text>
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
   <xsl:template name="pad-version-info">
     <xsl:param name="s"/>
     <xsl:value-of select="concat ($s, &quot;
@@ -55,6 +69,7 @@
         <xsl:with-param name="s" select="$final_message"/>
       </xsl:call-template>
     </xsl:variable>
+    <xsl:apply-templates select="." mode="trace"/>
     <xsl:message terminate="yes">
       <xsl:value-of select="$with-version-info"/>
     </xsl:message>
@@ -71,6 +86,7 @@
         <xsl:with-param name="s" select="$final_message"/>
       </xsl:call-template>
     </xsl:variable>
+    <xsl:apply-templates select="." mode="trace"/>
     <xsl:message terminate="yes">
       <xsl:value-of select="$with-version-info"/>
     </xsl:message>
@@ -84,6 +100,7 @@
         <xsl:with-param name="s" select="$final_message"/>
       </xsl:call-template>
     </xsl:variable>
+    <xsl:apply-templates select="." mode="trace"/>
     <xsl:message terminate="yes">
       <xsl:value-of select="$with-version-info"/>
     </xsl:message>
@@ -206,15 +223,15 @@
         <xsl:when test="@kind">
           <xsl:variable name="k" select="@kind"/>
           <xsl:variable name="message" select="concat (&quot;We expected an element (&quot;, $n, &quot;) of kind &quot;, $k, &quot; to have a Proposition child, but it doesn&apos;t&quot;)"/>
-          <xsl:call-template name="die">
+          <xsl:apply-templates select="." mode="die">
             <xsl:with-param name="message" select="$message"/>
-          </xsl:call-template>
+          </xsl:apply-templates>
         </xsl:when>
         <xsl:otherwise>
           <xsl:variable name="message" select="concat (&quot;We expected an element (&quot;, $n, &quot;) to have a Proposition child, but it doesn&apos;t&quot;)"/>
-          <xsl:call-template name="die">
+          <xsl:apply-templates select="." mode="die">
             <xsl:with-param name="message" select="$message"/>
-          </xsl:call-template>
+          </xsl:apply-templates>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
@@ -848,7 +865,7 @@ and
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Identify&apos; and not((Operation-Functor-Pattern | Bracket-Functor-Pattern)[2]])">
+  <xsl:template match="Item[@kind=&apos;Identify&apos; and not(count (Operation-Functor-Pattern | Bracket-Functor-Pattern) = 2)]">
     <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Identify item lacks two Operation-Functor-Pattern/Bracket-Functor-Pattern children!</xsl:text>
@@ -2240,7 +2257,7 @@ and
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Func-Synonym&apos; and not([Operation-Functor-Pattern | Bracket-Functor-Pattern][2])]">
+  <xsl:template match="Item[@kind=&apos;Func-Synonym&apos; and not(count (Operation-Functor-Pattern | Bracket-Functor-Pattern) = 2)]">
     <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
         <xsl:text>Func-Synonym item missing two Operation-Functor-Pattern children!</xsl:text>

@@ -147,16 +147,6 @@
     </xsl:if>
   </xsl:template>
 
-  <xsl:template name="ensure-shape">
-    <xsl:if test="not(@shape)">
-      <xsl:apply-templates select="." mode="die">
-        <xsl:with-param name="message">
-          <xsl:text>We expected to find an element with a shape attribute</xsl:text>
-        </xsl:with-param>
-      </xsl:apply-templates>
-    </xsl:if>
-  </xsl:template>
-
   <xsl:template name="ensure-variable">
     <xsl:if test="not(Variable)">
       <xsl:apply-templates select="." mode="die">
@@ -712,6 +702,14 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
+  <xsl:template match="Item[@kind = &quot;Functor-Definition&quot; and not(@shape)]">
+    <xsl:apply-templates select="." mode="die">
+      <xsl:with-param name="message">
+        <xsl:text>Functor-Definition elements require a shape attribute.</xsl:text>
+      </xsl:with-param>
+    </xsl:apply-templates>
+  </xsl:template>
+
   <xsl:template match="Item[@kind=&apos;Functor-Definition&apos;]">
     <xsl:if test="Redefine">
       <xsl:text>redefine </xsl:text>
@@ -723,7 +721,6 @@ and
       <xsl:text> -&gt; </xsl:text>
       <xsl:apply-templates select="Type-Specification[1]"/>
     </xsl:if>
-    <xsl:call-template name="ensure-shape"/>
     <xsl:variable name="shape" select="@shape"/>
     <xsl:if test="$shape = &quot;No-Definiens&quot;">
       <xsl:text>;</xsl:text>
@@ -1062,6 +1059,14 @@ and
 </xsl:text>
   </xsl:template>
 
+  <xsl:template match="Definiens[not(@shape)]">
+    <xsl:apply-templates select="." mode="die">
+      <xsl:with-param name="message">
+        <xsl:text>Definiens elements require a shape attribute.</xsl:text>
+      </xsl:with-param>
+    </xsl:apply-templates>
+  </xsl:template>
+
   <xsl:template match="Definiens">
     <xsl:if test="Label">
       <xsl:text>:</xsl:text>
@@ -1069,7 +1074,6 @@ and
       <xsl:apply-templates select="Label[1]"/>
       <xsl:text> </xsl:text>
     </xsl:if>
-    <xsl:call-template name="ensure-shape"/>
     <xsl:variable name="shape" select="@shape"/>
     <xsl:choose>
       <xsl:when test="Partial-Definiens">
@@ -2137,7 +2141,7 @@ and
   <xsl:template match="Item[@kind = &quot;Conclusion&quot; and not(@shape)]">
     <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
-        <xsl:text>We expected to find an element with a shape attribute</xsl:text>
+        <xsl:text>Conclusion items require a shape attribute</xsl:text>
       </xsl:with-param>
     </xsl:apply-templates>
   </xsl:template>
@@ -2435,7 +2439,7 @@ and
   <xsl:template match="Item[@kind = &quot;Regular-Statement&quot; and not(@shape)]">
     <xsl:apply-templates select="." mode="die">
       <xsl:with-param name="message">
-        <xsl:text>We expected to find an element with a shape attribute</xsl:text>
+        <xsl:text>Regular-Statement items must have a shape attribute.</xsl:text>
       </xsl:with-param>
     </xsl:apply-templates>
   </xsl:template>

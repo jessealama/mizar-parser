@@ -100,12 +100,6 @@ tpl ensure-spelling {
   }
 }
 
-tpl ensure-shape {
-  if [not(@shape)] {
-    apply [.] (#message = "We expected to find an element with a shape attribute") mode="die";
-  }
-}
-
 tpl ensure-variable {
   if [not(Variable)] {
     apply [.] (#message = "A variable was expected, but none was found!") mode="die";
@@ -455,6 +449,10 @@ tpl [Item[@kind='Functor-Definition' and not(Operation-Functor-Pattern) and not(
   apply [.] (#message = "Functor-Definition lacks both an Operation-Functor-Pattern child and a Bracket-Functor-Pattern child!") mode="die";
 }
 
+tpl [Item[@kind = "Functor-Definition" and not(@shape)]] {
+  apply [.] (#message = "Functor-Definition elements require a shape attribute.") mode="die";
+}
+
 tpl [Item[@kind='Functor-Definition']] {
   if [Redefine] {
     "redefine ";
@@ -467,7 +465,6 @@ tpl [Item[@kind='Functor-Definition']] {
     " -> "; apply [Type-Specification[1]];
   }
 
-  ensure-shape ();
   $shape = `@shape`;
 
   if [$shape = "No-Definiens"] {
@@ -681,6 +678,10 @@ tpl [Item[@kind='Loci-Declaration']] {
   "let "; apply [*]; ";"; "\n";
 }
 
+tpl [Definiens[not(@shape)]] {
+  apply [.] (#message = "Definiens elements require a shape attribute.") mode="die";
+}
+
 tpl [Definiens] {
   if [Label] {
     ":"; // special case: labels of definiens look like :this:, not like this:
@@ -688,7 +689,6 @@ tpl [Definiens] {
     " ";
   }
 
-  ensure-shape ();
   $shape = `@shape`;
 
   if [Partial-Definiens] {
@@ -1340,7 +1340,7 @@ tpl [Item[@kind = "Conclusion" and not(Iterative-Equality or Diffuse-Statement o
 }
 
 tpl [Item[@kind = "Conclusion" and not(@shape)]] {
-  apply [.] (#message = "We expected to find an element with a shape attribute") mode="die";
+  apply [.] (#message = "Conclusion items require a shape attribute") mode="die";
 }
 
 tpl [Item[@kind='Conclusion' and @shape = "Iterative-Equality"]] {
@@ -1540,7 +1540,7 @@ tpl [Equality] {
 }
 
 tpl [Item[@kind = "Regular-Statement" and not(@shape)]] {
-  apply [.] (#message = "We expected to find an element with a shape attribute") mode="die";
+  apply [.] (#message = "Regular-Statement items must have a shape attribute.") mode="die";
 }
 
 tpl [Item[@kind='Regular-Statement' and @shape = "Iterative-Equality"]] {

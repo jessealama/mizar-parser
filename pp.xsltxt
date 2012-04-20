@@ -546,7 +546,7 @@ tpl [Block[@kind='Registration-Block']] {
   "end"; ";"; "\n";
 }
 
-tpl [Item[@kind='Identify' and not((Operation-Functor-Pattern | Bracket-Functor-Pattern)[2]])] {
+tpl [Item[@kind='Identify' and not(count (Operation-Functor-Pattern | Bracket-Functor-Pattern) = 2)]] {
   apply [.] (#message = "Identify item lacks two Operation-Functor-Pattern/Bracket-Functor-Pattern children!") mode="die";
 }
 
@@ -1429,7 +1429,7 @@ tpl [Item[@kind='Mode-Synonym']] {
    apply [Mode-Pattern[1]]; ";"; "\n"; // aren't these backwards?
 }
 
-tpl [Item[@kind='Func-Synonym' and not([Operation-Functor-Pattern | Bracket-Functor-Pattern][2])]] {
+tpl [Item[@kind='Func-Synonym' and not(count (Operation-Functor-Pattern | Bracket-Functor-Pattern) = 2)]] {
   apply [.] (#message = "Func-Synonym item missing two Operation-Functor-Pattern children!") mode="die";
 }
 

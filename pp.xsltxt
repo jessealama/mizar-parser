@@ -32,6 +32,15 @@ output method="text";
 
 $supported-version = "7.13.01";
 
+tpl [*] mode="trace" {
+  $n = `name (.)`;
+  $position = `count (preceding-sibling::*[name() = $n]) + 1`;
+  if [parent::*] {
+    apply [..] mode="trace";
+  }
+  `$n`; "["; `$position`; "]"; "\n";
+}
+
 tpl pad-version-info (#s) {
   `concat ($s, "\n", "This stylesheet is known to support version ", $supported-version, " of the Mizar system.", "\n", "It may not support earlier or later versions.")`;
 }
@@ -41,6 +50,7 @@ tpl [*[@line and @col]] (#message) mode="die" {
   $col = `@col`;
   $final_message = `concat ($message, " (line ", $line, ", column ", $col, ")")`;
   $with-version-info = pad-version-info (#s = $final_message);
+  apply [.] mode="trace";
   msg terminate="yes" $with-version-info;
 }
 
@@ -50,12 +60,14 @@ tpl [*[not(@line) or not(@col) and preceding::*[@line and @col]]] (#message) mod
   $col = `$nearest-with-line-and-col-info/@col`;
   $final_message = `concat ($message, " (we were unable to detemine line and column information for the current context node, but the nearest preceding node with line and column is at line ", $line, " and column ", $col, ")")`;
   $with-version-info = pad-version-info (#s = $final_message);
+  apply [.] mode="trace";
   msg terminate="yes" $with-version-info;
 }
 
 tpl [*[not(@line) and not(@col) and not(preceding::*[@line and @col])]] (#message) mode="die" {
   $final_message = `concat ($message, " (unable to determine line and column information)")`;
   $with-version-info = pad-version-info (#s = $final_message);
+  apply [.] mode="trace";
   msg terminate="yes" $with-version-info;
 }
 

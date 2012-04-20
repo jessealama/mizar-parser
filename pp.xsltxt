@@ -134,10 +134,10 @@ tpl ensure-proposition {
     if [@kind] {
       $k = `@kind`;
       $message = `concat ("We expected an element (", $n, ") of kind ", $k, " to have a Proposition child, but it doesn't")`;
-      die (#message = $message);
+      apply [.] (#message = $message) mode="die";
     } else {
       $message = `concat ("We expected an element (", $n, ") to have a Proposition child, but it doesn't")`;
-      die (#message = $message);
+      apply [.] (#message = $message) mode="die";
     }
   }
 }

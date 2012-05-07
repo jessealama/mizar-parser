@@ -31,12 +31,75 @@
   <xsl:param name="suppress-environment">
     <xsl:text/>
   </xsl:param>
+  <!-- Whether to indent -->
+  <xsl:param name="indenting">
+    <xsl:text>0</xsl:text>
+  </xsl:param>
   <!-- //////////////////////////////////////////////////////////////////// -->
   <!-- Utilities -->
   <!-- //////////////////////////////////////////////////////////////////// -->
   <xsl:variable name="supported-version">
     <xsl:text>7.13.01</xsl:text>
   </xsl:variable>
+
+  <xsl:template name="n-spaces">
+    <xsl:param name="n"/>
+    <xsl:choose>
+      <xsl:when test="$n = &quot;&quot;">
+        <xsl:text/>
+      </xsl:when>
+      <xsl:when test="$n &lt; &quot;0&quot;">
+        <xsl:text/>
+      </xsl:when>
+      <xsl:when test="$n = &quot;0&quot;">
+        <xsl:text/>
+      </xsl:when>
+      <xsl:when test="$n = &quot;1&quot;">
+        <xsl:text> </xsl:text>
+      </xsl:when>
+      <xsl:when test="$n = &quot;2&quot;">
+        <xsl:text>  </xsl:text>
+      </xsl:when>
+      <xsl:when test="$n = &quot;3&quot;">
+        <xsl:text>   </xsl:text>
+      </xsl:when>
+      <xsl:when test="$n = &quot;4&quot;">
+        <xsl:text>    </xsl:text>
+      </xsl:when>
+      <xsl:when test="$n = &quot;5&quot;">
+        <xsl:text>     </xsl:text>
+      </xsl:when>
+      <xsl:when test="$n = &quot;6&quot;">
+        <xsl:text>      </xsl:text>
+      </xsl:when>
+      <xsl:when test="$n = &quot;7&quot;">
+        <xsl:text>       </xsl:text>
+      </xsl:when>
+      <xsl:when test="$n = &quot;8&quot;">
+        <xsl:text>        </xsl:text>
+      </xsl:when>
+      <xsl:when test="$n = &quot;9&quot;">
+        <xsl:text>         </xsl:text>
+      </xsl:when>
+      <xsl:when test="$n = &quot;10&quot;">
+        <xsl:text>          </xsl:text>
+      </xsl:when>
+      <xsl:when test="$n &gt; &quot;10&quot;">
+        <xsl:variable name="s">
+          <xsl:call-template name="n-spaces">
+            <xsl:with-param name="n" select="$n - 1"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:value-of select="concat (&quot; &quot;, $s)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:variable name="bad" select="concat (&quot;Error: the argument of the n-spaces template &apos;&quot;, $n, &quot;&apos; seems to not be a number.&quot;)"/>
+        <xsl:message terminate="yes">
+          <xsl:value-of select="$bad"/>
+        </xsl:message>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
 
   <xsl:template match="*" mode="trace">
     <xsl:variable name="n" select="name (.)"/>
@@ -137,36 +200,6 @@
   <!-- //////////////////////////////////////////////////////////////////// -->
   <!-- Utility templates -->
   <!-- //////////////////////////////////////////////////////////////////// -->
-  <xsl:template name="ensure-spelling">
-    <xsl:if test="not(@spelling)">
-      <xsl:variable name="n" select="name ()"/>
-      <xsl:variable name="message" select="concat (&quot;We expected an element (&quot;, $n, &quot;) to have a spelling attribute, but it lacks one&quot;)"/>
-      <xsl:apply-templates select="." mode="die">
-        <xsl:with-param name="message" select="$message"/>
-      </xsl:apply-templates>
-    </xsl:if>
-  </xsl:template>
-
-  <xsl:template name="ensure-variable">
-    <xsl:if test="not(Variable)">
-      <xsl:apply-templates select="." mode="die">
-        <xsl:with-param name="message">
-          <xsl:text>A variable was expected, but none was found!</xsl:text>
-        </xsl:with-param>
-      </xsl:apply-templates>
-    </xsl:if>
-  </xsl:template>
-
-  <xsl:template name="ensure-variables">
-    <xsl:if test="not(Variables)">
-      <xsl:apply-templates select="." mode="die">
-        <xsl:with-param name="message">
-          <xsl:text>A variables list was expected, but none was found!</xsl:text>
-        </xsl:with-param>
-      </xsl:apply-templates>
-    </xsl:if>
-  </xsl:template>
-
   <xsl:template name="apply-variable">
     <xsl:apply-templates select="Variable[1]"/>
   </xsl:template>
@@ -228,7 +261,10 @@
   </xsl:template>
 
   <xsl:template name="apply-proposition">
-    <xsl:apply-templates select="Proposition[1]"/>
+    <xsl:param name="indentation"/>
+    <xsl:apply-templates select="Proposition[1]">
+      <xsl:with-param name="indentation" select="$indentation"/>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template name="ensure-term">
@@ -324,9 +360,7 @@
         <xsl:apply-templates select="*"/>
       </xsl:for-each>
     </xsl:if>
-    <xsl:for-each select="Item">
-      <xsl:apply-templates select="."/>
-    </xsl:for-each>
+    <xsl:apply-templates select="*"/>
   </xsl:template>
 
   <xsl:template match="Variables">
@@ -338,20 +372,17 @@
     </xsl:call-template>
   </xsl:template>
 
-  <xsl:template match="Variable">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Variable[@spelling]">
     <xsl:value-of select="$variable-prefix"/>
     <xsl:value-of select="@spelling"/>
   </xsl:template>
 
-  <xsl:template match="Internal-Selector-Term">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Internal-Selector-Term[@spelling]">
     <xsl:text>the </xsl:text>
     <xsl:value-of select="@spelling"/>
   </xsl:template>
 
-  <xsl:template match="Standard-Type">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Standard-Type[@spelling]">
     <!-- this is so ugly.  How can I get rid of this? -->
     <xsl:choose>
       <xsl:when test="Infix-Term | Simple-Term | Private-Functor-Term | Circumfix-Term | Qualification-Term | it-Term | Placeholder-Term | Internal-Selector-Term | Selector-Term | Numeral-Term | Fraenkel-Term | Forgetful-Functor-Term | Aggregate-Term | Global-Choice-Term">
@@ -775,8 +806,7 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Predicate-Pattern[Loci[2]]">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Predicate-Pattern[Loci[2] and @spelling]">
     <xsl:apply-templates select="Loci[1]"/>
     <xsl:text> </xsl:text>
     <xsl:value-of select="@spelling"/>
@@ -784,8 +814,7 @@ and
     <xsl:apply-templates select="Loci[2]"/>
   </xsl:template>
 
-  <xsl:template match="Mode-Pattern">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Mode-Pattern[@spelling]">
     <xsl:value-of select="@spelling"/>
     <xsl:if test="Loci">
       <xsl:if test="Loci/*[1]">
@@ -803,8 +832,7 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Operation-Functor-Pattern">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Operation-Functor-Pattern[@spelling]">
     <!-- If either the first or the second Loci children have multiple -->
     <!-- arguments, put parentheses around them. -->
     <xsl:choose>
@@ -916,11 +944,47 @@ and
     <xsl:text>coherence</xsl:text>
   </xsl:template>
 
-  <xsl:template match="Block[@kind=&apos;Proof&apos;]">
-    <xsl:text>proof</xsl:text>
+  <xsl:template match="Block[@kind = &quot;Skipped-Proof&quot;]">
+    <xsl:text>@proof</xsl:text>
     <xsl:text>
 </xsl:text>
     <xsl:apply-templates select="*"/>
+    <xsl:text>end</xsl:text>
+    <xsl:text>;</xsl:text>
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="Block[@kind=&apos;Proof&apos;]">
+    <xsl:param name="indentation"/>
+    <xsl:text>proof</xsl:text>
+    <xsl:text>
+</xsl:text>
+    <xsl:choose>
+      <xsl:when test="$indenting = &quot;1&quot;">
+        <xsl:choose>
+          <xsl:when test="$indentation = &quot;&quot;">
+            <xsl:apply-templates select="*">
+              <xsl:with-param name="indentation">
+                <xsl:text>0</xsl:text>
+              </xsl:with-param>
+            </xsl:apply-templates>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select="*">
+              <xsl:with-param name="indentation" select="$indentation + 2"/>
+            </xsl:apply-templates>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="*">
+          <xsl:with-param name="indentation">
+            <xsl:text>0</xsl:text>
+          </xsl:with-param>
+        </xsl:apply-templates>
+      </xsl:otherwise>
+    </xsl:choose>
     <xsl:text>end</xsl:text>
     <xsl:text>;</xsl:text>
     <xsl:text>
@@ -966,8 +1030,7 @@ and
     <xsl:apply-templates select="Adjective"/>
   </xsl:template>
 
-  <xsl:template match="Adjective">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Adjective[@spelling]">
     <xsl:choose>
       <xsl:when test="*[2]">
         <xsl:text>(</xsl:text>
@@ -1174,13 +1237,11 @@ and
     </xsl:if>
   </xsl:template>
 
-  <xsl:template match="Locus">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Locus[@spelling]">
     <xsl:value-of select="@spelling"/>
   </xsl:template>
 
-  <xsl:template match="Attribute-Pattern">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Attribute-Pattern[@spelling]">
     <xsl:apply-templates select="Locus[1]"/>
     <xsl:text> is </xsl:text>
     <xsl:apply-templates select="Loci[1]"/>
@@ -1213,8 +1274,7 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Functor-Segment[Type-List and Type-Specification]">
-    <xsl:call-template name="ensure-variables"/>
+  <xsl:template match="Functor-Segment[Type-List and Type-Specification and Variables]">
     <xsl:call-template name="variable-list"/>
     <xsl:text>(</xsl:text>
     <xsl:apply-templates select="Type-List[1]"/>
@@ -1231,27 +1291,23 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Predicate-Segment[Type-List]">
-    <xsl:call-template name="ensure-variables"/>
+  <xsl:template match="Predicate-Segment[Type-List and Variables]">
     <xsl:call-template name="variable-list"/>
     <xsl:text>[</xsl:text>
     <xsl:apply-templates select="Type-List[1]"/>
     <xsl:text>]</xsl:text>
   </xsl:template>
 
-  <xsl:template match="Scheme">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Scheme[@spelling]">
     <xsl:text>scheme </xsl:text>
     <xsl:value-of select="@spelling"/>
   </xsl:template>
 
-  <xsl:template match="Implicitly-Qualified-Segment">
-    <xsl:call-template name="ensure-variable"/>
+  <xsl:template match="Implicitly-Qualified-Segment[Variable]">
     <xsl:call-template name="variable-list"/>
   </xsl:template>
 
-  <xsl:template match="Selector">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Selector[@spelling]">
     <xsl:value-of select="@spelling"/>
   </xsl:template>
 
@@ -1275,8 +1331,7 @@ and
     <xsl:call-template name="apply-type"/>
   </xsl:template>
 
-  <xsl:template match="Structure-Pattern">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Structure-Pattern[@spelling]">
     <xsl:value-of select="@spelling"/>
     <xsl:if test="Loci">
       <xsl:if test="Loci/*[1]">
@@ -1332,9 +1387,8 @@ and
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="Explicitly-Qualified-Segment">
+  <xsl:template match="Explicitly-Qualified-Segment[Variables]">
     <xsl:param name="verb"/>
-    <xsl:call-template name="ensure-variables"/>
     <xsl:call-template name="list">
       <xsl:with-param name="separ">
         <xsl:text> , </xsl:text>
@@ -1355,14 +1409,12 @@ and
     <xsl:call-template name="apply-type"/>
   </xsl:template>
 
-  <xsl:template match="Simple-Term">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Simple-Term[@spelling]">
     <xsl:value-of select="$variable-prefix"/>
     <xsl:value-of select="@spelling"/>
   </xsl:template>
 
-  <xsl:template match="Forgetful-Functor-Term">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Forgetful-Functor-Term[@spelling]">
     <xsl:text>( </xsl:text>
     <xsl:text>the </xsl:text>
     <xsl:value-of select="@spelling"/>
@@ -1373,8 +1425,7 @@ and
     <xsl:text> )</xsl:text>
   </xsl:template>
 
-  <xsl:template match="Aggregate-Term">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Aggregate-Term[@spelling]">
     <xsl:value-of select="@spelling"/>
     <xsl:text> (# </xsl:text>
     <xsl:call-template name="list">
@@ -1386,8 +1437,7 @@ and
     <xsl:text> #)</xsl:text>
   </xsl:template>
 
-  <xsl:template match="Selector-Term">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Selector-Term[@spelling]">
     <xsl:text>(the </xsl:text>
     <xsl:value-of select="@spelling"/>
     <xsl:text> of </xsl:text>
@@ -1416,8 +1466,7 @@ and
     <xsl:value-of select="@number"/>
   </xsl:template>
 
-  <xsl:template match="Private-Functor-Term">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Private-Functor-Term[@spelling]">
     <xsl:value-of select="@spelling"/>
     <xsl:text>(</xsl:text>
     <xsl:call-template name="list">
@@ -1438,8 +1487,7 @@ and
     <xsl:apply-templates select="*"/>
   </xsl:template>
 
-  <xsl:template match="Struct-Type">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Struct-Type[@spelling]">
     <xsl:value-of select="@spelling"/>
     <xsl:if test="*[1]">
       <!-- dependent struct type -->
@@ -1468,8 +1516,7 @@ and
     <xsl:apply-templates select="*[2]"/>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Constant-Definition&apos;]">
-    <xsl:call-template name="ensure-variable"/>
+  <xsl:template match="Item[@kind=&apos;Constant-Definition&apos; and Variable]">
     <xsl:text>set </xsl:text>
     <xsl:call-template name="apply-variable"/>
     <xsl:text> = </xsl:text>
@@ -1479,8 +1526,7 @@ and
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Private-Functor-Definition&apos;]">
-    <xsl:call-template name="ensure-variable"/>
+  <xsl:template match="Item[@kind=&apos;Private-Functor-Definition&apos; and Variable]">
     <xsl:text>deffunc </xsl:text>
     <xsl:call-template name="apply-variable"/>
     <xsl:if test="Type-List">
@@ -1510,8 +1556,7 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Private-Predicate-Definition&apos; and Type-List]">
-    <xsl:call-template name="ensure-variable"/>
+  <xsl:template match="Item[@kind=&apos;Private-Predicate-Definition&apos; and Type-List and Variable]">
     <xsl:text>defpred </xsl:text>
     <xsl:call-template name="apply-variable"/>
     <!-- sanity check: Type-List is present -->
@@ -1542,8 +1587,7 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Theorem-Reference[@number]">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Theorem-Reference[@number and @spelling]">
     <xsl:value-of select="@spelling"/>
     <xsl:text>:</xsl:text>
     <xsl:value-of select="@number"/>
@@ -1557,8 +1601,7 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Definition-Reference[@number]">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Definition-Reference[@number and @spelling]">
     <xsl:value-of select="@spelling"/>
     <xsl:text>:def </xsl:text>
     <xsl:value-of select="@number"/>
@@ -1592,8 +1635,7 @@ and
     <xsl:apply-templates select="*[position() &gt; 1]"/>
   </xsl:template>
 
-  <xsl:template match="Private-Predicate-Formula">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Private-Predicate-Formula[@spelling]">
     <xsl:value-of select="@spelling"/>
     <xsl:text>[ </xsl:text>
     <xsl:call-template name="list">
@@ -1623,18 +1665,106 @@ and
 
   <xsl:template match="Conjunctive-Formula">
     <xsl:text>(</xsl:text>
+    <xsl:apply-templates select="." mode="top-conjunctive-formula"/>
+    <xsl:text>)</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="*" mode="top-conjunctive-formula">
+    <xsl:apply-templates select="." mode="die">
+      <xsl:with-param name="message">
+        <xsl:text>Unexpected element.  How did we arrive here?</xsl:text>
+      </xsl:with-param>
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="Conjunctive-Formula[Conjunctive-Formula]" mode="top-conjunctive-formula">
+    <xsl:for-each select="*[1]">
+      <xsl:choose>
+        <xsl:when test="self::Conjunctive-Formula">
+          <xsl:apply-templates select="." mode="top-conjunctive-formula"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="."/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+    <xsl:text> &amp; </xsl:text>
+    <xsl:for-each select="*[2]">
+      <xsl:choose>
+        <xsl:when test="self::Conjunctive-Formula">
+          <xsl:apply-templates select="." mode="top-conjunctive-formula"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="."/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template match="Conjunctive-Formula[not(Conjunctive-Formula)]" mode="top-conjunctive-formula">
     <xsl:apply-templates select="*[1]"/>
     <xsl:text> &amp; </xsl:text>
     <xsl:apply-templates select="*[2]"/>
-    <xsl:text>)</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="Disjunctive-Formula[*[3]]">
+    <xsl:apply-templates select="." mode="die">
+      <xsl:with-param name="message">
+        <xsl:text>Don&apos;t know how to handle a Disjunctive-Formula that has more than two children!</xsl:text>
+      </xsl:with-param>
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="Disjunctive-Formula[not(*[2])]">
+    <xsl:apply-templates select="." mode="die">
+      <xsl:with-param name="message">
+        <xsl:text>Don&apos;t know how to handle a Disjunctive-Formula that has fewer than two children!</xsl:text>
+      </xsl:with-param>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Disjunctive-Formula">
     <xsl:text>(</xsl:text>
+    <xsl:apply-templates select="." mode="top-disjunctive-formula"/>
+    <xsl:text>)</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="*" mode="top-disjunctive-formula">
+    <xsl:apply-templates select="." mode="die">
+      <xsl:with-param name="message">
+        <xsl:text>Unexpected element.  How did we arrive here?</xsl:text>
+      </xsl:with-param>
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="Disjunctive-Formula[Disjunctive-Formula]" mode="top-disjunctive-formula">
+    <xsl:for-each select="*[1]">
+      <xsl:choose>
+        <xsl:when test="self::Disjunctive-Formula">
+          <xsl:apply-templates select="." mode="top-disjunctive-formula"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="."/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+    <xsl:text> or </xsl:text>
+    <xsl:for-each select="*[2]">
+      <xsl:choose>
+        <xsl:when test="self::Disjunctive-Formula">
+          <xsl:apply-templates select="." mode="top-disjunctive-formula"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="."/>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template match="Disjunctive-Formula[not(Disjunctive-Formula)]" mode="top-disjunctive-formula">
     <xsl:apply-templates select="*[1]"/>
     <xsl:text> or </xsl:text>
     <xsl:apply-templates select="*[2]"/>
-    <xsl:text>)</xsl:text>
   </xsl:template>
 
   <xsl:template match="Conditional-Formula">
@@ -1653,8 +1783,7 @@ and
     <xsl:text>)</xsl:text>
   </xsl:template>
 
-  <xsl:template match="Placeholder-Term">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Placeholder-Term[@spelling]">
     <xsl:value-of select="@spelling"/>
   </xsl:template>
 
@@ -1664,8 +1793,7 @@ and
     <xsl:apply-templates select="*[2]"/>
   </xsl:template>
 
-  <xsl:template match="Predicative-Formula">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Predicative-Formula[@spelling]">
     <xsl:apply-templates select="Arguments[1]"/>
     <xsl:text> </xsl:text>
     <xsl:value-of select="@spelling"/>
@@ -1749,31 +1877,36 @@ and
     </xsl:call-template>
   </xsl:template>
 
-  <xsl:template match="Proposition">
-    <xsl:choose>
-      <xsl:when test="Label">
-        <xsl:apply-templates select="Label[1]"/>
-        <xsl:text> </xsl:text>
-        <xsl:apply-templates select="*[2]"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:apply-templates select="*[1]"/>
-      </xsl:otherwise>
-    </xsl:choose>
+  <xsl:template match="Proposition[Label]">
+    <xsl:param name="indentation"/>
+    <xsl:variable name="pad">
+      <xsl:call-template name="n-spaces">
+        <xsl:with-param name="n" select="$indentation"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:value-of select="$pad"/>
+    <xsl:apply-templates select="Label"/>
+    <xsl:text> </xsl:text>
+    <xsl:apply-templates select="*[position() = last()]"/>
   </xsl:template>
 
-  <xsl:template match="Label">
-    <xsl:call-template name="ensure-spelling"/>
-    <xsl:if test="$labels-on-own-line = &quot;1&quot;">
-      <xsl:text>
-</xsl:text>
-    </xsl:if>
+  <xsl:template match="Proposition[not(Label)]">
+    <xsl:param name="indentation"/>
+    <xsl:variable name="pad">
+      <xsl:call-template name="n-spaces">
+        <xsl:with-param name="n" select="$indentation"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:value-of select="$pad"/>
+    <xsl:apply-templates select="*[1]"/>
+  </xsl:template>
+
+  <xsl:template match="Label[@spelling]">
     <xsl:value-of select="@spelling"/>
     <xsl:text>:</xsl:text>
   </xsl:template>
 
-  <xsl:template match="Local-Reference">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Local-Reference[@spelling]">
     <xsl:value-of select="@spelling"/>
   </xsl:template>
 
@@ -1813,8 +1946,7 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Infix-Term">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Infix-Term[@spelling]">
     <!-- Troublesome example: "M#".  "(M #)" is bad, "M #" is fine. -->
     <!-- Solution: write "( M # )" -->
     <xsl:text>( </xsl:text>
@@ -1874,8 +2006,7 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Bracket-Functor-Pattern">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Bracket-Functor-Pattern[@spelling]">
     <xsl:value-of select="@spelling"/>
     <xsl:call-template name="list">
       <xsl:with-param name="separ">
@@ -1919,8 +2050,7 @@ and
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Circumfix-Term">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Circumfix-Term[@spelling]">
     <xsl:value-of select="@spelling"/>
     <xsl:text> </xsl:text>
     <xsl:call-template name="list">
@@ -1933,8 +2063,7 @@ and
     <xsl:apply-templates select="Right-Circumflex-Symbol[1]"/>
   </xsl:template>
 
-  <xsl:template match="Right-Circumflex-Symbol">
-    <xsl:call-template name="ensure-spelling"/>
+  <xsl:template match="Right-Circumflex-Symbol[@spelling]">
     <xsl:text> </xsl:text>
     <xsl:value-of select="@spelling"/>
   </xsl:template>
@@ -1948,7 +2077,14 @@ and
   </xsl:template>
 
   <xsl:template name="maybe-link">
+    <xsl:param name="indentation"/>
+    <xsl:variable name="pad">
+      <xsl:call-template name="n-spaces">
+        <xsl:with-param name="n" select="$indentation"/>
+      </xsl:call-template>
+    </xsl:variable>
     <xsl:if test="Straightforward-Justification/Link | Scheme-Justification/Link">
+      <xsl:value-of select="$pad"/>
       <xsl:text>then </xsl:text>
     </xsl:if>
   </xsl:template>
@@ -2056,6 +2192,11 @@ and
 </xsl:text>
       <xsl:apply-templates select="Block[@kind=&apos;Proof&apos;][1]"/>
     </xsl:if>
+    <xsl:if test="Block[@kind = &quot;Skipped-Proof&quot;]">
+      <xsl:text>
+</xsl:text>
+      <xsl:apply-templates select="Block[@kind = &quot;Skipped-Proof&quot;][1]"/>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="Collective-Assumption[not(Conditions)]">
@@ -2128,14 +2269,6 @@ and
     <xsl:call-template name="apply-justification-if-present"/>
     <xsl:text>
 </xsl:text>
-  </xsl:template>
-
-  <xsl:template match="Item[@kind = &quot;Conclusion&quot; and not(Iterative-Equality or Diffuse-Statement or Compact-Statement)]">
-    <xsl:apply-templates select="." mode="die">
-      <xsl:with-param name="message">
-        <xsl:text>Don&apos;t know how to deal with a Conclusion that is not an Iterative-Equality, Diffuse-Statement, nor a Compact-Statement</xsl:text>
-      </xsl:with-param>
-    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind = &quot;Conclusion&quot; and not(@shape)]">
@@ -2234,13 +2367,6 @@ and
     <xsl:text>;</xsl:text>
     <xsl:text>
 </xsl:text>
-  </xsl:template>
-
-  <xsl:template match="Item[@kind=&apos;Conclusion&apos; and not(@shape = &quot;Compact-Statement&quot; or @shape = &quot;Diffuse-Statement&quot; or @shape = &quot;Iterative-Equality&quot;)]">
-    <xsl:variable name="message" select="concat (&quot;Don&apos;t know how to deal with a Conclusion item whose shape is &apos;&quot;, $shape, &quot;&apos;&quot;)"/>
-    <xsl:apply-templates select="." mode="die">
-      <xsl:with-param name="message" select="$message"/>
-    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Mode-Synonym&apos; and not(Mode-Pattern[2])]">
@@ -2369,6 +2495,12 @@ and
 </xsl:text>
   </xsl:template>
 
+  <xsl:template match="Item[@kind = &quot;Axiom-Item&quot;]">
+    <xsl:call-template name="ensure-proposition"/>
+    <xsl:text>axiom </xsl:text>
+    <xsl:call-template name="apply-proposition"/>
+  </xsl:template>
+
   <xsl:template match="Item[@kind=&apos;Theorem-Item&apos;]">
     <xsl:call-template name="ensure-proposition"/>
     <xsl:text>theorem</xsl:text>
@@ -2481,12 +2613,14 @@ and
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Regular-Statement&apos; and @shape = &quot;Compact-Statement&quot;]">
-    <xsl:call-template name="maybe-link"/>
-    <xsl:if test="Label">
-      <xsl:apply-templates select="Label[1]"/>
-    </xsl:if>
+    <xsl:param name="indentation"/>
+    <xsl:call-template name="maybe-link">
+      <xsl:with-param name="indentation" select="$indentation"/>
+    </xsl:call-template>
     <xsl:call-template name="ensure-proposition"/>
-    <xsl:call-template name="apply-proposition"/>
+    <xsl:call-template name="apply-proposition">
+      <xsl:with-param name="indentation" select="$indentation"/>
+    </xsl:call-template>
     <xsl:call-template name="apply-justification-if-present">
       <xsl:with-param name="end">
         <xsl:text>1</xsl:text>

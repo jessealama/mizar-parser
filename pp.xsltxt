@@ -26,11 +26,66 @@ output method="text";
 // the environment.
 #suppress-environment = { ""; }
 
+// Whether to indent
+#indenting = { "0"; }
+
 //////////////////////////////////////////////////////////////////////
 // Utilities
 //////////////////////////////////////////////////////////////////////
 
 $supported-version = "7.13.01";
+
+tpl n-spaces (#n) {
+  choose {
+    when [$n = ""] {
+      "";
+    }
+    when [$n < "0"] {
+      "";
+    }
+    when [$n = "0"] {
+      "";
+    }
+    when [$n = "1"] {
+      " ";
+    }
+    when [$n = "2"] {
+      "  ";
+    }
+    when [$n = "3"] {
+      "   ";
+    }
+    when [$n = "4"] {
+      "    ";
+    }
+    when [$n = "5"] {
+      "     ";
+    }
+    when [$n = "6"] {
+      "      ";
+    }
+    when [$n = "7"] {
+      "       ";
+    }
+    when [$n = "8"] {
+      "        ";
+    }
+    when [$n = "9"] {
+      "         ";
+    }
+    when [$n = "10"] {
+      "          ";
+    }
+    when [$n > "10"] {
+      $s = n-spaces (#n = `$n - 1`);
+      `concat (" ", $s)`;
+    }
+    otherwise {
+      $bad = `concat ("Error: the argument of the n-spaces template '", $n, "' seems to not be a number.")`;
+      msg terminate="yes" $bad;
+    }
+  }
+}
 
 tpl [*] mode="trace" {
   $n = `name (.)`;
@@ -92,26 +147,6 @@ tpl uc (#s) { `translate($s, $lcletters, $ucletters)`; }
 // Utility templates
 //////////////////////////////////////////////////////////////////////
 
-tpl ensure-spelling {
-  if [not(@spelling)] {
-    $n = `name ()`;
-    $message = `concat ("We expected an element (", $n, ") to have a spelling attribute, but it lacks one")`;
-    apply [.] (#message = $message) mode="die";
-  }
-}
-
-tpl ensure-variable {
-  if [not(Variable)] {
-    apply [.] (#message = "A variable was expected, but none was found!") mode="die";
-  }
-}
-
-tpl ensure-variables {
-  if [not(Variables)] {
-    apply [.] (#message = "A variables list was expected, but none was found!") mode="die";
-  }
-}
-
 tpl apply-variable {
   apply [Variable[1]];
 }
@@ -148,8 +183,8 @@ tpl ensure-proposition {
   }
 }
 
-tpl apply-proposition {
-  apply [Proposition[1]];
+tpl apply-proposition (#indentation) {
+  apply [Proposition[1]] (#indentation = $indentation);
 }
 
 tpl ensure-term {
@@ -211,27 +246,22 @@ tpl [Text-Proper] {
       apply [*];
     }
   }
-  for-each [Item] {
-    apply [.];
-  }
+  apply [*];
 }
 
 tpl [Variables] {
   list (#separ = " , ", #elems = `Variable`);
 }
 
-tpl [Variable] {
-  ensure-spelling ();
+tpl [Variable[@spelling]] {
   `$variable-prefix`; `@spelling`;
 }
 
-tpl [Internal-Selector-Term] {
-  ensure-spelling ();
+tpl [Internal-Selector-Term[@spelling]] {
   "the "; `@spelling`;
 }
 
-tpl [Standard-Type] {
-  ensure-spelling ();
+tpl [Standard-Type[@spelling]] {
   // this is so ugly.  How can I get rid of this?
   if [Infix-Term | Simple-Term | Private-Functor-Term | Circumfix-Term | Qualification-Term | it-Term | Placeholder-Term | Internal-Selector-Term | Selector-Term | Numeral-Term | Fraenkel-Term | Forgetful-Functor-Term | Aggregate-Term | Global-Choice-Term] {
    "("; `@spelling`; " of ";
@@ -497,13 +527,11 @@ tpl [Predicate-Pattern[not(Loci[2])]] {
   apply [.] (#message = "Predicate-Pattern does not have two Loci children!") mode="die";
 }
 
-tpl [Predicate-Pattern[Loci[2]]] {
-  ensure-spelling ();
+tpl [Predicate-Pattern[Loci[2] and @spelling]] {
   apply [Loci[1]]; " ";  `@spelling`;  " "; apply [Loci[2]];
 }
 
-tpl [Mode-Pattern] {
-  ensure-spelling ();
+tpl [Mode-Pattern[@spelling]] {
   `@spelling`;
   if [Loci] {
     if [Loci/*[1]] {
@@ -516,8 +544,7 @@ tpl [Operation-Functor-Pattern[not(Loci[2])]] {
   apply [.] (#message = "Operation-Functor-Pattern lacks two Loci children!") mode="die";
 }
 
-tpl [Operation-Functor-Pattern] {
-  ensure-spelling ();
+tpl [Operation-Functor-Pattern[@spelling]] {
   // If either the first or the second Loci children have multiple
   // arguments, put parentheses around them.
   if [Loci[1]/*[2]] {
@@ -591,9 +618,23 @@ tpl [Coherence] {
   "coherence";
 }
 
-tpl [Block[@kind='Proof']] {
-  "proof"; "\n";
+tpl [Block[@kind = "Skipped-Proof"]] {
+  "@proof"; "\n";
   apply [*];
+  "end"; ";"; "\n";
+}
+
+tpl [Block[@kind='Proof']] (#indentation) {
+  "proof"; "\n";
+  if [$indenting = "1"] {
+    if [$indentation = ""] {
+      apply [*] (#indentation = "0");
+    } else {
+      apply [*] (#indentation = `$indentation + 2`);
+    }
+  } else {
+    apply [*] (#indentation = "0");
+  }
   "end"; ";"; "\n";
 }
 
@@ -623,8 +664,7 @@ tpl [NegatedAdjective] {
   "non "; apply [Adjective];
 }
 
-tpl [Adjective] {
-  ensure-spelling ();
+tpl [Adjective[@spelling]] {
   if [*[2]] {
      "("; list (#separ = " , ", #elems = `*`); ")";
   } else {
@@ -683,7 +723,7 @@ tpl [Definiens[not(@shape)]] {
 }
 
 tpl [Definiens] {
-  if [Label] {
+      if [Label] {
     ":"; // special case: labels of definiens look like :this:, not like this:
     apply [Label[1]];
     " ";
@@ -764,13 +804,11 @@ tpl [Loci](#parentheses) {
   }
 }
 
-tpl [Locus] {
-  ensure-spelling ();
+tpl [Locus[@spelling]] {
   `@spelling`;
 }
 
-tpl [Attribute-Pattern] {
-  ensure-spelling ();
+tpl [Attribute-Pattern[@spelling]] {
   apply [Locus[1]];
   " is ";
   apply [Loci[1]]; " "; `@spelling`;
@@ -788,8 +826,7 @@ tpl [Functor-Segment[not(Type-Specification)]] {
   apply [.] (#message = "Missing Type-Specification child of a Functor-Segment element!") mode="die";
 }
 
-tpl [Functor-Segment[Type-List and Type-Specification]] {
-  ensure-variables ();
+tpl [Functor-Segment[Type-List and Type-Specification and Variables]] {
   variable-list ();
   "("; apply [Type-List[1]]; ")";
   " -> ";
@@ -800,24 +837,20 @@ tpl [Predicate-Segment[not(Type-List)]] {
   apply [.] (#message = "Type-List child of Predicate-Segment is missing!") mode="die";
 }
 
-tpl [Predicate-Segment[Type-List]] {
-  ensure-variables ();
+tpl [Predicate-Segment[Type-List and Variables]] {
   variable-list ();
   "["; apply [Type-List[1]]; "]";
 }
 
-tpl [Scheme] {
-  ensure-spelling ();
+tpl [Scheme[@spelling]] {
   "scheme "; `@spelling`;
 }
 
-tpl [Implicitly-Qualified-Segment] {
-  ensure-variable ();
+tpl [Implicitly-Qualified-Segment[Variable]] {
   variable-list ();
 }
 
-tpl [Selector] {
-  ensure-spelling ();
+tpl [Selector[@spelling]] {
   `@spelling`;
 }
 
@@ -831,8 +864,7 @@ tpl [Field-Segment] {
   " -> "; apply-type ();
 }
 
-tpl [Structure-Pattern] {
-  ensure-spelling ();
+tpl [Structure-Pattern[@spelling]] {
   `@spelling`;
   if [Loci] {
     if [Loci/*[1]] {
@@ -864,8 +896,7 @@ tpl [Item[@kind='Structure-Definition']] {
   apply [Structure-Pattern[1]]; ";"; "\n";
 }
 
-tpl [Explicitly-Qualified-Segment](#verb) {
-  ensure-variables ();
+tpl [Explicitly-Qualified-Segment[Variables]] (#verb) {
   list (#separ = " , ", #elems = `Variables/Variable`);
   " ";
   if [$verb = ""] {
@@ -878,23 +909,19 @@ tpl [Explicitly-Qualified-Segment](#verb) {
   apply-type ();
 }
 
-tpl [Simple-Term] {
-  ensure-spelling ();
+tpl [Simple-Term[@spelling]] {
   `$variable-prefix`; `@spelling`;
 }
 
-tpl [Forgetful-Functor-Term] {
-  ensure-spelling ();
+tpl [Forgetful-Functor-Term[@spelling]] {
   "( "; "the "; `@spelling`; if [*[1]] { " of "; apply [*[1]]; } " )";
 }
 
-tpl [Aggregate-Term] {
-  ensure-spelling ();
+tpl [Aggregate-Term[@spelling]] {
   `@spelling`; " (# "; list (#separ = " , ", #elems = `*`); " #)";
 }
 
-tpl [Selector-Term] {
-  ensure-spelling ();
+tpl [Selector-Term[@spelling]] {
   "(the "; `@spelling`; " of "; apply [*[1]]; ")"; // always just one child?
 }
 
@@ -910,8 +937,7 @@ tpl [Numeral-Term[@number]] {
   `@number`;
 }
 
-tpl [Private-Functor-Term] {
-  ensure-spelling ();
+tpl [Private-Functor-Term[@spelling]] {
   `@spelling`;
   "("; list (#separ = " , ", #elems = `./*`); ")";
 }
@@ -925,8 +951,7 @@ tpl [Global-Choice-Term] {
   apply [*];
 }
 
-tpl [Struct-Type] {
-  ensure-spelling ();
+tpl [Struct-Type[@spelling]] {
   `@spelling`;
   if [*[1]] { // dependent struct type
     " over ";
@@ -944,13 +969,11 @@ tpl [Clustered-Type[Adjective-Cluster]] {
   apply [*[2]]; // the type that the adjectives modity
 }
 
-tpl [Item[@kind='Constant-Definition']] {
-  ensure-variable ();
+tpl [Item[@kind='Constant-Definition' and Variable]] {
   "set "; apply-variable (); " = "; apply [*[2]]; ";"; "\n";
 }
 
-tpl [Item[@kind='Private-Functor-Definition']] {
-  ensure-variable ();
+tpl [Item[@kind='Private-Functor-Definition' and Variable]] {
   "deffunc ";  apply-variable ();
   if [Type-List] {
     if [Type-List/*[1]] {
@@ -964,8 +987,7 @@ tpl [Item[@kind='Private-Predicate-Definition' and not(Type-List)]] {
   apply [.] (#message = "Private-Predicate-Definition lacks a Type-List child!") mode="die";
 }
 
-tpl [Item[@kind='Private-Predicate-Definition' and Type-List]] {
-  ensure-variable ();
+tpl [Item[@kind='Private-Predicate-Definition' and Type-List and Variable]] {
   "defpred "; apply-variable ();
   // sanity check: Type-List is present
   "[ "; list(#separ = " , ", #elems = `Type-List[1]/*`); " ]"; "\n";
@@ -977,8 +999,7 @@ tpl [Theorem-Reference[not(@number)]] {
   apply [.] (#message = "Theorem-Reference lacks a number attribute!") mode="die";
 }
 
-tpl [Theorem-Reference[@number]] {
-  ensure-spelling ();
+tpl [Theorem-Reference[@number and @spelling]] {
   `@spelling`; ":"; `@number`;
 }
 
@@ -986,8 +1007,7 @@ tpl [Definition-Reference[not(@number)]] {
   apply [.] (#message = "Definition-Reference lacks a number attribute!") mode="die";
 }
 
-tpl [Definition-Reference[@number]] {
-  ensure-spelling ();
+tpl [Definition-Reference[@number and @spelling]] {
   `@spelling`; ":def "; `@number`;
 }
 
@@ -1009,8 +1029,7 @@ tpl [Item[@kind='Generalization']] { // very ugly.  I've asked Czeslaw to refact
   apply [*[position() > 1]];
 }
 
-tpl [Private-Predicate-Formula] {
-  ensure-spelling ();
+tpl [Private-Predicate-Formula[@spelling]] {
   `@spelling`; "[ "; list (#separ = " , ", #elems = `*`); " ]";
 }
 
@@ -1022,11 +1041,70 @@ tpl [Conjunctive-Formula[not(*[2])]] {
 }
 
 tpl [Conjunctive-Formula] {
-  "("; apply [*[1]]; " & "; apply [*[2]]; ")";
+  "("; apply [.] mode="top-conjunctive-formula"; ")";
+}
+
+tpl [*] mode="top-conjunctive-formula" {
+  apply [.] (#message = "Unexpected element.  How did we arrive here?") mode="die";
+}
+
+tpl [Conjunctive-Formula[Conjunctive-Formula]] mode="top-conjunctive-formula" {
+  for-each [*[1]] {
+    if [self::Conjunctive-Formula] {
+      apply [.] mode="top-conjunctive-formula";
+    } else {
+      apply [.];
+    }
+  }
+  " & ";
+  for-each [*[2]] {
+    if [self::Conjunctive-Formula] {
+      apply [.] mode="top-conjunctive-formula";
+    } else {
+      apply [.];
+    }
+  }
+}
+
+tpl [Conjunctive-Formula[not(Conjunctive-Formula)]] mode="top-conjunctive-formula" {
+  apply [*[1]]; " & "; apply [*[2]];
+}
+
+tpl [Disjunctive-Formula[*[3]]] {
+  apply [.] (#message = "Don't know how to handle a Disjunctive-Formula that has more than two children!") mode="die";
+}
+tpl [Disjunctive-Formula[not(*[2])]] {
+  apply [.] (#message = "Don't know how to handle a Disjunctive-Formula that has fewer than two children!") mode="die";
 }
 
 tpl [Disjunctive-Formula] {
-  "("; apply [*[1]]; " or "; apply [*[2]]; ")";
+  "("; apply [.] mode="top-disjunctive-formula"; ")";
+}
+
+tpl [*] mode="top-disjunctive-formula" {
+  apply [.] (#message = "Unexpected element.  How did we arrive here?") mode="die";
+}
+
+tpl [Disjunctive-Formula[Disjunctive-Formula]] mode="top-disjunctive-formula" {
+  for-each [*[1]] {
+    if [self::Disjunctive-Formula] {
+      apply [.] mode="top-disjunctive-formula";
+    } else {
+      apply [.];
+    }
+  }
+  " or ";
+  for-each [*[2]] {
+    if [self::Disjunctive-Formula] {
+      apply [.] mode="top-disjunctive-formula";
+    } else {
+      apply [.];
+    }
+  }
+}
+
+tpl [Disjunctive-Formula[not(Disjunctive-Formula)]] mode="top-disjunctive-formula" {
+  apply [*[1]]; " or "; apply [*[2]];
 }
 
 tpl [Conditional-Formula] {
@@ -1037,8 +1115,7 @@ tpl [Biconditional-Formula] {
   "("; apply [*[1]]; " iff "; apply [*[2]]; ")";
 }
 
-tpl [Placeholder-Term] {
-  ensure-spelling ();
+tpl [Placeholder-Term[@spelling]] {
   `@spelling`;
 }
 
@@ -1046,8 +1123,7 @@ tpl [Attributive-Formula] {
   apply [*[1]]; " is "; apply [*[2]];
 }
 
-tpl [Predicative-Formula] {
-  ensure-spelling ();
+tpl [Predicative-Formula[@spelling]] {
   apply [Arguments[1]];
   " "; `@spelling`; " ";
   apply [Arguments[2]];
@@ -1100,26 +1176,21 @@ tpl [Item[@kind="Correctness"]] {
   apply-justification-if-present (#end = "1");
 }
 
-tpl [Proposition] {
-  if [Label] {
-    apply [Label[1]];
-    " ";
-    apply [*[2]];
-  } else {
-    apply [*[1]]; // no label case
-  }
+tpl [Proposition[Label]] (#indentation) {
+  $pad = n-spaces (#n = $indentation);
+  $pad; apply [Label]; " "; apply [*[position() = last()]];
 }
 
-tpl [Label] {
-  ensure-spelling ();
-  if [$labels-on-own-line = "1"] {
-    "\n";
-  }
+tpl [Proposition[not(Label)]] (#indentation) {
+  $pad = n-spaces (#n = $indentation);
+  $pad; apply [*[1]];
+}
+
+tpl [Label[@spelling]] {
   `@spelling`; ":";
 }
 
-tpl [Local-Reference] {
-  ensure-spelling ();
+tpl [Local-Reference[@spelling]] {
   `@spelling`;
 }
 
@@ -1141,8 +1212,7 @@ tpl [Infix-Term[not(Arguments[2])]] {
   apply [.] (#message = "Infix-Term lacks two Arguments children!") mode="die";
 }
 
-tpl [Infix-Term] {
-  ensure-spelling ();
+tpl [Infix-Term[@spelling]] {
 
   // Troublesome example: "M#".  "(M #)" is bad, "M #" is fine.
   // Solution: write "( M # )"
@@ -1181,8 +1251,7 @@ tpl [Bracket-Functor-Pattern[not(Right-Cirumflex-Symbol)]] {
   apply [.] (#message = "Bracket-Functor-Pattern lacks a Right-Circumflex-Symbol child!") mode="die";
 }
 
-tpl [Bracket-Functor-Pattern] {
-  ensure-spelling ();
+tpl [Bracket-Functor-Pattern[@spelling]] {
   `@spelling`;
    list (#separ = " , ", #elems = `Loci/Locus`);
    apply [Right-Circumflex-Symbol[1]];
@@ -1213,16 +1282,14 @@ tpl [Circumfix-Term[not(Right-Circumflex-Symbol)]] {
   apply (#message = "Circumfix-Term lacks a right-Circumflex-Symbol child!") mode="die";
 }
 
-tpl [Circumfix-Term] {
-  ensure-spelling ();
+tpl [Circumfix-Term[@spelling]] {
   `@spelling`;
   " ";
   list (#separ = " , ", #elems = `*[position() > 1]`); // everything after the Right-Circumflex-Symbol
   apply [Right-Circumflex-Symbol[1]];
 }
 
-tpl [Right-Circumflex-Symbol] {
-  ensure-spelling ();
+tpl [Right-Circumflex-Symbol[@spelling]] {
   " "; `@spelling`;
 }
 
@@ -1230,9 +1297,10 @@ tpl [Qualification-Term] {
   "("; apply [*[1]]; " qua "; apply [*[2]]; ")";
 }
 
-tpl maybe-link {
+tpl maybe-link (#indentation) {
+  $pad = n-spaces (#n = $indentation);
   if [Straightforward-Justification/Link | Scheme-Justification/Link] {
-    "then ";
+    $pad; "then ";
   }
 }
 
@@ -1303,6 +1371,10 @@ tpl apply-justification-if-present(#end) {
     "\n";
     apply [Block[@kind='Proof'][1]];
   }
+  if [Block[@kind = "Skipped-Proof"]] {
+    "\n";
+    apply [Block[@kind = "Skipped-Proof"][1]];
+  }
 }
 
 tpl [Collective-Assumption[not(Conditions)]] {
@@ -1333,10 +1405,6 @@ tpl [Item[@kind='Existential-Assumption']] {
   " such that"; "\n";
   apply [Conditions[1]];
   apply-justification-if-present (); "\n";
-}
-
-tpl [Item[@kind = "Conclusion" and not(Iterative-Equality or Diffuse-Statement or Compact-Statement)]] {
-  apply [.] (#message = "Don't know how to deal with a Conclusion that is not an Iterative-Equality, Diffuse-Statement, nor a Compact-Statement") mode="die";
 }
 
 tpl [Item[@kind = "Conclusion" and not(@shape)]] {
@@ -1426,11 +1494,6 @@ tpl [Item[@kind='Conclusion' and @shape = "Compact-Statement" and not(Block[@kin
   ";"; "\n";
 }
 
-tpl [Item[@kind='Conclusion' and not(@shape = "Compact-Statement" or @shape = "Diffuse-Statement" or @shape = "Iterative-Equality")]] {
-  $message = `concat ("Don't know how to deal with a Conclusion item whose shape is '", $shape, "'")`;
-  apply [.] (#message = $message) mode="die";
-}
-
 tpl [Item[@kind='Mode-Synonym' and not(Mode-Pattern[2])]] {
   apply [.] (#message = "Mode-Synonym item missing two Mode-Pattern children!") mode="die";
 }
@@ -1502,6 +1565,12 @@ tpl [Block[@kind='Notation-Block']] {
   "end;"; "\n";
 }
 
+tpl [Item[@kind = "Axiom-Item"]] {
+  ensure-proposition ();
+  "axiom ";
+  apply-proposition ();
+}
+
 tpl [Item[@kind='Theorem-Item']] {
   ensure-proposition ();
   "theorem"; "\n";
@@ -1564,13 +1633,10 @@ tpl [Item[@kind='Regular-Statement' and @shape = "Diffuse-Statement" and (Block[
   apply [Block[@kind='Now-Reasoning' or @kind = 'Hereby-Reasoning'][1]];
 }
 
-tpl [Item[@kind='Regular-Statement' and @shape = "Compact-Statement"]] {
-  maybe-link ();
-  if [Label] {
-    apply [Label[1]];
-  }
+tpl [Item[@kind='Regular-Statement' and @shape = "Compact-Statement"]] (#indentation) {
+  maybe-link (#indentation = $indentation);
   ensure-proposition ();
-  apply-proposition ();
+  apply-proposition (#indentation = $indentation);
   apply-justification-if-present (#end = "1");
 }
 

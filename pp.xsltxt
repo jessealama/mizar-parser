@@ -947,8 +947,7 @@ tpl [Contradiction] {
 }
 
 tpl [Global-Choice-Term] {
-  "the ";
-  apply [*];
+  "the "; apply [*];
 }
 
 tpl [Struct-Type[@spelling]] {

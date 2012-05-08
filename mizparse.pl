@@ -1,7 +1,10 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 use strict;
 use warnings;
+
+require v5.10.0;    # for the 'say' feature
+use feature 'say';
 
 use LWP;
 use Getopt::Long qw(:config gnu_compat);
@@ -12,7 +15,7 @@ use English qw(-no_match_vars);
 use version;
 use Carp qw(croak);
 
-Readonly my $VERSION => qv('1.1');
+Readonly my $VERSION => qv('1.2');
 
 my $man       = 0;
 my $help      = 0;
@@ -29,19 +32,47 @@ Readonly my $FULL_STOP    => q{.};
 Readonly my $EMPTY_STRING => q{};
 Readonly my $TWO_SPACES   => q{  };
 Readonly my $DASH         => q{-};
+Readonly my $LF           => "\N{LF}";
+Readonly my $HTTP_MESSAGE_BODY_MIME_TYPE => 'application/x-www-form-urlencoded';
 
 sub ensure_valid_transform {
-    return (   $transform eq 'none'
+    return (
+        defined $transform && ( $transform eq 'none'
             || $transform eq 'wsm'
-            || $transform eq 'msm' );
+            || $transform eq 'msm' )
+    );
 }
 
 sub ensure_valid_format {
-    return ( $format eq 'text' || $format eq 'xml' );
+    return ( defined $format && ( $format eq 'text' || $format eq 'xml' ) );
 }
 
 sub ensure_sensible_timeout {
-    return ( $timeout > 0 );
+    return ( defined $timeout && $timeout > 0 );
+}
+
+sub error_message {
+    my $message = join ($EMPTY_STRING, @_);
+    my $error_message = 'Error: ';
+    $error_message .=
+	($message eq $EMPTY_STRING ? '(no error message was supplied)' : $message);
+    return $error_message;
+}
+
+sub warning_message {
+    my $message = join ($EMPTY_STRING, @_);
+    my $warning_message = 'Error: ';
+    $warning_message .=
+	($message eq $EMPTY_STRING ? '(no warning message was supplied)' : $message);
+    return $warning_message;
+}
+
+sub debug_message {
+    my $message = join ($EMPTY_STRING, @_);
+    my $debug_message = 'Error: ';
+    $debug_message .=
+	($message eq $EMPTY_STRING ? '(no debug message was supplied)' : $message);
+    return $debug_message;
 }
 
 sub process_commandline {
@@ -69,7 +100,7 @@ sub process_commandline {
     }
 
     if ($version) {
-        print $VERSION, "\N{LF}";
+        say $VERSION;
         exit 0;
     }
 
@@ -85,13 +116,18 @@ sub process_commandline {
         pod2usage(1);
     }
 
+    my $article_path = $ARGV[0];
+
+    if ( !ensure_sensible_article($article_path) ) {
+	exit 1;
+    }
+
     if ($debug) {
         $verbose = 1;
     }
 
     if ( !ensure_sensible_timeout() ) {
-        print {*STDERR} 'Error: \'', $timeout,
-            '\' is not a sensible value for a timeout.', "\N{LF}";
+        say {*STDERR} error_message ('\'', $timeout, '\' is not a sensible value for a timeout.');
         return 0;
     }
 
@@ -108,23 +144,18 @@ sub ensure_sensible_article {
     }
 
     if ( !-e $path ) {
-        print {*STDERR} 'Error: there is no file at the given path',
-            "\N{LF}", "\N{LF}", $TWO_SPACES, $path, "\N{LF}",
-            "\N{LF}";
+        say {*STDERR} error_message ('There is no file at the given path',
+            $LF, $LF, $TWO_SPACES, $path, $LF);
         return 0;
     }
 
     if ( -d $path ) {
-        print {*STDERR} 'Error: the supplied article', "\N{LF}",
-            "\N{LF}", $TWO_SPACES, $path, "\N{LF}", "\N{LF}",
-            'is not a file but a directory.';
+        say {*STDERR} error_message ('The supplied article', $LF, $LF, $TWO_SPACES, $path, $LF, $LF, 'is not a file but a directory.');
         return 0;
     }
 
     if ( !-r $path ) {
-        print {*STDERR} 'Error: the article file', "\N{LF}",
-            "\N{LF}", $TWO_SPACES, $path, "\N{LF}", "\N{LF}",
-            'is unreadable.';
+        say {*STDERR} error_message ('The article file', $LF, $LF, $TWO_SPACES, $path, $LF, $LF, 'is unreadable.');
         return 0;
     }
 
@@ -135,25 +166,33 @@ sub ensure_sensible_article {
 sub slurp {
     my $path_or_fh = shift;
 
-    open (my $fh, '<', $path_or_fh)
-	or die 'Error: unable to open the file (or filehandle) ', $path_or_fh, '.';
+    open( my $fh, '<', $path_or_fh )
+        or die error_message ('Unable to open the file (or filehandle) ', $path_or_fh, $FULL_STOP);
 
     my $contents;
     { local $/; $contents = <$fh>; }
 
     close $fh
-	or die 'Error: unable to close the file (or filehandle) ', $path_or_fh, '.';
+        or die error_message ('Unable to close the file (or filehandle) ', $path_or_fh,$FULL_STOP);
 
     return $contents;
+}
+
+sub request_uri {
+    if (defined $transform) {
+	if (defined $format) {
+	    return "${MIZAR_PARSER_BASE_URI}?strictness=${transform}&format=${format}";
+	} else {
+	    die 'Error: the \'format\' parameter has an undefined value.';
+	}
+    } else {
+	die 'Error: the \'transform\' parameter has an undefined value.';
+    }
 }
 
 process_commandline();
 
 my $article_path = $ARGV[0];
-
-if ( !ensure_sensible_article($article_path) ) {
-    exit 1;
-}
 
 # Read the article
 my $article_content =
@@ -164,14 +203,13 @@ my $article_content =
 my $agent = LWP::UserAgent->new( timeout => $timeout );
 
 # Prepare the HTTP request
-my $request_uri =
-    "${MIZAR_PARSER_BASE_URI}?strictness=${transform}&format=${format}";
+my $request_uri = request_uri ();
 my $request = HTTP::Request->new( GET => $request_uri );
-$request->content_type('application/x-www-form-urlencoded');
+$request->content_type($HTTP_MESSAGE_BODY_MIME_TYPE);
 $request->content($article_content);
 
 if ($debug) {
-    print 'DEBUG: The request URI is: ', $request_uri, "\N{LF}";
+    say {*STDERR} debug_message ('The request URI is: ', $request_uri);
 }
 
 # (Try to) send out the request
@@ -182,7 +220,7 @@ if ( defined $response ) {
     if ( $response->is_success() ) {
 
         my $response_content = $response->content();
-        print $response_content, "\N{LF}";
+        say $response_content;
 
         exit 0;
 
@@ -196,34 +234,27 @@ if ( defined $response ) {
             $response_content =
                 defined $response_content ? $response_content : $EMPTY_STRING;
 
-            print {*STDERR}
-                'Error: the request was unsuccessful.  The parsing service returned:',
-                "\N{LF}", "\N{LF}", $TWO_SPACES, $status,
-                "\N{LF}", "\N{LF}";
+            say {*STDERR} error_message ('The request was unsuccessful.  The parsing service returned:', $LF, $LF, $TWO_SPACES, $status, $LF);
 
             if ( $response_content eq $EMPTY_STRING ) {
 
-                print {*STDERR}
-                    'The message received from the parsing service is empty.',
-                    "\N{LF}";
+                say {*STDERR} warning_message ('The message received from the parsing service is empty.');
 
             }
             else {
 
-                print {*STDERR} 'Here is the message we received:',
-                    "\N{LF}", "\N{LF}";
-                print {*STDERR} $response_content, "\N{LF}";
+                say {*STDERR} 'Here is the message we received:', $LF;
+                say {*STDERR} $response_content;
 
             }
 
         }
         else {
 
-            print {*STDERR}
-                'Error: the request was unsuccessful, and it seems we did not even get a response from the server.',
-                "\N{LF}",
+            say {*STDERR} error_message ('The request was unsuccessful, and it seems we did not even get a response from the server.',
+                $LF,
                 '(Did the request timeout?  The value of the timeout was ',
-                $timeout, ' seconds.)', "\N{LF}";
+                $timeout, ' seconds.)');
 
         }
 
@@ -232,14 +263,11 @@ if ( defined $response ) {
 }
 else {
     if ( defined $eval_request_message ) {
-        print {*STDERR}
-            'Error: the HTTP request failed.  Here is the message we got:',
-            "\N{LF}", $eval_request_message, "\N{LF}";
+        say {*STDERR} error_message ('The HTTP request failed.  Here is the message we got:',
+            $LF, $eval_request_message);
     }
     else {
-        print {*STDERR}
-            'Error: the HTTP request failed badly; not even a failure message is available.',
-            "\N{LF}";
+        say {*STDERR} error_message ('The HTTP request failed badly; not even a failure message is available.');
     }
 }
 
@@ -407,6 +435,8 @@ that you can see in the CPAN URIs, but I have some hope that somewhat
 older versions of these modules suffice for the rather straightforward
 tasks that I require of them.
 
+In addition, we require Perl version 5.10 or newer.
+
 =head1 DIAGNOSTICS
 
 If you are not getting the output you expect, try executing the same
@@ -431,7 +461,7 @@ the B<Mizar> file that you give to this program.
 
 =item L<The Mizar parsing service homepage|http://mizar.cs.ualberta.ca/parsing/>.
 
-The parsing service underlies this program.
+The parsing service on which this program is based.
 
 =item L<The Mizar homepage|http://mizar.org>
 

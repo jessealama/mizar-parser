@@ -128,6 +128,7 @@
 
 ;; By default, all requests are bad
 (defmethod handle (method format strictness article)
+  (declare (ignore method format strictness article))
   (let ((uri (request-uri*))
 	(method-symbol (request-method*))
 	(message (raw-post-data :force-text t)))
@@ -389,19 +390,23 @@
 				  :if-does-not-exist :ignore))))
 
 (defmethod acceptor-dispatch-request ((acceptor parser-acceptor) request)
-  (let ((method (request-method request))
-	(format (get-parameter "format" request))
-	(strictness (get-parameter "strictness" request))
-	(uri (script-name request)))
+  (let ((uri (script-name request))
+	(method (request-method request)))
     (cond ((string= uri "/parsing.css")
-	   (handle-static-file (file-in-project-directory "parsing.css")
-			       "text/css"))
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "parsing.css")
+				   "text/css")
+	       (return-message +http-method-not-allowed+)))
 	  ((string= uri "/favicon.ico")
-	   (handle-static-file (file-in-project-directory "favicon.ico")
-			       "image/png"))
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "favicon.ico")
+				   "image/png")
+	       (return-message +http-method-not-allowed+)))
 	  ((string= uri "/mizparse.pl")
-	   (handle-static-file (file-in-project-directory "mizparse.pl")
-			       "text/plain"))
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "mizparse.pl")
+				   "text/plain")
+	       (return-message +http-method-not-allowed+)))
 	  ((string= uri "/")
 	   (let ((message-length-header (header-in* "Content-Length" request))
 		 (message (raw-post-data :force-text t
@@ -414,15 +419,19 @@
 				  (return-message +http-length-required+))
 				 ((> message-length +biggest-article-length+)
 				  (return-message +http-request-entity-too-large+))
+				 ((string= uri "/")
+				  (let ((format (get-parameter "format" request))
+					(strictness (get-parameter "strictness" request)))
+				    (handle method format strictness message)))
+				 ((string= uri "/pretty-print")
+				  (return-message +http-accepted+))
 				 (t
-				  (handle method format strictness message)))
+				  (return-message +http-not-found+
+						  :mime-type "text/plain"
+						  :message (format nil "Unknown resource ~a." uri))))
 			   (return-message +http-length-required+)))
 		     (return-message +http-length-required+))
-		 (emit-canned-message))))
-	  (t
-	   (return-message +http-not-found+
-			   :mime-type "text/plain"
-			   :message (format nil "Unknown resource ~a." uri))))))
+		 (emit-canned-message)))))))
 
 (defmethod acceptor-status-message ((acceptor parser-acceptor) http-return-code &key &allow-other-keys)
   "This method enures that some method on the ACCEPTOR-STATUS-MESSAGE

@@ -218,7 +218,7 @@ tpl [*] {
 
 tpl [/] {
   if [Text-Proper] {
-    apply [Text-Proper];
+    apply [Text-Proper] (#indentation = "0");
   } else {
     apply [.] (#message = "The Text-Proper document element is missing.") mode="die";
   }
@@ -233,20 +233,24 @@ tpl [Ident] {
   `@name`;
 }
 
-tpl [Directive] {
+tpl [Directive] (#indentation) {
   $name_lc = lc (#s = `@name`);
   if [Ident[not(@name = "HIDDEN")]] {
+    if [$indenting = "1"] {
+      $pad = n-spaces (#n = $indentation);
+      `$pad`;
+    }
     $name_lc; " "; list (#separ = ",", #elems = `Ident[not(@name = "HIDDEN")]`); ";"; "\n";
   }
 }
 
-tpl [Text-Proper] {
+tpl [Text-Proper] (#indentation) {
   if [not($suppress-environment = "1")] {
     for-each [document ($evl, /)] {
-      apply [*];
+      apply [*] (#indentation = $indentation);
     }
   }
-  apply [*];
+  apply [*] (#indentation = $indentation);
 }
 
 tpl [Variables] {
@@ -625,16 +629,15 @@ tpl [Block[@kind = "Skipped-Proof"]] {
 }
 
 tpl [Block[@kind='Proof']] (#indentation) {
+  $pad = n-spaces (#n = $indentation);
+  if [$indenting = "1"] { `$pad`; }
   "proof"; "\n";
   if [$indenting = "1"] {
-    if [$indentation = ""] {
-      apply [*] (#indentation = "0");
-    } else {
-      apply [*] (#indentation = `$indentation + 2`);
-    }
+    apply [*] (#indentation = `$indentation + 2`);
   } else {
-    apply [*] (#indentation = "0");
+    apply [*];
   }
+  if [$indenting = "1"] { `$pad`; }
   "end"; ";"; "\n";
 }
 
@@ -986,12 +989,11 @@ tpl [Item[@kind='Private-Predicate-Definition' and not(Type-List)]] {
   apply [.] (#message = "Private-Predicate-Definition lacks a Type-List child!") mode="die";
 }
 
-tpl [Item[@kind='Private-Predicate-Definition' and Type-List and Variable]] {
+tpl [Item[@kind='Private-Predicate-Definition' and Type-List and Variable]] (#indentation) {
+  $pad = n-spaces (#n = $indentation);
+  if [$indenting = "1"] { $pad; }
   "defpred "; apply-variable ();
-  // sanity check: Type-List is present
-  "[ "; list(#separ = " , ", #elems = `Type-List[1]/*`); " ]"; "\n";
-  " means"; "\n";
-  apply [*[3]]; ";"; "\n";
+  "[ "; list(#separ = " , ", #elems = `Type-List[1]/*`); " ]"; " means "; apply [*[3]]; ";"; "\n";
 }
 
 tpl [Theorem-Reference[not(@number)]] {
@@ -1021,7 +1023,9 @@ tpl [Item[@kind='Exemplification']] {
   "\n";
 }
 
-tpl [Item[@kind='Generalization']] { // very ugly.  I've asked Czeslaw to refactor
+tpl [Item[@kind='Generalization']] (#indentation) { // very ugly.  I've asked Czeslaw to refactor
+  $pad = n-spaces (#n = $indentation);
+  if [$indenting = "1"] { $pad; }
   "let ";
   apply [Explicitly-Qualified-Segment | Implicitly-Qualified-Segment];
   ";"; "\n";
@@ -1177,12 +1181,14 @@ tpl [Item[@kind="Correctness"]] {
 
 tpl [Proposition[Label]] (#indentation) {
   $pad = n-spaces (#n = $indentation);
-  $pad; apply [Label]; " "; apply [*[position() = last()]];
+  if [$indenting = "1"] { $pad; }
+  apply [Label]; " "; apply [*[position() = last()]];
 }
 
 tpl [Proposition[not(Label)]] (#indentation) {
   $pad = n-spaces (#n = $indentation);
-  $pad; apply [*[1]];
+  if [$indenting = "1"] { $pad; }
+  apply [*[1]];
 }
 
 tpl [Label[@spelling]] {
@@ -1333,17 +1339,19 @@ tpl [Straightforward-Justification[not(Link)]] {
   }
 }
 
-tpl [Single-Assumption] {
+tpl [Single-Assumption] (#indentation) {
   ensure-proposition ();
-  apply-proposition ();
+  apply-proposition (#indentation = $indentation);
 }
 
-tpl [Item[@kind='Assumption']] {
+tpl [Item[@kind='Assumption']] (#indentation) {
+  $pad = n-spaces (#n = $indentation);
+  if [$indenting = "1"] { $pad; }
   if [Single-Assumption] {
     "assume "; apply [Single-Assumption]; ";"; "\n";
   }
   if [Collective-Assumption] {
-    apply [Collective-Assumption[1]];
+    apply [Collective-Assumption[1]] (#indentation = $indenting);
   }
 }
 
@@ -1353,7 +1361,7 @@ tpl [Iterative-Step] {
   apply-justification-if-present ();
 }
 
-tpl apply-justification-if-present(#end) {
+tpl apply-justification-if-present(#end, #indentation) {
   if [Scheme-Justification] {
     apply [Scheme-Justification[1]];
     if [not($end = "")] {
@@ -1368,7 +1376,7 @@ tpl apply-justification-if-present(#end) {
   }
   if [Block[@kind='Proof']] {
     "\n";
-    apply [Block[@kind='Proof'][1]];
+    apply [Block[@kind='Proof'][1]] (#indentation = $indentation);
   }
   if [Block[@kind = "Skipped-Proof"]] {
     "\n";
@@ -1458,8 +1466,9 @@ tpl [Item[@kind='Conclusion' and @shape = "Diffuse-Statement" and not(Block[@kin
   apply [Block[1]];
 }
 
-tpl [Item[@kind='Conclusion' and @shape = "Compact-Statement" and Block[@kind = "Proof"]]] {
-
+tpl [Item[@kind='Conclusion' and @shape = "Compact-Statement" and Block[@kind = "Proof"]]] (#indentation) {
+  $pad = n-spaces (#n = $indentation);
+  if [$indenting = "1"] { $pad; }
   if [Straightforward-Justification/Link | Scheme-Justification/Link] {
     "hence ";
   }
@@ -1471,15 +1480,15 @@ tpl [Item[@kind='Conclusion' and @shape = "Compact-Statement" and Block[@kind = 
     "thus ";
   }
   apply [Proposition[1]]; "\n";
-  apply [Block[@kind='Proof'][1]]; "\n";
+  apply [Block[@kind='Proof'][1]] (#indentation = $indenting); "\n";
 }
 
-tpl [Item[@kind='Conclusion' and @shape = "Compact-Statement" and not(Block[@kind = "Proof"])]] {
-
+tpl [Item[@kind='Conclusion' and @shape = "Compact-Statement" and not(Block[@kind = "Proof"])]] (#indentation) {
+  $pad = n-spaces (#n = $indentation);
+  if [$indenting = "1"] { $pad; }
   if [Straightforward-Justification/Link | Scheme-Justification/Link] {
     "hence ";
   }
-
   if [Label] {
     apply [Label[1]];
   }
@@ -1582,9 +1591,16 @@ tpl [Item[@kind='Theorem-Item']] {
   }
 }
 
-tpl [Block[@kind='Now-Reasoning']] {
+tpl [Block[@kind='Now-Reasoning']] (#indentation) {
+  $pad = n-spaces (#n = $indentation);
+  if [$indenting = "1"] { $pad; }
   "now"; "\n";
-  apply [*];
+  if [$indenting = "1"] {
+    apply [*] (#indentation = `$indentation + 2`);
+  } else {
+    apply [*];
+  }
+  if [$indenting = "1"] { $pad; }
   "end;"; "\n";
 }
 
@@ -1624,19 +1640,19 @@ tpl [Item[@kind='Regular-Statement' and @shape = "Diffuse-Statement" and not(Blo
   apply [.] (#message = "Don't know how to handle this piece of diffuse reasoning it is neither a 'now' nor a 'hereby' block.") mode="die";
 }
 
-tpl [Item[@kind='Regular-Statement' and @shape = "Diffuse-Statement" and (Block[@kind = "Now-Reasoning"] or Block[@kind = "Hereby-Reasoning"])]] {
-  maybe-link ();
+tpl [Item[@kind='Regular-Statement' and @shape = "Diffuse-Statement" and (Block[@kind = "Now-Reasoning"] or Block[@kind = "Hereby-Reasoning"])]] (#indentation) {
+  maybe-link (#indentation = $indentation);
   if [Label] {
-    apply [Label[1]];
+    apply [Label[1]]; "\n";
   }
-  apply [Block[@kind='Now-Reasoning' or @kind = 'Hereby-Reasoning'][1]];
+  apply [Block[@kind='Now-Reasoning' or @kind = 'Hereby-Reasoning'][1]] (#indentation = $indentation);
 }
 
 tpl [Item[@kind='Regular-Statement' and @shape = "Compact-Statement"]] (#indentation) {
   maybe-link (#indentation = $indentation);
   ensure-proposition ();
   apply-proposition (#indentation = $indentation);
-  apply-justification-if-present (#end = "1");
+  apply-justification-if-present (#end = "1", #indentation = $indentation);
 }
 
 tpl [Universal-Quantifier-Formula] {

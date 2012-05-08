@@ -310,7 +310,11 @@
   <xsl:template match="/">
     <xsl:choose>
       <xsl:when test="Text-Proper">
-        <xsl:apply-templates select="Text-Proper"/>
+        <xsl:apply-templates select="Text-Proper">
+          <xsl:with-param name="indentation">
+            <xsl:text>0</xsl:text>
+          </xsl:with-param>
+        </xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates select="." mode="die">
@@ -334,12 +338,21 @@
   </xsl:template>
 
   <xsl:template match="Directive">
+    <xsl:param name="indentation"/>
     <xsl:variable name="name_lc">
       <xsl:call-template name="lc">
         <xsl:with-param name="s" select="@name"/>
       </xsl:call-template>
     </xsl:variable>
     <xsl:if test="Ident[not(@name = &quot;HIDDEN&quot;)]">
+      <xsl:if test="$indenting = &quot;1&quot;">
+        <xsl:variable name="pad">
+          <xsl:call-template name="n-spaces">
+            <xsl:with-param name="n" select="$indentation"/>
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:value-of select="$pad"/>
+      </xsl:if>
       <xsl:value-of select="$name_lc"/>
       <xsl:text> </xsl:text>
       <xsl:call-template name="list">
@@ -355,12 +368,17 @@
   </xsl:template>
 
   <xsl:template match="Text-Proper">
+    <xsl:param name="indentation"/>
     <xsl:if test="not($suppress-environment = &quot;1&quot;)">
       <xsl:for-each select="document ($evl, /)">
-        <xsl:apply-templates select="*"/>
+        <xsl:apply-templates select="*">
+          <xsl:with-param name="indentation" select="$indentation"/>
+        </xsl:apply-templates>
       </xsl:for-each>
     </xsl:if>
-    <xsl:apply-templates select="*"/>
+    <xsl:apply-templates select="*">
+      <xsl:with-param name="indentation" select="$indentation"/>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Variables">
@@ -957,34 +975,30 @@ and
 
   <xsl:template match="Block[@kind=&apos;Proof&apos;]">
     <xsl:param name="indentation"/>
+    <xsl:variable name="pad">
+      <xsl:call-template name="n-spaces">
+        <xsl:with-param name="n" select="$indentation"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:if test="$indenting = &quot;1&quot;">
+      <xsl:value-of select="$pad"/>
+    </xsl:if>
     <xsl:text>proof</xsl:text>
     <xsl:text>
 </xsl:text>
     <xsl:choose>
       <xsl:when test="$indenting = &quot;1&quot;">
-        <xsl:choose>
-          <xsl:when test="$indentation = &quot;&quot;">
-            <xsl:apply-templates select="*">
-              <xsl:with-param name="indentation">
-                <xsl:text>0</xsl:text>
-              </xsl:with-param>
-            </xsl:apply-templates>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:apply-templates select="*">
-              <xsl:with-param name="indentation" select="$indentation + 2"/>
-            </xsl:apply-templates>
-          </xsl:otherwise>
-        </xsl:choose>
+        <xsl:apply-templates select="*">
+          <xsl:with-param name="indentation" select="$indentation + 2"/>
+        </xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates select="*">
-          <xsl:with-param name="indentation">
-            <xsl:text>0</xsl:text>
-          </xsl:with-param>
-        </xsl:apply-templates>
+        <xsl:apply-templates select="*"/>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:if test="$indenting = &quot;1&quot;">
+      <xsl:value-of select="$pad"/>
+    </xsl:if>
     <xsl:text>end</xsl:text>
     <xsl:text>;</xsl:text>
     <xsl:text>
@@ -1557,9 +1571,17 @@ and
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Private-Predicate-Definition&apos; and Type-List and Variable]">
+    <xsl:param name="indentation"/>
+    <xsl:variable name="pad">
+      <xsl:call-template name="n-spaces">
+        <xsl:with-param name="n" select="$indentation"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:if test="$indenting = &quot;1&quot;">
+      <xsl:value-of select="$pad"/>
+    </xsl:if>
     <xsl:text>defpred </xsl:text>
     <xsl:call-template name="apply-variable"/>
-    <!-- sanity check: Type-List is present -->
     <xsl:text>[ </xsl:text>
     <xsl:call-template name="list">
       <xsl:with-param name="separ">
@@ -1568,11 +1590,7 @@ and
       <xsl:with-param name="elems" select="Type-List[1]/*"/>
     </xsl:call-template>
     <xsl:text> ]</xsl:text>
-    <xsl:text>
-</xsl:text>
-    <xsl:text> means</xsl:text>
-    <xsl:text>
-</xsl:text>
+    <xsl:text> means </xsl:text>
     <xsl:apply-templates select="*[3]"/>
     <xsl:text>;</xsl:text>
     <xsl:text>
@@ -1626,7 +1644,16 @@ and
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Generalization&apos;]">
+    <xsl:param name="indentation"/>
     <!-- very ugly.  I've asked Czeslaw to refactor -->
+    <xsl:variable name="pad">
+      <xsl:call-template name="n-spaces">
+        <xsl:with-param name="n" select="$indentation"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:if test="$indenting = &quot;1&quot;">
+      <xsl:value-of select="$pad"/>
+    </xsl:if>
     <xsl:text>let </xsl:text>
     <xsl:apply-templates select="Explicitly-Qualified-Segment | Implicitly-Qualified-Segment"/>
     <xsl:text>;</xsl:text>
@@ -1884,7 +1911,9 @@ and
         <xsl:with-param name="n" select="$indentation"/>
       </xsl:call-template>
     </xsl:variable>
-    <xsl:value-of select="$pad"/>
+    <xsl:if test="$indenting = &quot;1&quot;">
+      <xsl:value-of select="$pad"/>
+    </xsl:if>
     <xsl:apply-templates select="Label"/>
     <xsl:text> </xsl:text>
     <xsl:apply-templates select="*[position() = last()]"/>
@@ -1897,7 +1926,9 @@ and
         <xsl:with-param name="n" select="$indentation"/>
       </xsl:call-template>
     </xsl:variable>
-    <xsl:value-of select="$pad"/>
+    <xsl:if test="$indenting = &quot;1&quot;">
+      <xsl:value-of select="$pad"/>
+    </xsl:if>
     <xsl:apply-templates select="*[1]"/>
   </xsl:template>
 
@@ -2146,11 +2177,23 @@ and
   </xsl:template>
 
   <xsl:template match="Single-Assumption">
+    <xsl:param name="indentation"/>
     <xsl:call-template name="ensure-proposition"/>
-    <xsl:call-template name="apply-proposition"/>
+    <xsl:call-template name="apply-proposition">
+      <xsl:with-param name="indentation" select="$indentation"/>
+    </xsl:call-template>
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Assumption&apos;]">
+    <xsl:param name="indentation"/>
+    <xsl:variable name="pad">
+      <xsl:call-template name="n-spaces">
+        <xsl:with-param name="n" select="$indentation"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:if test="$indenting = &quot;1&quot;">
+      <xsl:value-of select="$pad"/>
+    </xsl:if>
     <xsl:if test="Single-Assumption">
       <xsl:text>assume </xsl:text>
       <xsl:apply-templates select="Single-Assumption"/>
@@ -2159,7 +2202,9 @@ and
 </xsl:text>
     </xsl:if>
     <xsl:if test="Collective-Assumption">
-      <xsl:apply-templates select="Collective-Assumption[1]"/>
+      <xsl:apply-templates select="Collective-Assumption[1]">
+        <xsl:with-param name="indentation" select="$indenting"/>
+      </xsl:apply-templates>
     </xsl:if>
   </xsl:template>
 
@@ -2171,6 +2216,7 @@ and
 
   <xsl:template name="apply-justification-if-present">
     <xsl:param name="end"/>
+    <xsl:param name="indentation"/>
     <xsl:if test="Scheme-Justification">
       <xsl:apply-templates select="Scheme-Justification[1]"/>
       <xsl:if test="not($end = &quot;&quot;)">
@@ -2190,7 +2236,9 @@ and
     <xsl:if test="Block[@kind=&apos;Proof&apos;]">
       <xsl:text>
 </xsl:text>
-      <xsl:apply-templates select="Block[@kind=&apos;Proof&apos;][1]"/>
+      <xsl:apply-templates select="Block[@kind=&apos;Proof&apos;][1]">
+        <xsl:with-param name="indentation" select="$indentation"/>
+      </xsl:apply-templates>
     </xsl:if>
     <xsl:if test="Block[@kind = &quot;Skipped-Proof&quot;]">
       <xsl:text>
@@ -2333,6 +2381,15 @@ and
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Conclusion&apos; and @shape = &quot;Compact-Statement&quot; and Block[@kind = &quot;Proof&quot;]]">
+    <xsl:param name="indentation"/>
+    <xsl:variable name="pad">
+      <xsl:call-template name="n-spaces">
+        <xsl:with-param name="n" select="$indentation"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:if test="$indenting = &quot;1&quot;">
+      <xsl:value-of select="$pad"/>
+    </xsl:if>
     <xsl:if test="Straightforward-Justification/Link | Scheme-Justification/Link">
       <xsl:text>hence </xsl:text>
     </xsl:if>
@@ -2345,12 +2402,23 @@ and
     <xsl:apply-templates select="Proposition[1]"/>
     <xsl:text>
 </xsl:text>
-    <xsl:apply-templates select="Block[@kind=&apos;Proof&apos;][1]"/>
+    <xsl:apply-templates select="Block[@kind=&apos;Proof&apos;][1]">
+      <xsl:with-param name="indentation" select="$indenting"/>
+    </xsl:apply-templates>
     <xsl:text>
 </xsl:text>
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Conclusion&apos; and @shape = &quot;Compact-Statement&quot; and not(Block[@kind = &quot;Proof&quot;])]">
+    <xsl:param name="indentation"/>
+    <xsl:variable name="pad">
+      <xsl:call-template name="n-spaces">
+        <xsl:with-param name="n" select="$indentation"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:if test="$indenting = &quot;1&quot;">
+      <xsl:value-of select="$pad"/>
+    </xsl:if>
     <xsl:if test="Straightforward-Justification/Link | Scheme-Justification/Link">
       <xsl:text>hence </xsl:text>
     </xsl:if>
@@ -2524,10 +2592,31 @@ and
   </xsl:template>
 
   <xsl:template match="Block[@kind=&apos;Now-Reasoning&apos;]">
+    <xsl:param name="indentation"/>
+    <xsl:variable name="pad">
+      <xsl:call-template name="n-spaces">
+        <xsl:with-param name="n" select="$indentation"/>
+      </xsl:call-template>
+    </xsl:variable>
+    <xsl:if test="$indenting = &quot;1&quot;">
+      <xsl:value-of select="$pad"/>
+    </xsl:if>
     <xsl:text>now</xsl:text>
     <xsl:text>
 </xsl:text>
-    <xsl:apply-templates select="*"/>
+    <xsl:choose>
+      <xsl:when test="$indenting = &quot;1&quot;">
+        <xsl:apply-templates select="*">
+          <xsl:with-param name="indentation" select="$indentation + 2"/>
+        </xsl:apply-templates>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="*"/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:if test="$indenting = &quot;1&quot;">
+      <xsl:value-of select="$pad"/>
+    </xsl:if>
     <xsl:text>end;</xsl:text>
     <xsl:text>
 </xsl:text>
@@ -2605,11 +2694,18 @@ and
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Regular-Statement&apos; and @shape = &quot;Diffuse-Statement&quot; and (Block[@kind = &quot;Now-Reasoning&quot;] or Block[@kind = &quot;Hereby-Reasoning&quot;])]">
-    <xsl:call-template name="maybe-link"/>
+    <xsl:param name="indentation"/>
+    <xsl:call-template name="maybe-link">
+      <xsl:with-param name="indentation" select="$indentation"/>
+    </xsl:call-template>
     <xsl:if test="Label">
       <xsl:apply-templates select="Label[1]"/>
+      <xsl:text>
+</xsl:text>
     </xsl:if>
-    <xsl:apply-templates select="Block[@kind=&apos;Now-Reasoning&apos; or @kind = &apos;Hereby-Reasoning&apos;][1]"/>
+    <xsl:apply-templates select="Block[@kind=&apos;Now-Reasoning&apos; or @kind = &apos;Hereby-Reasoning&apos;][1]">
+      <xsl:with-param name="indentation" select="$indentation"/>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Regular-Statement&apos; and @shape = &quot;Compact-Statement&quot;]">
@@ -2625,6 +2721,7 @@ and
       <xsl:with-param name="end">
         <xsl:text>1</xsl:text>
       </xsl:with-param>
+      <xsl:with-param name="indentation" select="$indentation"/>
     </xsl:call-template>
   </xsl:template>
 

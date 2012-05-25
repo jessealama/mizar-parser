@@ -213,7 +213,9 @@ tpl apply-formula {
 
 // By default, if we don't handle something explicitly, abort! abort!
 tpl [*] {
-  apply [.] (#message = "Unexpected element.  How did we arrive here?") mode="die";
+  $n = `name (.)`;
+  $message = `concat ("Unexpected element '", $n, "'.")`;
+  apply [.] (#message = $message) mode="die";
 }
 
 tpl [/] {

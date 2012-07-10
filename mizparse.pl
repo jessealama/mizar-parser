@@ -15,7 +15,7 @@ use English qw(-no_match_vars);
 use version;
 use Carp qw(croak);
 
-Readonly my $VERSION => qv('1.2');
+Readonly my $VERSION => qv('1.3');
 
 my $man       = 0;
 my $help      = 0;

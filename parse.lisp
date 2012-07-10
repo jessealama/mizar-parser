@@ -37,7 +37,7 @@
 	 ((:li :class "command") "mizparse.pl article.miz")
 	 ((:li :class "pseudo-response") "XML document apparing on standard output, if there were no errors.")
 	 ((:li :class "comment") "The plain text representation of the Weakly Strict Mizar form of article.miz")
-	 ((:li :class "command") "mizparse.pl --transform=wsm --format=text")
+	 ((:li :class "command") "mizparse.pl --transform=wsm --format=text article.miz")
 	 ((:li :class "pseudo-response") "Plain text document on standard output")
 	 ((:li :class "comment") "Use mizparse in a text transformation toolchain")
 	 ((:li :class "command") "cool-rewriter article.miz | mizparse.pl --format=xml --transform=msm - | xsltproc hot-stylesheet.xsl - | ...")))

@@ -204,7 +204,7 @@ my $agent = LWP::UserAgent->new( timeout => $timeout );
 
 # Prepare the HTTP request
 my $request_uri = request_uri ();
-my $request = HTTP::Request->new( GET => $request_uri );
+my $request = HTTP::Request->new( POST => $request_uri );
 $request->content_type($HTTP_MESSAGE_BODY_MIME_TYPE);
 $request->content($article_content);
 
@@ -448,7 +448,7 @@ program), or, better (worse?), debug mode (B<--debug>).
 No external coniguration needed to run the program; it should work Out
 Of The Box.  (Assuming you can even run it at all; see the section on
 Dependencies.)  A working network connection is required; the program
-will submit an HTTP GET request on port 80 on a Canadian server in an
+will submit an HTTP POST request on port 80 on a Canadian server in an
 undisclosed location.
 
 Even if you have a working B<Mizar> environment on your own machine, it

@@ -52,13 +52,13 @@
 	  ((:li :class "comment") "Note the escaping of the article variable and the URI.")
 	  ((:li :class "comment") "Your browser may wrap the next command over multiple lines;")
 	  ((:li :class "comment") "keep in mind that the URI should not contain whitespace.")
-	  ((:li :class "command") "curl -X GET --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=wsm&amp;format=text'")
+	  ((:li :class "command") "curl --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=wsm&amp;format=text'")
 	  ((:li :class "pseudo-response") "Weakly Strict Mizar form of article.miz, in plain text format.")
-	  ((:li :class "command") "curl -X GET --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=none&amp;format=xml'")
+	  ((:li :class "command") "curl --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=none&amp;format=xml'")
 	  ((:li :class "pseudo-response") "Parse tree for article.miz, in XML format.")
-	  ((:li :class "command") "curl -X GET --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=msm&amp;format=text'")
+	  ((:li :class "command") "curl --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=msm&amp;format=text'")
 	  ((:li :class "pseudo-response") "More Strict Mizar form of article.miz, in plain text format.")
-	  ((:li :class "command") "curl -X GET --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=msm&amp;format=xml'")
+	  ((:li :class "command") "curl --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=msm&amp;format=xml'")
 	  ((:li :class "pseudo-response") "XML parse tree of More Strict Mizar form of article.miz.")))
        (:p "Within a Javascript application, one could prepare a suitable HTTP request using the aforementioned XmlHttpRequest approach.  Java developers can use (for example) " (:a :href "http://hc.apache.org/httpcomponents-client-ga/" :title "HttpClient" "the Apache Foundation&apos;s HttpClient") " interface.")
        ((:h1 :id "http-resources") "HTTP resource(s)")
@@ -146,17 +146,17 @@
   (declare (ignore format strictness article))
   (let* ((method-name (symbol-name method))
 	(method-name-lc (format nil "~(~a~)" method-name)))
-    (cond ((string= method-name-lc "get")
+    (cond ((string= method-name-lc "post")
 	   (call-next-method))
 	  ((string= method-name-lc "head")
 	   (call-next-method))
 	  ((string= method-name-lc "options")
 	   (call-next-method))
 	  (t
-	   (setf (header-out "Allow") "GET, HEAD, OPTIONS")
+	   (setf (header-out "Allow") "POST, HEAD, OPTIONS")
 	   (return-message +http-method-not-allowed+
 			   :mime-type "text/plain"
-			   :message "We support only the GET, HEAD, and OPTIONS HTTP methods.")))))
+			   :message "We support only the POST, HEAD, and OPTIONS HTTP methods.")))))
 
 (defmethod handle (method format strictness (article null))
   (declare (ignore method format strictness))
@@ -188,14 +188,14 @@
 
 (defmethod handle ((method (eql :options)) format strictness article)
   (declare (ignore format strictness article))
-  (setf (header-out "Accept") "OPTIONS, HEAD, GET")
+  (setf (header-out "Accept") "OPTIONS, HEAD, POST")
   (return-message +http-no-content+))
 
 (defmethod handle ((method (eql :head)) format strictness article)
   (declare (ignore method))
   (setf (content-type*) nil)
   (setf (return-code*) +http-no-content+)
-  (handle :get format strictness article))
+  (handle :post format strictness article))
 
 (defmethod handle (method (format null) strictness article)
   (handle method :xml strictness article))
@@ -203,7 +203,7 @@
 (defmethod handle (method format (strictness null) article)
   (handle method format :none article))
 
-(defmethod handle :around ((method (eql :get)) format strictness (article article))
+(defmethod handle :around ((method (eql :post)) format strictness (article article))
   (declare (ignore format strictness))
   (multiple-value-bind (accom-ok? accom-crashed?)
       (accom article)
@@ -217,7 +217,7 @@
 		    (header-out "Server") error-explanation)
 	      error-explanation)))))
 
-(defmethod handle ((method (eql :get))
+(defmethod handle ((method (eql :post))
 		   (format (eql :xml))
 		   (strictness (eql :none))
 		   (article article))
@@ -232,7 +232,7 @@
 	    (return-message +http-internal-server-error+)
 	    (return-message +http-bad-request+)))))
 
-(defmethod handle ((method (eql :get))
+(defmethod handle ((method (eql :post))
 		   (format (eql :text))
 		   (strictness (eql :none))
 		   (article article))
@@ -241,7 +241,7 @@
 		    :message (file-as-string miz-path)
 		    :mime-type "text/plain")))
 
-(defmethod handle ((method (eql :get))
+(defmethod handle ((method (eql :post))
 		   (format (eql :text))
 		   (strictness (eql :wsm))
 		   (article article))
@@ -271,7 +271,7 @@
 	    (return-message +http-internal-server-error+)
 	    (return-message +http-bad-request+)))))
 
-(defmethod handle ((method (eql :get))
+(defmethod handle ((method (eql :post))
 		   (format (eql :xml))
 		   (strictness (eql :wsm))
 		   (article article))
@@ -305,7 +305,7 @@
 	    (return-message +http-internal-server-error+)
 	    (return-message +http-bad-request+)))))
 
-(defmethod handle ((method (eql :get))
+(defmethod handle ((method (eql :post))
 		   (format (eql :text))
 		   (strictness (eql :msm))
 		   (article article))
@@ -342,7 +342,7 @@
 	    (return-message +http-internal-server-error+)
 	    (return-message +http-bad-request+)))))
 
-(defmethod handle ((method (eql :get))
+(defmethod handle ((method (eql :post))
 		   (format (eql :xml))
 		   (strictness (eql :msm))
 		   (article article))
@@ -433,7 +433,24 @@
 						  :message (format nil "Unknown resource ~a." uri))))
 			   (return-message +http-length-required+)))
 		     (return-message +http-length-required+))
-		 (emit-canned-message)))))))
+		 (emit-canned-message)
+		 ;; (return-message +http-bad-request+
+		 ;; 		 :mime-type "text/plain"
+		 ;; 		 :message (let ((headers (headers-in request)))
+		 ;; 			    (with-output-to-string (s)
+		 ;; 			      (format s "Empty message body.~%")
+		 ;; 			      (if headers
+		 ;; 				  (loop
+		 ;; 				     initially (format s "Headers:~%")
+		 ;; 				     for (header . value) in headers
+		 ;; 				     do
+		 ;; 				       (format s "~a: ~a~%" (symbol-name header) value))
+		 ;; 				  (format s "No headers were given with your request.~%")))))
+		 )))
+	  (t
+	   (return-message +http-not-found+
+			   :mime-type "text/plain"
+			   :message (format nil "Unknown resource ~a." uri))))))
 
 (defmethod acceptor-status-message ((acceptor parser-acceptor) http-return-code &key &allow-other-keys)
   "This method enures that some method on the ACCEPTOR-STATUS-MESSAGE

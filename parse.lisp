@@ -93,8 +93,7 @@
        ((:h1 :id "http-resources") "HTTP resource(s)")
        (:p "At present, the Mizar parsing service handles requests for only one resource, " (:code "/parsing") ".  Accessing any other resource, with any HTTP method, will result in a " (:code "404 (Not Found)") " error.")
        (:ul
-	(:li (:p "Supported HTTP Methods: " (:strong "GET") ", " (:strong "HEAD") ", " (:strong "OPTIONS") ".")
-	     (:p (:strong "POST") " is not supported."))
+	(:li (:p "Supported HTTP Methods: " (:strong "GET") ", " (:strong "POST") ", " (:strong "HEAD") ", " (:strong "OPTIONS") "."))
 	(:li (:p "Protocol: In the message body, include the Mizar text."))
 	(:li (:p "Query Parameters: We support the parameters " (:code "strictness") " and " (:code "format") ".")
 	     (:ul
@@ -112,12 +111,12 @@
 		    (:li (:p (:code "msm"))
 			 (:p "The More Strict Mizar transformation.")))
 		   (:p "The default is " (:code "none") "."))))
-	(:li (:p "Response (" (:strong "GET") "): An XML representation of the parse tree for the given Mizar text, if the text is parseable; the MIME type will be " (:code "application/xml") " and the return code will be " (:code "200 (OK)") ".  If the text is not parsable, and if it can be determined that the error lies in the supplied text rather than with the Mizar tools themselves, then the return code will be " (:code "400 (Bad Request)") " and the response body will be a plain text listing (served with the MIME type " (:code "text/plain") ") of the errors in the supplied text.  More precisely, the response will be a list of lines each of which adheres to the format")
+	(:li (:p "Response (" (:strong "POST") "): An XML representation of the parse tree for the given Mizar text, if the text is parseable; the MIME type will be " (:code "application/xml") " and the return code will be " (:code "200 (OK)") ".  If the text is not parsable, and if it can be determined that the error lies in the supplied text rather than with the Mizar tools themselves, then the return code will be " (:code "400 (Bad Request)") " and the response body will be a plain text listing (served with the MIME type " (:code "text/plain") ") of the errors in the supplied text.  More precisely, the response will be a list of lines each of which adheres to the format")
 	     (:p (:code "line-number column-number error-number explanation"))
 	     (:p "where " (:code "line-number") ", " (:code "column-number") ", and " (:code "error-number") " are positive natural numbers, and " (:code "explanation") " is an natural language of the error.")
 	     (:p "If it can be determined that the supplied text is problematic because the Mizar tools themselves crash when operating on the text, then the return code will be " (:code "500 (Internal Server Error)") ", and there will be an empty response body."))
-	(:li (:p "Response (" (:strong "HEAD") ") The response will be computed described in the " (:strong "GET") " case, but ther will be an empty response body serived without any MIME type."))
-	(:li (:p "Response (" (:strong "OPTIONS") ") The return code will be " (:code "200 (OK)") " and the mesasge body will be the string " (:code "GET, HEAD, OPTIONS") ".")))
+	(:li (:p "Response (" (:strong "HEAD") ") The response will be computed described in the " (:strong "POST") " case, but ther will be an empty response body serived without any MIME type."))
+	(:li (:p "Response (" (:strong "OPTIONS") ") The return code will be " (:code "200 (OK)") " and the mesasge body will be the string " (:code "GET, POST, HEAD, OPTIONS") ".")))
        (:h1 "Mizar version")
        (:p "At the moment, this site works with Mizar texts according to system version " (:strong (str +mizar-system-version+)) " and MML version " (:strong (str +mml-version+)) ".")
        (:h1 "Related resources")
@@ -141,7 +140,7 @@
   "The Hunchentoot acceptor that we use for the parser service.")
 
 (defgeneric handle (method format strictness article)
-  (:documentation "Handle the current request on ARTICLE, assuming that it was made using the HTTP method METHOD (e.g., GET, HEAD, PUT, OPTIONS, etc)."))
+  (:documentation "Handle the current request on ARTICLE, assuming that it was made using the HTTP method METHOD (e.g., GET, POST, HEAD, PUT, OPTIONS, etc)."))
 
 ;; Don't emit the Server response header
 (defmethod handle :before (method format strictness article)

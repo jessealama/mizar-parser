@@ -67,7 +67,7 @@
 	 ((:li :class "command") "cool-rewriter article.miz | mizparse.pl --format=xml --transform=msm - | xsltproc hot-stylesheet.xsl - | ...")))
        (:p "For more information, just do " (:code "mizparse.pl --man") ".")
        (:h1 "Do things your way")
-       (:p "If you'd like to parse Mizar texts on your own machine, first make sure you have Mizar version " (:strong "7.13.01") " (or newer).  The tools that produce parse trees and do the Weakly Strict Mizar and More Strict Mizar text normalizations are " (:code "wsmparser") " and " (:code "msmprocessor") ".  One needs to first run the " (:code "accom") " tool before running " (:code "wsmparser") ", and one needs to run " (:code "wsmparser") " before running " (:code "msmprocessor") ".")
+       (:p "If you'd like to parse Mizar texts on your own machine, first make sure you have Mizar version " (:strong "7.13.01") " (or newer).  Go to " (:a :href "http://mizar.org" "the Mizar homepage") " to download the latest version. The tools that produce parse trees and do the Weakly Strict Mizar and More Strict Mizar text normalizations are " (:code "wsmparser") " and " (:code "msmprocessor") ".  One needs to first run the " (:code "accom") " tool before running " (:code "wsmparser") ", and one needs to run " (:code "wsmparser") " before running " (:code "msmprocessor") ".")
        (:p (:code "wsmparser") " produces two files.  If your Mizar article is called &lsquo;article&rsquo;, doing")
        ((:blockquote :class "session")
 	(:ol

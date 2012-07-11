@@ -2,7 +2,7 @@
 (in-package :mizar-parser)
 
 (define-constant +project-root-directory+
-    "/Users/alama/sources/mizar/parsing/"
+    "/home/mizar-items/mizar-parser/"
   :test #'string=
   :documentation "The directory under which any static data is stored.")
 

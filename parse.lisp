@@ -2,7 +2,7 @@
 (in-package :mizar-parser)
 
 (define-constant +project-root-directory+
-    "/home/mizar-items/mizar-parser/"
+    "/Users/alama/sources/mizar/parsing/"
   :test #'string=
   :documentation "The directory under which any static data is stored.")
 
@@ -29,6 +29,30 @@
        (:h1 "About this service")
        (:p "The intention behind this site is to facilitate programmatic access to Mizar parsing services.  At the moment no HTML-driven interface to the parser services is provided; you are now looking at the only HTML page that this service emits, which is entirely informational.")
        (:p "This site documents some of the cutting-edge developments in Mizar text transformations.  The site was announced in the paper &lsquo;New developments in parsing Mizar&rsquo;, by Czes&#322;aw Bylinski and Jesse Alama, which was submitted to " (:a :href "http://www.informatik.uni-bremen.de/cicm2012/cicm.php?event=sysproj&amp;menu=general" :title "Conference on Intelligent Computer Mathematics (CICM 2012) Track E: Systems and Projects" "CICM 2012 Track E (Systems and Projects)") ".")
+       ((:h1 :id "examples") "Examples")
+       (:p "Here are several examples illustrating the transformations  currently supported and the XML representation of the texts.")
+       (:ul
+	(:li
+	 (:p (:a :href "http://mizar.org/version/current/html/xboole_0.html" (:tt "XBOOLE_0") ": Boolean Properties of Sets - Definitions (by Library Committee)"))
+	 (:ul
+	  (:li (:a :href "xboole_0.miz" "Plain text"))
+	  (:li (:a :href "xboole_0.wsx" "XML parse tree (of the untransformed article)"))
+	  (:li (:a :href "xboole_0.wsm" "Weakly Strict Mizar form (plain text)"))
+	  (:li (:a :href "xboole_0.msm" "More Strict Mizar form (plain text)"))))
+	(:li
+	 (:p (:a :href "http://mizar.org/version/current/html/card_lar.html" (:tt "CARD_LAR") ": Mahlo and inaccessible cardinals (by Josef Urban)"))
+	 (:ul
+	  (:li (:a :href "card_lar.miz" "Plain text"))
+	  (:li (:a :href "card_lar.wsx" "XML parse tree (of the untransformed article)"))
+	  (:li (:a :href "card_lar.wsm" "Weakly Strict Mizar form (plain text)"))
+	  (:li (:a :href "card_lar.msm" "More Strict Mizar form (plain text)"))))
+	(:li
+	 (:p (:a :href "http://mizar.org/version/current/html/group_10.html" (:tt "GROUP_10") ": The Sylow theorems (by Marco Riccardi)"))
+	 (:ul
+	  (:li (:a :href "group_10.miz" "Plain text"))
+	  (:li (:a :href "group_10.wsx" "XML parse tree (of the untransformed article)"))
+	  (:li (:a :href "group_10.wsm" "Weakly Strict Mizar form (plain text)"))
+	  (:li (:a :href "group_10.msm" "More Strict Mizar form (plain text)")))))
        ((:h1 :id "download") "Download")
        (:p "A " (:a :href "/parsing/mizparse.pl" "simple Perl script") " is available to facilitate access to this service.  To get started, just do")
        ((:blockquote :class "session")
@@ -47,18 +71,16 @@
        (:p "With curl, for example, one can use the service in this way at the commandline:")
        ((:blockquote :class "session")
          (:ol
-	  ((:li :class "comment") "Store the content of article.miz in a shell variable.")
-	  ((:li :class "command") "article=`cat article.miz`")
 	  ((:li :class "comment") "Note the escaping of the article variable and the URI.")
 	  ((:li :class "comment") "Your browser may wrap the next command over multiple lines;")
 	  ((:li :class "comment") "keep in mind that the URI should not contain whitespace.")
-	  ((:li :class "command") "curl --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=wsm&amp;format=text'")
+	  ((:li :class "command") "curl --data @article.miz 'http://mizar.cs.ualberta.ca/parsing/?strictness=wsm&amp;format=text'")
 	  ((:li :class "pseudo-response") "Weakly Strict Mizar form of article.miz, in plain text format.")
-	  ((:li :class "command") "curl --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=none&amp;format=xml'")
+	  ((:li :class "command") "curl --data @article.miz 'http://mizar.cs.ualberta.ca/parsing/?strictness=none&amp;format=xml'")
 	  ((:li :class "pseudo-response") "Parse tree for article.miz, in XML format.")
-	  ((:li :class "command") "curl --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=msm&amp;format=text'")
+	  ((:li :class "command") "curl --data @article.miz 'http://mizar.cs.ualberta.ca/parsing/?strictness=msm&amp;format=text'")
 	  ((:li :class "pseudo-response") "More Strict Mizar form of article.miz, in plain text format.")
-	  ((:li :class "command") "curl --data \"$article\" 'http://mizar.cs.ualberta.ca/parsing/?strictness=msm&amp;format=xml'")
+	  ((:li :class "command") "curl --data @article.miz 'http://mizar.cs.ualberta.ca/parsing/?strictness=msm&amp;format=xml'")
 	  ((:li :class "pseudo-response") "XML parse tree of More Strict Mizar form of article.miz.")))
        (:p "Within a Javascript application, one could prepare a suitable HTTP request using the aforementioned XmlHttpRequest approach.  Java developers can use (for example) " (:a :href "http://hc.apache.org/httpcomponents-client-ga/" :title "HttpClient" "the Apache Foundation&apos;s HttpClient") " interface.")
        ((:h1 :id "http-resources") "HTTP resource(s)")
@@ -409,6 +431,72 @@
 	       (handle-static-file (file-in-project-directory "mizparse.pl")
 				   "text/plain")
 	       (return-message +http-method-not-allowed+)))
+
+	  ;; examples
+	  ((string= uri "/xboole_0.miz")
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "xboole_0.miz")
+				   "text/plain")
+	       (return-message +http-method-not-allowed+)))
+	  ((string= uri "/xboole_0.wsx")
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "xboole_0.wsx")
+				   "application/xml")
+	       (return-message +http-method-not-allowed+)))
+	  ((string= uri "/xboole_0.wsm")
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "xboole_0.wsm")
+				   "text/plain")
+	       (return-message +http-method-not-allowed+)))
+	  ((string= uri "/xboole_0.msm")
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "xboole_0.msm")
+				   "text/plain")
+	       (return-message +http-method-not-allowed+)))
+
+	  ((string= uri "/card_lar.miz")
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "card_lar.miz")
+				   "text/plain")
+	       (return-message +http-method-not-allowed+)))
+	  ((string= uri "/card_lar.wsx")
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "card_lar.wsx")
+				   "application/xml")
+	       (return-message +http-method-not-allowed+)))
+	  ((string= uri "/card_lar.wsm")
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "card_lar.wsm")
+				   "text/plain")
+	       (return-message +http-method-not-allowed+)))
+	  ((string= uri "/card_lar.msm")
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "card_lar.msm")
+				   "text/plain")
+	       (return-message +http-method-not-allowed+)))
+
+	  ((string= uri "/group_10.miz")
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "group_10.miz")
+				   "text/plain")
+	       (return-message +http-method-not-allowed+)))
+	  ((string= uri "/group_10.wsx")
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "group_10.wsx")
+				   "application/xml")
+	       (return-message +http-method-not-allowed+)))
+	  ((string= uri "/group_10.wsm")
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "group_10.wsm")
+				   "text/plain")
+	       (return-message +http-method-not-allowed+)))
+	  ((string= uri "/group_10.msm")
+	   (if (eq method :get)
+	       (handle-static-file (file-in-project-directory "group_10.msm")
+				   "text/plain")
+	       (return-message +http-method-not-allowed+)))
+
+	  ;; the guts
 	  ((string= uri "/")
 	   (let ((message-length-header (header-in* "Content-Length" request))
 		 (message (raw-post-data :force-text t
@@ -433,20 +521,7 @@
 						  :message (format nil "Unknown resource ~a." uri))))
 			   (return-message +http-length-required+)))
 		     (return-message +http-length-required+))
-		 (emit-canned-message)
-		 ;; (return-message +http-bad-request+
-		 ;; 		 :mime-type "text/plain"
-		 ;; 		 :message (let ((headers (headers-in request)))
-		 ;; 			    (with-output-to-string (s)
-		 ;; 			      (format s "Empty message body.~%")
-		 ;; 			      (if headers
-		 ;; 				  (loop
-		 ;; 				     initially (format s "Headers:~%")
-		 ;; 				     for (header . value) in headers
-		 ;; 				     do
-		 ;; 				       (format s "~a: ~a~%" (symbol-name header) value))
-		 ;; 				  (format s "No headers were given with your request.~%")))))
-		 )))
+		 (emit-canned-message))))
 	  (t
 	   (return-message +http-not-found+
 			   :mime-type "text/plain"

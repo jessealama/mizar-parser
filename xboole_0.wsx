@@ -1,0 +1,3664 @@
+<?xml version="1.0"?>
+<Text-Proper articleid="XBOOLE_0" articleext=".miz" line="23" col="5">
+ <Item kind="Section-Pragma" line="23" col="5">
+ </Item>
+ <Item kind="Reservation" line="25" col="33">
+  <Variables>
+   <Variable idnr="2" spelling="X" line="25" col="9"/>
+   <Variable idnr="3" spelling="Y" line="25" col="12"/>
+   <Variable idnr="4" spelling="Z" line="25" col="15"/>
+   <Variable idnr="5" spelling="x" line="25" col="18"/>
+   <Variable idnr="6" spelling="y" line="25" col="21"/>
+   <Variable idnr="7" spelling="z" line="25" col="24"/>
+  </Variables>
+  <Standard-Type nr="1" spelling="set" line="25" col="32"/>
+ </Item>
+ <Item kind="Scheme-Block-Item" line="27" col="6">
+  <Block kind="Scheme-Block" line="27" col="6">
+   <Item kind="Scheme-Head" line="28" col="12">
+    <Scheme idnr="8" spelling="Separation"/>
+    <Schematic-Variables>
+     <Functor-Segment line="28" col="18">
+      <Variables>
+       <Variable idnr="9" spelling="A" line="28" col="16"/>
+      </Variables>
+      <Type-List>
+      </Type-List>
+      <Type-Specification>
+       <Standard-Type nr="1" spelling="set" line="28" col="24"/>
+      </Type-Specification>
+     </Functor-Segment>
+     <Predicate-Segment line="28" col="32">
+      <Variables>
+       <Variable idnr="10" spelling="P" line="28" col="27"/>
+      </Variables>
+      <Type-List>
+       <Standard-Type nr="1" spelling="set" line="28" col="31"/>
+      </Type-List>
+     </Predicate-Segment>
+    </Schematic-Variables>
+    <Existential-Quantifier-Formula line="30" col="7">
+     <Explicitly-Qualified-Segment line="29" col="4">
+      <Variables>
+       <Variable idnr="2" spelling="X" line="29" col="6"/>
+      </Variables>
+      <Standard-Type nr="1" spelling="set" line="29" col="16"/>
+     </Explicitly-Qualified-Segment>
+     <Universal-Quantifier-Formula line="30" col="7">
+      <Explicitly-Qualified-Segment line="29" col="23">
+       <Variables>
+        <Variable idnr="5" spelling="x" line="29" col="25"/>
+       </Variables>
+       <Standard-Type nr="1" spelling="set" line="29" col="35"/>
+      </Explicitly-Qualified-Segment>
+      <Biconditional-Formula line="30" col="7">
+       <Predicative-Formula nr="3" spelling="in" line="29" col="46">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="29" col="43"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="29" col="48"/>
+        </Arguments>
+       </Predicative-Formula>
+       <Conjunctive-Formula line="30" col="7">
+        <Predicative-Formula nr="3" spelling="in" line="29" col="57">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="29" col="54"/>
+         </Arguments>
+         <Arguments>
+          <Private-Functor-Term idnr="9" spelling="A" line="29" col="59"/>
+         </Arguments>
+        </Predicative-Formula>
+        <Private-Predicate-Formula idnr="10" spelling="P" line="29" col="65">
+         <Simple-Term idnr="5" spelling="x" line="29" col="67"/>
+        </Private-Predicate-Formula>
+       </Conjunctive-Formula>
+      </Biconditional-Formula>
+     </Universal-Quantifier-Formula>
+    </Existential-Quantifier-Formula>
+   </Item>
+   <Item kind="Private-Predicate-Definition" line="31" col="9">
+    <Variable idnr="11" spelling="Q" line="31" col="11"/>
+    <Type-List>
+     <Standard-Type nr="1" spelling="set" line="31" col="15"/>
+     <Standard-Type nr="1" spelling="set" line="31" col="19"/>
+    </Type-List>
+    <Conjunctive-Formula line="31" col="43">
+     <Predicative-Formula nr="1" spelling="=" line="31" col="31">
+      <Arguments>
+       <Placeholder-Term nr="1" spelling="&#x24;1" line="31" col="29"/>
+      </Arguments>
+      <Arguments>
+       <Placeholder-Term nr="2" spelling="&#x24;2" line="31" col="34"/>
+      </Arguments>
+     </Predicative-Formula>
+     <Private-Predicate-Formula idnr="10" spelling="P" line="31" col="38">
+      <Placeholder-Term nr="2" spelling="&#x24;2" line="31" col="41"/>
+     </Private-Predicate-Formula>
+    </Conjunctive-Formula>
+   </Item>
+   <Item kind="Regular-Statement" shape="Compact-Statement" line="32" col="2">
+    <Proposition>
+     <Label idnr="12" spelling="A1" line="32" col="2"/>
+     <Universal-Quantifier-Formula line="32" col="45">
+      <Implicitly-Qualified-Segment line="32" col="9">
+       <Variable idnr="5" spelling="x" line="32" col="9"/>
+      </Implicitly-Qualified-Segment>
+      <Universal-Quantifier-Formula line="32" col="45">
+       <Implicitly-Qualified-Segment line="32" col="11">
+        <Variable idnr="6" spelling="y" line="32" col="11"/>
+       </Implicitly-Qualified-Segment>
+       <Universal-Quantifier-Formula line="32" col="45">
+        <Implicitly-Qualified-Segment line="32" col="13">
+         <Variable idnr="7" spelling="z" line="32" col="13"/>
+        </Implicitly-Qualified-Segment>
+        <Conditional-Formula line="32" col="45">
+         <Conjunctive-Formula line="32" col="38">
+          <Private-Predicate-Formula idnr="11" spelling="Q" line="32" col="18">
+           <Simple-Term idnr="5" spelling="x" line="32" col="20"/>
+           <Simple-Term idnr="6" spelling="y" line="32" col="22"/>
+          </Private-Predicate-Formula>
+          <Private-Predicate-Formula idnr="11" spelling="Q" line="32" col="27">
+           <Simple-Term idnr="5" spelling="x" line="32" col="29"/>
+           <Simple-Term idnr="7" spelling="z" line="32" col="31"/>
+          </Private-Predicate-Formula>
+         </Conjunctive-Formula>
+         <Predicative-Formula nr="1" spelling="=" line="32" col="42">
+          <Arguments>
+           <Simple-Term idnr="6" spelling="y" line="32" col="40"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="7" spelling="z" line="32" col="44"/>
+          </Arguments>
+         </Predicative-Formula>
+        </Conditional-Formula>
+       </Universal-Quantifier-Formula>
+      </Universal-Quantifier-Formula>
+     </Universal-Quantifier-Formula>
+    </Proposition>
+    <Straightforward-Justification line="32" col="44"/>
+   </Item>
+   <Item kind="Choice-Statement" line="33" col="10">
+    <Implicitly-Qualified-Segment line="33" col="12">
+     <Variable idnr="2" spelling="X" line="33" col="12"/>
+    </Implicitly-Qualified-Segment>
+    <Conditions>
+     <Proposition>
+      <Label idnr="13" spelling="A2" line="34" col="2"/>
+      <Universal-Quantifier-Formula line="34" col="57">
+       <Implicitly-Qualified-Segment line="34" col="9">
+        <Variable idnr="5" spelling="x" line="34" col="9"/>
+       </Implicitly-Qualified-Segment>
+       <Biconditional-Formula line="34" col="57">
+        <Predicative-Formula nr="3" spelling="in" line="34" col="20">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="34" col="17"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="34" col="22"/>
+         </Arguments>
+        </Predicative-Formula>
+        <Existential-Quantifier-Formula line="34" col="57">
+         <Implicitly-Qualified-Segment line="34" col="31">
+          <Variable idnr="6" spelling="y" line="34" col="31"/>
+         </Implicitly-Qualified-Segment>
+         <Conjunctive-Formula line="34" col="57">
+          <Predicative-Formula nr="3" spelling="in" line="34" col="39">
+           <Arguments>
+            <Simple-Term idnr="6" spelling="y" line="34" col="36"/>
+           </Arguments>
+           <Arguments>
+            <Private-Functor-Term idnr="9" spelling="A" line="34" col="41"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Private-Predicate-Formula idnr="11" spelling="Q" line="34" col="47">
+           <Simple-Term idnr="6" spelling="y" line="34" col="49"/>
+           <Simple-Term idnr="5" spelling="x" line="34" col="51"/>
+          </Private-Predicate-Formula>
+         </Conjunctive-Formula>
+        </Existential-Quantifier-Formula>
+       </Biconditional-Formula>
+      </Universal-Quantifier-Formula>
+     </Proposition>
+    </Conditions>
+    <Scheme-Justification nr="1" idnr="1" spelling="TARSKI" line="34" col="57">
+     <Local-Reference line="34" col="73" idnr="12" spelling="A1"/>
+    </Scheme-Justification>
+   </Item>
+   <Item kind="Exemplification" line="35" col="9">
+    <Simple-Term idnr="2" spelling="X" line="35" col="8"/>
+   </Item>
+   <Item kind="Generalization" line="36" col="8">
+    <Implicitly-Qualified-Segment line="36" col="7">
+     <Variable idnr="5" spelling="x" line="36" col="7"/>
+    </Implicitly-Qualified-Segment>
+   </Item>
+   <Item kind="Regular-Statement" shape="Compact-Statement" line="37" col="3">
+    <Proposition>
+     <Biconditional-Formula line="37" col="47">
+      <Predicative-Formula nr="3" spelling="in" line="37" col="6">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="37" col="3"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="37" col="8"/>
+       </Arguments>
+      </Predicative-Formula>
+      <Existential-Quantifier-Formula line="37" col="47">
+       <Implicitly-Qualified-Segment line="37" col="17">
+        <Variable idnr="6" spelling="y" line="37" col="17"/>
+       </Implicitly-Qualified-Segment>
+       <Conjunctive-Formula line="37" col="47">
+        <Conjunctive-Formula line="37" col="39">
+         <Predicative-Formula nr="3" spelling="in" line="37" col="25">
+          <Arguments>
+           <Simple-Term idnr="6" spelling="y" line="37" col="22"/>
+          </Arguments>
+          <Arguments>
+           <Private-Functor-Term idnr="9" spelling="A" line="37" col="27"/>
+          </Arguments>
+         </Predicative-Formula>
+         <Predicative-Formula nr="1" spelling="=" line="37" col="35">
+          <Arguments>
+           <Simple-Term idnr="6" spelling="y" line="37" col="33"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="37" col="37"/>
+          </Arguments>
+         </Predicative-Formula>
+        </Conjunctive-Formula>
+        <Private-Predicate-Formula idnr="10" spelling="P" line="37" col="41">
+         <Simple-Term idnr="5" spelling="x" line="37" col="43"/>
+        </Private-Predicate-Formula>
+       </Conjunctive-Formula>
+      </Existential-Quantifier-Formula>
+     </Biconditional-Formula>
+    </Proposition>
+    <Straightforward-Justification line="37" col="47">
+     <Local-Reference line="37" col="50" idnr="13" spelling="A2"/>
+    </Straightforward-Justification>
+   </Item>
+   <Item kind="Conclusion" shape="Compact-Statement" line="38" col="14">
+    <Proposition>
+     <Thesis line="38" col="14"/>
+    </Proposition>
+    <Straightforward-Justification line="38" col="14">
+     <Link line="38" col="7"/>
+    </Straightforward-Justification>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Definition-Item" line="41" col="10">
+  <Block kind="Definitional-Block" line="41" col="10">
+   <Item kind="Loci-Declaration" line="42" col="15">
+    <Explicitly-Qualified-Segment line="42" col="5">
+     <Variables>
+      <Variable idnr="2" spelling="X" line="42" col="7"/>
+     </Variables>
+     <Standard-Type nr="1" spelling="set" line="42" col="14"/>
+    </Explicitly-Qualified-Segment>
+   </Item>
+   <Item kind="Attribute-Definition" line="43" col="6">
+    <Attribute-Pattern nr="2" spelling="empty" line="43" col="17">
+     <Locus idnr="2" spelling="X" line="43" col="8"/>
+     <Loci/>
+    </Attribute-Pattern>
+    <Definiens line="43" col="23" kind="Simple-Definiens" shape="Formula-Expression">
+     <Label idnr="14" spelling="Def1" line="44" col="7"/>
+     <Negated-Formula line="45" col="31">
+      <Existential-Quantifier-Formula line="45" col="31">
+       <Explicitly-Qualified-Segment line="45" col="8">
+        <Variables>
+         <Variable idnr="5" spelling="x" line="45" col="10"/>
+        </Variables>
+        <Standard-Type nr="1" spelling="set" line="45" col="20"/>
+       </Explicitly-Qualified-Segment>
+       <Predicative-Formula nr="3" spelling="in" line="45" col="28">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="45" col="25"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="45" col="30"/>
+        </Arguments>
+       </Predicative-Formula>
+      </Existential-Quantifier-Formula>
+     </Negated-Formula>
+    </Definiens>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Definition-Item" line="48" col="12">
+  <Block kind="Registration-Block" line="48" col="12">
+   <Item kind="Cluster" line="49" col="9">
+    <Existential-Registration line="49" col="9">
+     <Adjective-Cluster>
+      <Adjective nr="2" spelling="empty" line="49" col="15"/>
+     </Adjective-Cluster>
+     <Standard-Type nr="1" spelling="set" line="49" col="23"/>
+    </Existential-Registration>
+   </Item>
+   <Item kind="Correctness-Condition" condition="existence" line="50" col="11">
+    <Block kind="Proof" line="51" col="7">
+     <Item kind="Private-Predicate-Definition" line="52" col="11">
+      <Variable idnr="10" spelling="P" line="52" col="13"/>
+      <Type-List>
+       <Standard-Type nr="1" spelling="set" line="52" col="17"/>
+      </Type-List>
+      <Contradiction line="52" col="38"/>
+     </Item>
+     <Item kind="Choice-Statement" line="53" col="12">
+      <Implicitly-Qualified-Segment line="53" col="14">
+       <Variable idnr="3" spelling="Y" line="53" col="14"/>
+      </Implicitly-Qualified-Segment>
+      <Conditions>
+       <Proposition>
+        <Label idnr="12" spelling="A1" line="54" col="2"/>
+        <Biconditional-Formula line="54" col="39">
+         <Predicative-Formula nr="3" spelling="in" line="54" col="8">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="54" col="5"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="54" col="10"/>
+          </Arguments>
+         </Predicative-Formula>
+         <Conjunctive-Formula line="54" col="39">
+          <Predicative-Formula nr="3" spelling="in" line="54" col="19">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="54" col="16"/>
+           </Arguments>
+           <Arguments>
+            <Global-Choice-Term line="54" col="27">
+             <Standard-Type nr="1" spelling="set" line="54" col="27"/>
+            </Global-Choice-Term>
+           </Arguments>
+          </Predicative-Formula>
+          <Private-Predicate-Formula idnr="10" spelling="P" line="54" col="31">
+           <Simple-Term idnr="5" spelling="x" line="54" col="33"/>
+          </Private-Predicate-Formula>
+         </Conjunctive-Formula>
+        </Biconditional-Formula>
+       </Proposition>
+      </Conditions>
+      <Scheme-Justification nr="0" idnr="8" spelling="Separation" line="54" col="39">
+      </Scheme-Justification>
+     </Item>
+     <Item kind="Exemplification" line="55" col="11">
+      <Simple-Term idnr="3" spelling="Y" line="55" col="10"/>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="56" col="12">
+      <Proposition>
+       <Negated-Formula line="56" col="40">
+        <Existential-Quantifier-Formula line="56" col="40">
+         <Explicitly-Qualified-Segment line="56" col="15">
+          <Variables>
+           <Variable idnr="5" spelling="x" line="56" col="17"/>
+          </Variables>
+          <Standard-Type nr="1" spelling="set" line="56" col="27"/>
+         </Explicitly-Qualified-Segment>
+         <Predicative-Formula nr="3" spelling="in" line="56" col="35">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="56" col="32"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="56" col="37"/>
+          </Arguments>
+         </Predicative-Formula>
+        </Existential-Quantifier-Formula>
+       </Negated-Formula>
+      </Proposition>
+      <Straightforward-Justification line="56" col="40">
+       <Local-Reference line="56" col="43" idnr="12" spelling="A1"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Definition-Item" line="60" col="10">
+  <Block kind="Definitional-Block" line="60" col="10">
+   <Item kind="Functor-Definition" shape="Equals" line="61" col="6">
+    <Operation-Functor-Pattern nr="2" spelling="&#x7B;&#x7D;" line="0" col="0">
+     <Loci/>
+     <Loci/>
+    </Operation-Functor-Pattern>
+    <Type-Specification>
+     <Standard-Type nr="1" spelling="set" line="61" col="16"/>
+    </Type-Specification>
+    <Definiens line="61" col="23" kind="Simple-Definiens" shape="Term-Expression">
+     <Global-Choice-Term line="62" col="11">
+      <Clustered-Type line="62" col="15">
+       <Adjective-Cluster>
+        <Adjective nr="2" spelling="empty" line="62" col="11"/>
+       </Adjective-Cluster>
+       <Standard-Type nr="1" spelling="set" line="62" col="15"/>
+      </Clustered-Type>
+     </Global-Choice-Term>
+    </Definiens>
+   </Item>
+   <Item kind="Correctness-Condition" condition="coherence" line="63" col="11">
+    <Straightforward-Justification line="63" col="11"/>
+   </Item>
+   <Item kind="Loci-Declaration" line="64" col="17">
+    <Explicitly-Qualified-Segment line="64" col="5">
+     <Variables>
+      <Variable idnr="2" spelling="X" line="64" col="7"/>
+      <Variable idnr="3" spelling="Y" line="64" col="9"/>
+     </Variables>
+     <Standard-Type nr="1" spelling="set" line="64" col="16"/>
+    </Explicitly-Qualified-Segment>
+   </Item>
+   <Item kind="Functor-Definition" shape="Means" line="65" col="6">
+    <Operation-Functor-Pattern nr="3" spelling="\/" line="0" col="0">
+     <Loci>
+      <Locus idnr="2" spelling="X" line="65" col="8"/>
+     </Loci>
+     <Loci>
+      <Locus idnr="3" spelling="Y" line="65" col="13"/>
+     </Loci>
+    </Operation-Functor-Pattern>
+    <Type-Specification>
+     <Standard-Type nr="1" spelling="set" line="65" col="20"/>
+    </Type-Specification>
+    <Definiens line="65" col="26" kind="Simple-Definiens" shape="Formula-Expression">
+     <Label idnr="15" spelling="Def3" line="66" col="7"/>
+     <Biconditional-Formula line="67" col="31">
+      <Predicative-Formula nr="3" spelling="in" line="67" col="6">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="67" col="3"/>
+       </Arguments>
+       <Arguments>
+        <it-Term line="67" col="9"/>
+       </Arguments>
+      </Predicative-Formula>
+      <Disjunctive-Formula line="67" col="31">
+       <Predicative-Formula nr="3" spelling="in" line="67" col="18">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="67" col="15"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="67" col="20"/>
+        </Arguments>
+       </Predicative-Formula>
+       <Predicative-Formula nr="3" spelling="in" line="67" col="28">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="67" col="25"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="3" spelling="Y" line="67" col="30"/>
+        </Arguments>
+       </Predicative-Formula>
+      </Disjunctive-Formula>
+     </Biconditional-Formula>
+    </Definiens>
+   </Item>
+   <Item kind="Correctness-Condition" condition="existence" line="68" col="11">
+    <Block kind="Proof" line="69" col="7">
+     <Item kind="Exemplification" line="70" col="21">
+      <Infix-Term nr="1" spelling="union" line="70" col="14">
+       <Arguments/>
+       <Arguments>
+        <Circumfix-Term nr="2" spelling="{" line="70" col="20">
+         <Right-Circumflex-Symbol nr="2" spelling="}" line="70" col="20"/>
+         <Simple-Term idnr="2" spelling="X" line="70" col="17"/>
+         <Simple-Term idnr="3" spelling="Y" line="70" col="19"/>
+        </Circumfix-Term>
+       </Arguments>
+      </Infix-Term>
+     </Item>
+     <Item kind="Generalization" line="71" col="10">
+      <Implicitly-Qualified-Segment line="71" col="9">
+       <Variable idnr="5" spelling="x" line="71" col="9"/>
+      </Implicitly-Qualified-Segment>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="72" col="10">
+      <Proposition>
+       <Conditional-Formula line="73" col="9">
+        <Predicative-Formula nr="3" spelling="in" line="72" col="13">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="72" col="10"/>
+         </Arguments>
+         <Arguments>
+          <Infix-Term nr="1" spelling="union" line="72" col="19">
+           <Arguments/>
+           <Arguments>
+            <Circumfix-Term nr="2" spelling="{" line="72" col="25">
+             <Right-Circumflex-Symbol nr="2" spelling="}" line="72" col="25"/>
+             <Simple-Term idnr="2" spelling="X" line="72" col="22"/>
+             <Simple-Term idnr="3" spelling="Y" line="72" col="24"/>
+            </Circumfix-Term>
+           </Arguments>
+          </Infix-Term>
+         </Arguments>
+        </Predicative-Formula>
+        <Disjunctive-Formula line="73" col="9">
+         <Predicative-Formula nr="3" spelling="in" line="72" col="38">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="72" col="35"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="72" col="40"/>
+          </Arguments>
+         </Predicative-Formula>
+         <Predicative-Formula nr="3" spelling="in" line="72" col="48">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="72" col="45"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="72" col="50"/>
+          </Arguments>
+         </Predicative-Formula>
+        </Disjunctive-Formula>
+       </Conditional-Formula>
+      </Proposition>
+      <Block kind="Proof" line="73" col="9">
+       <Item kind="Assumption" line="74" col="12">
+        <Single-Assumption line="74" col="12">
+         <Proposition>
+          <Predicative-Formula nr="3" spelling="in" line="74" col="17">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="74" col="14"/>
+           </Arguments>
+           <Arguments>
+            <Infix-Term nr="1" spelling="union" line="74" col="23">
+             <Arguments/>
+             <Arguments>
+              <Circumfix-Term nr="2" spelling="{" line="74" col="29">
+               <Right-Circumflex-Symbol nr="2" spelling="}" line="74" col="29"/>
+               <Simple-Term idnr="2" spelling="X" line="74" col="26"/>
+               <Simple-Term idnr="3" spelling="Y" line="74" col="28"/>
+              </Circumfix-Term>
+             </Arguments>
+            </Infix-Term>
+           </Arguments>
+          </Predicative-Formula>
+         </Proposition>
+        </Single-Assumption>
+       </Item>
+       <Item kind="Regular-Statement" shape="Compact-Statement" line="75" col="13">
+        <Proposition>
+         <Existential-Quantifier-Formula line="75" col="51">
+          <Explicitly-Qualified-Segment line="75" col="13">
+           <Variables>
+            <Variable idnr="4" spelling="Z" line="75" col="15"/>
+           </Variables>
+           <Standard-Type nr="1" spelling="set" line="75" col="25"/>
+          </Explicitly-Qualified-Segment>
+          <Conjunctive-Formula line="75" col="51">
+           <Predicative-Formula nr="3" spelling="in" line="75" col="33">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="75" col="30"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="4" spelling="Z" line="75" col="35"/>
+            </Arguments>
+           </Predicative-Formula>
+           <Predicative-Formula nr="3" spelling="in" line="75" col="42">
+            <Arguments>
+             <Simple-Term idnr="4" spelling="Z" line="75" col="39"/>
+            </Arguments>
+            <Arguments>
+             <Circumfix-Term nr="2" spelling="{" line="75" col="48">
+              <Right-Circumflex-Symbol nr="2" spelling="}" line="75" col="48"/>
+              <Simple-Term idnr="2" spelling="X" line="75" col="45"/>
+              <Simple-Term idnr="3" spelling="Y" line="75" col="47"/>
+             </Circumfix-Term>
+            </Arguments>
+           </Predicative-Formula>
+          </Conjunctive-Formula>
+         </Existential-Quantifier-Formula>
+        </Proposition>
+        <Straightforward-Justification line="75" col="51">
+         <Link line="75" col="10"/>
+         <Definition-Reference line="75" col="64" nr="1" spelling="TARSKI" number="4"/>
+        </Straightforward-Justification>
+       </Item>
+       <Item kind="Conclusion" shape="Compact-Statement" line="76" col="18">
+        <Proposition>
+         <Thesis line="76" col="18"/>
+        </Proposition>
+        <Straightforward-Justification line="76" col="21">
+         <Link line="76" col="11"/>
+         <Definition-Reference line="76" col="34" nr="1" spelling="TARSKI" number="2"/>
+        </Straightforward-Justification>
+       </Item>
+      </Block>
+     </Item>
+     <Item kind="Regular-Statement" shape="Compact-Statement" line="78" col="5">
+      <Proposition>
+       <Conjunctive-Formula line="78" col="30">
+        <Predicative-Formula nr="3" spelling="in" line="78" col="8">
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="78" col="5"/>
+         </Arguments>
+         <Arguments>
+          <Circumfix-Term nr="2" spelling="{" line="78" col="14">
+           <Right-Circumflex-Symbol nr="2" spelling="}" line="78" col="14"/>
+           <Simple-Term idnr="2" spelling="X" line="78" col="11"/>
+           <Simple-Term idnr="3" spelling="Y" line="78" col="13"/>
+          </Circumfix-Term>
+         </Arguments>
+        </Predicative-Formula>
+        <Predicative-Formula nr="3" spelling="in" line="78" col="21">
+         <Arguments>
+          <Simple-Term idnr="3" spelling="Y" line="78" col="18"/>
+         </Arguments>
+         <Arguments>
+          <Circumfix-Term nr="2" spelling="{" line="78" col="27">
+           <Right-Circumflex-Symbol nr="2" spelling="}" line="78" col="27"/>
+           <Simple-Term idnr="2" spelling="X" line="78" col="24"/>
+           <Simple-Term idnr="3" spelling="Y" line="78" col="26"/>
+          </Circumfix-Term>
+         </Arguments>
+        </Predicative-Formula>
+       </Conjunctive-Formula>
+      </Proposition>
+      <Straightforward-Justification line="78" col="30">
+       <Definition-Reference line="78" col="43" nr="1" spelling="TARSKI" number="2"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="79" col="16">
+      <Proposition>
+       <Thesis line="79" col="16"/>
+      </Proposition>
+      <Straightforward-Justification line="79" col="19">
+       <Link line="79" col="9"/>
+       <Definition-Reference line="79" col="32" nr="1" spelling="TARSKI" number="4"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+   <Item kind="Correctness-Condition" condition="uniqueness" line="81" col="12">
+    <Block kind="Proof" line="82" col="7">
+     <Item kind="Generalization" line="85" col="33">
+      <Explicitly-Qualified-Segment line="83" col="7">
+       <Variables>
+        <Variable idnr="12" spelling="A1" line="83" col="10"/>
+        <Variable idnr="13" spelling="A2" line="83" col="14"/>
+       </Variables>
+       <Standard-Type nr="1" spelling="set" line="83" col="21"/>
+      </Explicitly-Qualified-Segment>
+     </Item>
+     <Item kind="Assumption" line="85" col="33">
+      <Collective-Assumption line="83" col="31">
+       <Conditions>
+        <Proposition>
+         <Label idnr="16" spelling="A3" line="84" col="2"/>
+         <Biconditional-Formula line="84" col="36">
+          <Predicative-Formula nr="3" spelling="in" line="84" col="8">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="84" col="5"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="12" spelling="A1" line="84" col="11"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Disjunctive-Formula line="84" col="36">
+           <Predicative-Formula nr="3" spelling="in" line="84" col="20">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="84" col="17"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="2" spelling="X" line="84" col="22"/>
+            </Arguments>
+           </Predicative-Formula>
+           <Predicative-Formula nr="3" spelling="in" line="84" col="30">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="84" col="27"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="3" spelling="Y" line="84" col="32"/>
+            </Arguments>
+           </Predicative-Formula>
+          </Disjunctive-Formula>
+         </Biconditional-Formula>
+        </Proposition>
+        <Proposition>
+         <Label idnr="17" spelling="A4" line="85" col="2"/>
+         <Biconditional-Formula line="85" col="33">
+          <Predicative-Formula nr="3" spelling="in" line="85" col="8">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="85" col="5"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="13" spelling="A2" line="85" col="11"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Disjunctive-Formula line="85" col="33">
+           <Predicative-Formula nr="3" spelling="in" line="85" col="20">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="85" col="17"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="2" spelling="X" line="85" col="22"/>
+            </Arguments>
+           </Predicative-Formula>
+           <Predicative-Formula nr="3" spelling="in" line="85" col="30">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="85" col="27"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="3" spelling="Y" line="85" col="32"/>
+            </Arguments>
+           </Predicative-Formula>
+          </Disjunctive-Formula>
+         </Biconditional-Formula>
+        </Proposition>
+       </Conditions>
+      </Collective-Assumption>
+     </Item>
+     <Item kind="Regular-Statement" shape="Diffuse-Statement" line="86" col="7">
+      <Block kind="Now-Reasoning" line="86" col="7">
+       <Item kind="Generalization" line="87" col="12">
+        <Implicitly-Qualified-Segment line="87" col="11">
+         <Variable idnr="5" spelling="x" line="87" col="11"/>
+        </Implicitly-Qualified-Segment>
+       </Item>
+       <Item kind="Regular-Statement" shape="Compact-Statement" line="88" col="7">
+        <Proposition>
+         <Biconditional-Formula line="88" col="37">
+          <Predicative-Formula nr="3" spelling="in" line="88" col="10">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="88" col="7"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="12" spelling="A1" line="88" col="13"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Disjunctive-Formula line="88" col="37">
+           <Predicative-Formula nr="3" spelling="in" line="88" col="22">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="88" col="19"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="2" spelling="X" line="88" col="24"/>
+            </Arguments>
+           </Predicative-Formula>
+           <Predicative-Formula nr="3" spelling="in" line="88" col="32">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="88" col="29"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="3" spelling="Y" line="88" col="34"/>
+            </Arguments>
+           </Predicative-Formula>
+          </Disjunctive-Formula>
+         </Biconditional-Formula>
+        </Proposition>
+        <Straightforward-Justification line="88" col="37">
+         <Local-Reference line="88" col="40" idnr="16" spelling="A3"/>
+        </Straightforward-Justification>
+       </Item>
+       <Item kind="Conclusion" shape="Compact-Statement" line="89" col="13">
+        <Proposition>
+         <Biconditional-Formula line="89" col="34">
+          <Predicative-Formula nr="3" spelling="in" line="89" col="16">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="89" col="13"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="12" spelling="A1" line="89" col="19"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Predicative-Formula nr="3" spelling="in" line="89" col="28">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="89" col="25"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="13" spelling="A2" line="89" col="31"/>
+           </Arguments>
+          </Predicative-Formula>
+         </Biconditional-Formula>
+        </Proposition>
+        <Straightforward-Justification line="89" col="34">
+         <Link line="89" col="11"/>
+         <Local-Reference line="89" col="37" idnr="17" spelling="A4"/>
+        </Straightforward-Justification>
+       </Item>
+      </Block>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="91" col="16">
+      <Proposition>
+       <Thesis line="91" col="16"/>
+      </Proposition>
+      <Straightforward-Justification line="91" col="19">
+       <Link line="91" col="9"/>
+       <Theorem-Reference line="91" col="28" nr="1" spelling="TARSKI" number="1"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+   <Item kind="Property" property="commutativity" line="93" col="15">
+    <Straightforward-Justification line="93" col="15"/>
+   </Item>
+   <Item kind="Property" property="idempotence" line="94" col="13">
+    <Straightforward-Justification line="94" col="13"/>
+   </Item>
+   <Item kind="Functor-Definition" shape="Means" line="95" col="6">
+    <Operation-Functor-Pattern nr="4" spelling="/\" line="0" col="0">
+     <Loci>
+      <Locus idnr="2" spelling="X" line="95" col="8"/>
+     </Loci>
+     <Loci>
+      <Locus idnr="3" spelling="Y" line="95" col="13"/>
+     </Loci>
+    </Operation-Functor-Pattern>
+    <Type-Specification>
+     <Standard-Type nr="1" spelling="set" line="95" col="20"/>
+    </Type-Specification>
+    <Definiens line="95" col="26" kind="Simple-Definiens" shape="Formula-Expression">
+     <Label idnr="18" spelling="Def4" line="96" col="7"/>
+     <Biconditional-Formula line="97" col="30">
+      <Predicative-Formula nr="3" spelling="in" line="97" col="6">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="97" col="3"/>
+       </Arguments>
+       <Arguments>
+        <it-Term line="97" col="9"/>
+       </Arguments>
+      </Predicative-Formula>
+      <Conjunctive-Formula line="97" col="30">
+       <Predicative-Formula nr="3" spelling="in" line="97" col="18">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="97" col="15"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="97" col="20"/>
+        </Arguments>
+       </Predicative-Formula>
+       <Predicative-Formula nr="3" spelling="in" line="97" col="27">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="97" col="24"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="3" spelling="Y" line="97" col="29"/>
+        </Arguments>
+       </Predicative-Formula>
+      </Conjunctive-Formula>
+     </Biconditional-Formula>
+    </Definiens>
+   </Item>
+   <Item kind="Correctness-Condition" condition="existence" line="98" col="11">
+    <Block kind="Proof" line="99" col="7">
+     <Item kind="Private-Predicate-Definition" line="100" col="11">
+      <Variable idnr="10" spelling="P" line="100" col="13"/>
+      <Type-List>
+       <Standard-Type nr="1" spelling="set" line="100" col="17"/>
+      </Type-List>
+      <Predicative-Formula nr="3" spelling="in" line="100" col="30">
+       <Arguments>
+        <Placeholder-Term nr="1" spelling="&#x24;1" line="100" col="27"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="100" col="32"/>
+       </Arguments>
+      </Predicative-Formula>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="101" col="11">
+      <Proposition>
+       <Existential-Quantifier-Formula line="101" col="68">
+        <Explicitly-Qualified-Segment line="101" col="11">
+         <Variables>
+          <Variable idnr="4" spelling="Z" line="101" col="13"/>
+         </Variables>
+         <Standard-Type nr="1" spelling="set" line="101" col="23"/>
+        </Explicitly-Qualified-Segment>
+        <Universal-Quantifier-Formula line="101" col="68">
+         <Implicitly-Qualified-Segment line="101" col="32">
+          <Variable idnr="5" spelling="x" line="101" col="32"/>
+         </Implicitly-Qualified-Segment>
+         <Biconditional-Formula line="101" col="68">
+          <Predicative-Formula nr="3" spelling="in" line="101" col="43">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="101" col="40"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="4" spelling="Z" line="101" col="45"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Conjunctive-Formula line="101" col="68">
+           <Predicative-Formula nr="3" spelling="in" line="101" col="54">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="101" col="51"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="2" spelling="X" line="101" col="56"/>
+            </Arguments>
+           </Predicative-Formula>
+           <Private-Predicate-Formula idnr="10" spelling="P" line="101" col="60">
+            <Simple-Term idnr="5" spelling="x" line="101" col="62"/>
+           </Private-Predicate-Formula>
+          </Conjunctive-Formula>
+         </Biconditional-Formula>
+        </Universal-Quantifier-Formula>
+       </Existential-Quantifier-Formula>
+      </Proposition>
+      <Scheme-Justification nr="0" idnr="8" spelling="Separation" line="101" col="68">
+      </Scheme-Justification>
+     </Item>
+    </Block>
+   </Item>
+   <Item kind="Correctness-Condition" condition="uniqueness" line="104" col="12">
+    <Block kind="Proof" line="105" col="7">
+     <Item kind="Generalization" line="108" col="32">
+      <Explicitly-Qualified-Segment line="106" col="7">
+       <Variables>
+        <Variable idnr="12" spelling="A1" line="106" col="10"/>
+        <Variable idnr="13" spelling="A2" line="106" col="14"/>
+       </Variables>
+       <Standard-Type nr="1" spelling="set" line="106" col="21"/>
+      </Explicitly-Qualified-Segment>
+     </Item>
+     <Item kind="Assumption" line="108" col="32">
+      <Collective-Assumption line="106" col="31">
+       <Conditions>
+        <Proposition>
+         <Label idnr="19" spelling="A5" line="107" col="2"/>
+         <Biconditional-Formula line="107" col="35">
+          <Predicative-Formula nr="3" spelling="in" line="107" col="8">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="107" col="5"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="12" spelling="A1" line="107" col="11"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Conjunctive-Formula line="107" col="35">
+           <Predicative-Formula nr="3" spelling="in" line="107" col="20">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="107" col="17"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="2" spelling="X" line="107" col="22"/>
+            </Arguments>
+           </Predicative-Formula>
+           <Predicative-Formula nr="3" spelling="in" line="107" col="29">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="107" col="26"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="3" spelling="Y" line="107" col="31"/>
+            </Arguments>
+           </Predicative-Formula>
+          </Conjunctive-Formula>
+         </Biconditional-Formula>
+        </Proposition>
+        <Proposition>
+         <Label idnr="20" spelling="A6" line="108" col="2"/>
+         <Biconditional-Formula line="108" col="32">
+          <Predicative-Formula nr="3" spelling="in" line="108" col="8">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="108" col="5"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="13" spelling="A2" line="108" col="11"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Conjunctive-Formula line="108" col="32">
+           <Predicative-Formula nr="3" spelling="in" line="108" col="20">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="108" col="17"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="2" spelling="X" line="108" col="22"/>
+            </Arguments>
+           </Predicative-Formula>
+           <Predicative-Formula nr="3" spelling="in" line="108" col="29">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="108" col="26"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="3" spelling="Y" line="108" col="31"/>
+            </Arguments>
+           </Predicative-Formula>
+          </Conjunctive-Formula>
+         </Biconditional-Formula>
+        </Proposition>
+       </Conditions>
+      </Collective-Assumption>
+     </Item>
+     <Item kind="Regular-Statement" shape="Diffuse-Statement" line="109" col="7">
+      <Block kind="Now-Reasoning" line="109" col="7">
+       <Item kind="Generalization" line="110" col="12">
+        <Implicitly-Qualified-Segment line="110" col="11">
+         <Variable idnr="5" spelling="x" line="110" col="11"/>
+        </Implicitly-Qualified-Segment>
+       </Item>
+       <Item kind="Regular-Statement" shape="Compact-Statement" line="111" col="7">
+        <Proposition>
+         <Biconditional-Formula line="111" col="36">
+          <Predicative-Formula nr="3" spelling="in" line="111" col="10">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="111" col="7"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="12" spelling="A1" line="111" col="13"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Conjunctive-Formula line="111" col="36">
+           <Predicative-Formula nr="3" spelling="in" line="111" col="22">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="111" col="19"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="2" spelling="X" line="111" col="24"/>
+            </Arguments>
+           </Predicative-Formula>
+           <Predicative-Formula nr="3" spelling="in" line="111" col="31">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="111" col="28"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="3" spelling="Y" line="111" col="33"/>
+            </Arguments>
+           </Predicative-Formula>
+          </Conjunctive-Formula>
+         </Biconditional-Formula>
+        </Proposition>
+        <Straightforward-Justification line="111" col="36">
+         <Local-Reference line="111" col="39" idnr="19" spelling="A5"/>
+        </Straightforward-Justification>
+       </Item>
+       <Item kind="Conclusion" shape="Compact-Statement" line="112" col="13">
+        <Proposition>
+         <Biconditional-Formula line="112" col="34">
+          <Predicative-Formula nr="3" spelling="in" line="112" col="16">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="112" col="13"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="12" spelling="A1" line="112" col="19"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Predicative-Formula nr="3" spelling="in" line="112" col="28">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="112" col="25"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="13" spelling="A2" line="112" col="31"/>
+           </Arguments>
+          </Predicative-Formula>
+         </Biconditional-Formula>
+        </Proposition>
+        <Straightforward-Justification line="112" col="34">
+         <Link line="112" col="11"/>
+         <Local-Reference line="112" col="37" idnr="20" spelling="A6"/>
+        </Straightforward-Justification>
+       </Item>
+      </Block>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="114" col="16">
+      <Proposition>
+       <Thesis line="114" col="16"/>
+      </Proposition>
+      <Straightforward-Justification line="114" col="19">
+       <Link line="114" col="9"/>
+       <Theorem-Reference line="114" col="28" nr="1" spelling="TARSKI" number="1"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+   <Item kind="Property" property="commutativity" line="116" col="15">
+    <Straightforward-Justification line="116" col="15"/>
+   </Item>
+   <Item kind="Property" property="idempotence" line="117" col="13">
+    <Straightforward-Justification line="117" col="13"/>
+   </Item>
+   <Item kind="Functor-Definition" shape="Means" line="118" col="6">
+    <Operation-Functor-Pattern nr="5" spelling="\" line="0" col="0">
+     <Loci>
+      <Locus idnr="2" spelling="X" line="118" col="8"/>
+     </Loci>
+     <Loci>
+      <Locus idnr="3" spelling="Y" line="118" col="12"/>
+     </Loci>
+    </Operation-Functor-Pattern>
+    <Type-Specification>
+     <Standard-Type nr="1" spelling="set" line="118" col="19"/>
+    </Type-Specification>
+    <Definiens line="118" col="25" kind="Simple-Definiens" shape="Formula-Expression">
+     <Label idnr="21" spelling="Def5" line="119" col="7"/>
+     <Biconditional-Formula line="120" col="34">
+      <Predicative-Formula nr="3" spelling="in" line="120" col="6">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="120" col="3"/>
+       </Arguments>
+       <Arguments>
+        <it-Term line="120" col="9"/>
+       </Arguments>
+      </Predicative-Formula>
+      <Conjunctive-Formula line="120" col="34">
+       <Predicative-Formula nr="3" spelling="in" line="120" col="18">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="120" col="15"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="120" col="20"/>
+        </Arguments>
+       </Predicative-Formula>
+       <Negated-Formula line="120" col="34">
+        <Predicative-Formula nr="3" spelling="in" line="120" col="31">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="120" col="28"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="3" spelling="Y" line="120" col="33"/>
+         </Arguments>
+        </Predicative-Formula>
+       </Negated-Formula>
+      </Conjunctive-Formula>
+     </Biconditional-Formula>
+    </Definiens>
+   </Item>
+   <Item kind="Correctness-Condition" condition="existence" line="121" col="11">
+    <Block kind="Proof" line="122" col="7">
+     <Item kind="Private-Predicate-Definition" line="123" col="11">
+      <Variable idnr="10" spelling="P" line="123" col="13"/>
+      <Type-List>
+       <Standard-Type nr="1" spelling="set" line="123" col="17"/>
+      </Type-List>
+      <Negated-Formula line="123" col="37">
+       <Predicative-Formula nr="3" spelling="in" line="123" col="34">
+        <Arguments>
+         <Placeholder-Term nr="1" spelling="&#x24;1" line="123" col="31"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="3" spelling="Y" line="123" col="36"/>
+        </Arguments>
+       </Predicative-Formula>
+      </Negated-Formula>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="124" col="11">
+      <Proposition>
+       <Existential-Quantifier-Formula line="124" col="68">
+        <Explicitly-Qualified-Segment line="124" col="11">
+         <Variables>
+          <Variable idnr="4" spelling="Z" line="124" col="13"/>
+         </Variables>
+         <Standard-Type nr="1" spelling="set" line="124" col="23"/>
+        </Explicitly-Qualified-Segment>
+        <Universal-Quantifier-Formula line="124" col="68">
+         <Implicitly-Qualified-Segment line="124" col="32">
+          <Variable idnr="5" spelling="x" line="124" col="32"/>
+         </Implicitly-Qualified-Segment>
+         <Biconditional-Formula line="124" col="68">
+          <Predicative-Formula nr="3" spelling="in" line="124" col="43">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="124" col="40"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="4" spelling="Z" line="124" col="45"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Conjunctive-Formula line="124" col="68">
+           <Predicative-Formula nr="3" spelling="in" line="124" col="54">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="124" col="51"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="2" spelling="X" line="124" col="56"/>
+            </Arguments>
+           </Predicative-Formula>
+           <Private-Predicate-Formula idnr="10" spelling="P" line="124" col="60">
+            <Simple-Term idnr="5" spelling="x" line="124" col="62"/>
+           </Private-Predicate-Formula>
+          </Conjunctive-Formula>
+         </Biconditional-Formula>
+        </Universal-Quantifier-Formula>
+       </Existential-Quantifier-Formula>
+      </Proposition>
+      <Scheme-Justification nr="0" idnr="8" spelling="Separation" line="124" col="68">
+      </Scheme-Justification>
+     </Item>
+    </Block>
+   </Item>
+   <Item kind="Correctness-Condition" condition="uniqueness" line="127" col="12">
+    <Block kind="Proof" line="128" col="7">
+     <Item kind="Generalization" line="131" col="36">
+      <Explicitly-Qualified-Segment line="129" col="7">
+       <Variables>
+        <Variable idnr="12" spelling="A1" line="129" col="10"/>
+        <Variable idnr="13" spelling="A2" line="129" col="14"/>
+       </Variables>
+       <Standard-Type nr="1" spelling="set" line="129" col="21"/>
+      </Explicitly-Qualified-Segment>
+     </Item>
+     <Item kind="Assumption" line="131" col="36">
+      <Collective-Assumption line="129" col="31">
+       <Conditions>
+        <Proposition>
+         <Label idnr="22" spelling="A7" line="130" col="2"/>
+         <Biconditional-Formula line="130" col="39">
+          <Predicative-Formula nr="3" spelling="in" line="130" col="8">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="130" col="5"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="12" spelling="A1" line="130" col="11"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Conjunctive-Formula line="130" col="39">
+           <Predicative-Formula nr="3" spelling="in" line="130" col="20">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="130" col="17"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="2" spelling="X" line="130" col="22"/>
+            </Arguments>
+           </Predicative-Formula>
+           <Negated-Formula line="130" col="39">
+            <Predicative-Formula nr="3" spelling="in" line="130" col="33">
+             <Arguments>
+              <Simple-Term idnr="5" spelling="x" line="130" col="30"/>
+             </Arguments>
+             <Arguments>
+              <Simple-Term idnr="3" spelling="Y" line="130" col="35"/>
+             </Arguments>
+            </Predicative-Formula>
+           </Negated-Formula>
+          </Conjunctive-Formula>
+         </Biconditional-Formula>
+        </Proposition>
+        <Proposition>
+         <Label idnr="23" spelling="A8" line="131" col="2"/>
+         <Biconditional-Formula line="131" col="36">
+          <Predicative-Formula nr="3" spelling="in" line="131" col="8">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="131" col="5"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="13" spelling="A2" line="131" col="11"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Conjunctive-Formula line="131" col="36">
+           <Predicative-Formula nr="3" spelling="in" line="131" col="20">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="131" col="17"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="2" spelling="X" line="131" col="22"/>
+            </Arguments>
+           </Predicative-Formula>
+           <Negated-Formula line="131" col="36">
+            <Predicative-Formula nr="3" spelling="in" line="131" col="33">
+             <Arguments>
+              <Simple-Term idnr="5" spelling="x" line="131" col="30"/>
+             </Arguments>
+             <Arguments>
+              <Simple-Term idnr="3" spelling="Y" line="131" col="35"/>
+             </Arguments>
+            </Predicative-Formula>
+           </Negated-Formula>
+          </Conjunctive-Formula>
+         </Biconditional-Formula>
+        </Proposition>
+       </Conditions>
+      </Collective-Assumption>
+     </Item>
+     <Item kind="Regular-Statement" shape="Diffuse-Statement" line="132" col="7">
+      <Block kind="Now-Reasoning" line="132" col="7">
+       <Item kind="Generalization" line="133" col="12">
+        <Implicitly-Qualified-Segment line="133" col="11">
+         <Variable idnr="5" spelling="x" line="133" col="11"/>
+        </Implicitly-Qualified-Segment>
+       </Item>
+       <Item kind="Regular-Statement" shape="Compact-Statement" line="134" col="7">
+        <Proposition>
+         <Biconditional-Formula line="134" col="40">
+          <Predicative-Formula nr="3" spelling="in" line="134" col="10">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="134" col="7"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="12" spelling="A1" line="134" col="13"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Conjunctive-Formula line="134" col="40">
+           <Predicative-Formula nr="3" spelling="in" line="134" col="22">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="134" col="19"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="2" spelling="X" line="134" col="24"/>
+            </Arguments>
+           </Predicative-Formula>
+           <Negated-Formula line="134" col="40">
+            <Predicative-Formula nr="3" spelling="in" line="134" col="35">
+             <Arguments>
+              <Simple-Term idnr="5" spelling="x" line="134" col="32"/>
+             </Arguments>
+             <Arguments>
+              <Simple-Term idnr="3" spelling="Y" line="134" col="37"/>
+             </Arguments>
+            </Predicative-Formula>
+           </Negated-Formula>
+          </Conjunctive-Formula>
+         </Biconditional-Formula>
+        </Proposition>
+        <Straightforward-Justification line="134" col="40">
+         <Local-Reference line="134" col="43" idnr="22" spelling="A7"/>
+        </Straightforward-Justification>
+       </Item>
+       <Item kind="Conclusion" shape="Compact-Statement" line="135" col="13">
+        <Proposition>
+         <Biconditional-Formula line="135" col="34">
+          <Predicative-Formula nr="3" spelling="in" line="135" col="16">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="135" col="13"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="12" spelling="A1" line="135" col="19"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Predicative-Formula nr="3" spelling="in" line="135" col="28">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="135" col="25"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="13" spelling="A2" line="135" col="31"/>
+           </Arguments>
+          </Predicative-Formula>
+         </Biconditional-Formula>
+        </Proposition>
+        <Straightforward-Justification line="135" col="34">
+         <Link line="135" col="11"/>
+         <Local-Reference line="135" col="37" idnr="23" spelling="A8"/>
+        </Straightforward-Justification>
+       </Item>
+      </Block>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="137" col="16">
+      <Proposition>
+       <Thesis line="137" col="16"/>
+      </Proposition>
+      <Straightforward-Justification line="137" col="19">
+       <Link line="137" col="9"/>
+       <Theorem-Reference line="137" col="28" nr="1" spelling="TARSKI" number="1"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Definition-Item" line="141" col="10">
+  <Block kind="Definitional-Block" line="141" col="10">
+   <Item kind="Loci-Declaration" line="142" col="18">
+    <Explicitly-Qualified-Segment line="142" col="5">
+     <Variables>
+      <Variable idnr="2" spelling="X" line="142" col="7"/>
+      <Variable idnr="3" spelling="Y" line="142" col="10"/>
+     </Variables>
+     <Standard-Type nr="1" spelling="set" line="142" col="17"/>
+    </Explicitly-Qualified-Segment>
+   </Item>
+   <Item kind="Functor-Definition" shape="Equals" line="143" col="6">
+    <Operation-Functor-Pattern nr="6" spelling="\&#x2B;\" line="0" col="0">
+     <Loci>
+      <Locus idnr="2" spelling="X" line="143" col="8"/>
+     </Loci>
+     <Loci>
+      <Locus idnr="3" spelling="Y" line="143" col="14"/>
+     </Loci>
+    </Operation-Functor-Pattern>
+    <Type-Specification>
+     <Standard-Type nr="1" spelling="set" line="143" col="21"/>
+    </Type-Specification>
+    <Definiens line="143" col="28" kind="Simple-Definiens" shape="Term-Expression">
+     <Infix-Term nr="3" spelling="\/" line="144" col="12">
+      <Arguments>
+       <Infix-Term nr="5" spelling="\" line="144" col="6">
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="144" col="4"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="3" spelling="Y" line="144" col="8"/>
+        </Arguments>
+       </Infix-Term>
+      </Arguments>
+      <Arguments>
+       <Infix-Term nr="5" spelling="\" line="144" col="17">
+        <Arguments>
+         <Simple-Term idnr="3" spelling="Y" line="144" col="15"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="144" col="19"/>
+        </Arguments>
+       </Infix-Term>
+      </Arguments>
+     </Infix-Term>
+    </Definiens>
+   </Item>
+   <Item kind="Correctness" condition="correctness" line="145" col="13">
+    <Conditions>
+     <Correctness condition="coherence"/>
+    </Conditions>
+    <Straightforward-Justification line="145" col="13"/>
+   </Item>
+   <Item kind="Property" property="commutativity" line="146" col="15">
+    <Straightforward-Justification line="146" col="15"/>
+   </Item>
+   <Item kind="Predicate-Definition" line="147" col="6">
+    <Predicate-Pattern nr="6" spelling="misses" line="147" col="15">
+     <Loci>
+      <Locus idnr="2" spelling="X" line="147" col="8"/>
+     </Loci>
+     <Loci>
+      <Locus idnr="3" spelling="Y" line="147" col="17"/>
+     </Loci>
+    </Predicate-Pattern>
+    <Definiens line="147" col="23" kind="Simple-Definiens" shape="Formula-Expression">
+     <Label idnr="24" spelling="Def7" line="148" col="7"/>
+     <Predicative-Formula nr="1" spelling="=" line="149" col="10">
+      <Arguments>
+       <Infix-Term nr="4" spelling="/\" line="149" col="6">
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="149" col="3"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="3" spelling="Y" line="149" col="8"/>
+        </Arguments>
+       </Infix-Term>
+      </Arguments>
+      <Arguments>
+       <Infix-Term nr="2" spelling="&#x7B;&#x7D;" line="149" col="13">
+        <Arguments/>
+        <Arguments/>
+       </Infix-Term>
+      </Arguments>
+     </Predicative-Formula>
+    </Definiens>
+   </Item>
+   <Item kind="Property" property="symmetry" line="150" col="10">
+    <Straightforward-Justification line="150" col="10"/>
+   </Item>
+   <Item kind="Predicate-Definition" line="151" col="6">
+    <Predicate-Pattern nr="7" spelling="c&#x3C;" line="151" col="11">
+     <Loci>
+      <Locus idnr="2" spelling="X" line="151" col="8"/>
+     </Loci>
+     <Loci>
+      <Locus idnr="3" spelling="Y" line="151" col="13"/>
+     </Loci>
+    </Predicate-Pattern>
+    <Definiens line="151" col="19" kind="Simple-Definiens" shape="Formula-Expression">
+     <Label idnr="25" spelling="Def8" line="152" col="7"/>
+     <Conjunctive-Formula line="153" col="18">
+      <Predicative-Formula nr="4" spelling="c=" line="153" col="6">
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="153" col="3"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="153" col="8"/>
+       </Arguments>
+      </Predicative-Formula>
+      <Predicative-Formula nr="2" spelling="&#x3C;&#x3E;" line="153" col="15">
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="153" col="12"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="153" col="17"/>
+       </Arguments>
+      </Predicative-Formula>
+     </Conjunctive-Formula>
+    </Definiens>
+   </Item>
+   <Item kind="Property" property="irreflexivity" line="154" col="15">
+    <Straightforward-Justification line="154" col="15"/>
+   </Item>
+   <Item kind="Property" property="asymmetry" line="155" col="11">
+    <Block kind="Proof" line="156" col="7">
+     <Item kind="Generalization" line="157" col="12">
+      <Implicitly-Qualified-Segment line="157" col="9">
+       <Variable idnr="2" spelling="X" line="157" col="9"/>
+      </Implicitly-Qualified-Segment>
+     </Item>
+     <Item kind="Generalization" line="157" col="12">
+      <Implicitly-Qualified-Segment line="157" col="11">
+       <Variable idnr="3" spelling="Y" line="157" col="11"/>
+      </Implicitly-Qualified-Segment>
+     </Item>
+     <Item kind="Assumption" line="158" col="10">
+      <Single-Assumption line="158" col="10">
+       <Proposition>
+        <Label idnr="12" spelling="A1" line="159" col="2"/>
+        <Predicative-Formula nr="4" spelling="c=" line="159" col="8">
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="159" col="5"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="3" spelling="Y" line="159" col="10"/>
+         </Arguments>
+        </Predicative-Formula>
+       </Proposition>
+      </Single-Assumption>
+     </Item>
+     <Item kind="Assumption" line="160" col="10">
+      <Single-Assumption line="160" col="10">
+       <Proposition>
+        <Predicative-Formula nr="2" spelling="&#x3C;&#x3E;" line="160" col="15">
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="160" col="12"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="3" spelling="Y" line="160" col="17"/>
+         </Arguments>
+        </Predicative-Formula>
+       </Proposition>
+      </Single-Assumption>
+     </Item>
+     <Item kind="Assumption" line="161" col="10">
+      <Single-Assumption line="161" col="10">
+       <Proposition>
+        <Predicative-Formula nr="4" spelling="c=" line="161" col="15">
+         <Arguments>
+          <Simple-Term idnr="3" spelling="Y" line="161" col="12"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="161" col="17"/>
+         </Arguments>
+        </Predicative-Formula>
+       </Proposition>
+      </Single-Assumption>
+     </Item>
+     <Item kind="Regular-Statement" shape="Compact-Statement" line="162" col="12">
+      <Proposition>
+       <Universal-Quantifier-Formula line="162" col="41">
+        <Implicitly-Qualified-Segment line="162" col="14">
+         <Variable idnr="5" spelling="x" line="162" col="14"/>
+        </Implicitly-Qualified-Segment>
+        <Biconditional-Formula line="162" col="41">
+         <Predicative-Formula nr="3" spelling="in" line="162" col="25">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="162" col="22"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="162" col="27"/>
+          </Arguments>
+         </Predicative-Formula>
+         <Predicative-Formula nr="3" spelling="in" line="162" col="36">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="162" col="33"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="162" col="38"/>
+          </Arguments>
+         </Predicative-Formula>
+        </Biconditional-Formula>
+       </Universal-Quantifier-Formula>
+      </Proposition>
+      <Straightforward-Justification line="162" col="41">
+       <Link line="162" col="8"/>
+       <Local-Reference line="162" col="44" idnr="12" spelling="A1"/>
+       <Definition-Reference line="162" col="57" nr="1" spelling="TARSKI" number="3"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="163" col="16">
+      <Proposition>
+       <Thesis line="163" col="16"/>
+      </Proposition>
+      <Straightforward-Justification line="163" col="19">
+       <Link line="163" col="9"/>
+       <Theorem-Reference line="163" col="28" nr="1" spelling="TARSKI" number="1"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+   <Item kind="Predicate-Definition" line="165" col="6">
+    <Predicate-Pattern nr="8" spelling="are_c=-comparable" line="165" col="28">
+     <Loci>
+      <Locus idnr="2" spelling="X" line="165" col="8"/>
+      <Locus idnr="3" spelling="Y" line="165" col="10"/>
+     </Loci>
+     <Loci/>
+    </Predicate-Pattern>
+    <Definiens line="165" col="34" kind="Simple-Definiens" shape="Formula-Expression">
+     <Disjunctive-Formula line="166" col="19">
+      <Predicative-Formula nr="4" spelling="c=" line="166" col="6">
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="166" col="3"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="166" col="8"/>
+       </Arguments>
+      </Predicative-Formula>
+      <Predicative-Formula nr="4" spelling="c=" line="166" col="16">
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="166" col="13"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="166" col="18"/>
+       </Arguments>
+      </Predicative-Formula>
+     </Disjunctive-Formula>
+    </Definiens>
+   </Item>
+   <Item kind="Property" property="reflexivity" line="167" col="13">
+    <Straightforward-Justification line="167" col="13"/>
+   </Item>
+   <Item kind="Property" property="symmetry" line="168" col="10">
+    <Straightforward-Justification line="168" col="10"/>
+   </Item>
+   <Item kind="Predicate-Definition" line="169" col="15">
+    <Redefine/>
+    <Predicate-Pattern nr="1" spelling="=" line="169" col="19">
+     <Loci>
+      <Locus idnr="2" spelling="X" line="169" col="17"/>
+     </Loci>
+     <Loci>
+      <Locus idnr="3" spelling="Y" line="169" col="21"/>
+     </Loci>
+    </Predicate-Pattern>
+    <Definiens line="169" col="27" kind="Simple-Definiens" shape="Formula-Expression">
+     <Conjunctive-Formula line="170" col="18">
+      <Predicative-Formula nr="4" spelling="c=" line="170" col="6">
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="170" col="3"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="170" col="8"/>
+       </Arguments>
+      </Predicative-Formula>
+      <Predicative-Formula nr="4" spelling="c=" line="170" col="15">
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="170" col="12"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="170" col="17"/>
+       </Arguments>
+      </Predicative-Formula>
+     </Conjunctive-Formula>
+    </Definiens>
+   </Item>
+   <Item kind="Correctness-Condition" condition="compatibility" line="171" col="15">
+    <Block kind="Proof" line="172" col="7">
+     <Item kind="Conclusion" shape="Compact-Statement" line="173" col="10">
+      <Proposition>
+       <Conditional-Formula line="173" col="39">
+        <Predicative-Formula nr="1" spelling="=" line="173" col="12">
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="173" col="10"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="3" spelling="Y" line="173" col="14"/>
+         </Arguments>
+        </Predicative-Formula>
+        <Conjunctive-Formula line="173" col="39">
+         <Predicative-Formula nr="4" spelling="c=" line="173" col="27">
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="173" col="24"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="173" col="29"/>
+          </Arguments>
+         </Predicative-Formula>
+         <Predicative-Formula nr="4" spelling="c=" line="173" col="36">
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="173" col="33"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="173" col="38"/>
+          </Arguments>
+         </Predicative-Formula>
+        </Conjunctive-Formula>
+       </Conditional-Formula>
+      </Proposition>
+      <Straightforward-Justification line="173" col="38"/>
+     </Item>
+     <Item kind="Assumption" line="174" col="10">
+      <Single-Assumption line="174" col="10">
+       <Proposition>
+        <Conjunctive-Formula line="174" col="27">
+         <Predicative-Formula nr="4" spelling="c=" line="174" col="15">
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="174" col="12"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="174" col="17"/>
+          </Arguments>
+         </Predicative-Formula>
+         <Predicative-Formula nr="4" spelling="c=" line="174" col="24">
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="174" col="21"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="174" col="26"/>
+          </Arguments>
+         </Predicative-Formula>
+        </Conjunctive-Formula>
+       </Proposition>
+      </Single-Assumption>
+     </Item>
+     <Item kind="Regular-Statement" shape="Compact-Statement" line="175" col="12">
+      <Proposition>
+       <Universal-Quantifier-Formula line="175" col="41">
+        <Implicitly-Qualified-Segment line="175" col="14">
+         <Variable idnr="5" spelling="x" line="175" col="14"/>
+        </Implicitly-Qualified-Segment>
+        <Biconditional-Formula line="175" col="41">
+         <Predicative-Formula nr="3" spelling="in" line="175" col="25">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="175" col="22"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="175" col="27"/>
+          </Arguments>
+         </Predicative-Formula>
+         <Predicative-Formula nr="3" spelling="in" line="175" col="36">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="175" col="33"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="175" col="38"/>
+          </Arguments>
+         </Predicative-Formula>
+        </Biconditional-Formula>
+       </Universal-Quantifier-Formula>
+      </Proposition>
+      <Straightforward-Justification line="175" col="41">
+       <Link line="175" col="8"/>
+       <Definition-Reference line="175" col="54" nr="1" spelling="TARSKI" number="3"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="176" col="16">
+      <Proposition>
+       <Thesis line="176" col="16"/>
+      </Proposition>
+      <Straightforward-Justification line="176" col="19">
+       <Link line="176" col="9"/>
+       <Theorem-Reference line="176" col="28" nr="1" spelling="TARSKI" number="1"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Definition-Item" line="180" col="8">
+  <Block kind="Notation-Block" line="180" col="8">
+   <Item kind="Loci-Declaration" line="181" col="18">
+    <Explicitly-Qualified-Segment line="181" col="5">
+     <Variables>
+      <Variable idnr="2" spelling="X" line="181" col="7"/>
+      <Variable idnr="3" spelling="Y" line="181" col="10"/>
+     </Variables>
+     <Standard-Type nr="1" spelling="set" line="181" col="17"/>
+    </Explicitly-Qualified-Segment>
+   </Item>
+   <Item kind="Pred-Antonym" line="182" col="11">
+    <Predicate-Pattern nr="6" spelling="misses" line="182" col="32">
+     <Loci>
+      <Locus idnr="2" spelling="X" line="182" col="25"/>
+     </Loci>
+     <Loci>
+      <Locus idnr="3" spelling="Y" line="182" col="34"/>
+     </Loci>
+    </Predicate-Pattern>
+    <Predicate-Pattern nr="9" spelling="meets" line="182" col="17">
+     <Loci>
+      <Locus idnr="2" spelling="X" line="182" col="11"/>
+     </Loci>
+     <Loci>
+      <Locus idnr="3" spelling="Y" line="182" col="19"/>
+     </Loci>
+    </Predicate-Pattern>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Theorem-Item" line="185" col="7">
+  <Proposition>
+   <Biconditional-Formula line="187" col="5">
+    <Predicative-Formula nr="3" spelling="in" line="186" col="6">
+     <Arguments>
+      <Simple-Term idnr="5" spelling="x" line="186" col="3"/>
+     </Arguments>
+     <Arguments>
+      <Infix-Term nr="6" spelling="\&#x2B;\" line="186" col="12">
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="186" col="8"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="186" col="14"/>
+       </Arguments>
+      </Infix-Term>
+     </Arguments>
+    </Predicative-Formula>
+    <Negated-Formula line="187" col="5">
+     <Biconditional-Formula line="186" col="42">
+      <Predicative-Formula nr="3" spelling="in" line="186" col="28">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="186" col="25"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="186" col="30"/>
+       </Arguments>
+      </Predicative-Formula>
+      <Predicative-Formula nr="3" spelling="in" line="186" col="39">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="186" col="36"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="186" col="41"/>
+       </Arguments>
+      </Predicative-Formula>
+     </Biconditional-Formula>
+    </Negated-Formula>
+   </Biconditional-Formula>
+  </Proposition>
+  <Block kind="Proof" line="187" col="5">
+   <Item kind="Regular-Statement" shape="Compact-Statement" line="188" col="3">
+    <Proposition>
+     <Biconditional-Formula line="188" col="46">
+      <Predicative-Formula nr="3" spelling="in" line="188" col="6">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="188" col="3"/>
+       </Arguments>
+       <Arguments>
+        <Infix-Term nr="6" spelling="\&#x2B;\" line="188" col="12">
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="188" col="8"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="3" spelling="Y" line="188" col="14"/>
+         </Arguments>
+        </Infix-Term>
+       </Arguments>
+      </Predicative-Formula>
+      <Disjunctive-Formula line="188" col="46">
+       <Predicative-Formula nr="3" spelling="in" line="188" col="23">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="188" col="20"/>
+        </Arguments>
+        <Arguments>
+         <Infix-Term nr="5" spelling="\" line="188" col="27">
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="188" col="25"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="188" col="29"/>
+          </Arguments>
+         </Infix-Term>
+        </Arguments>
+       </Predicative-Formula>
+       <Predicative-Formula nr="3" spelling="in" line="188" col="37">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="188" col="34"/>
+        </Arguments>
+        <Arguments>
+         <Infix-Term nr="5" spelling="\" line="188" col="41">
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="188" col="39"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="188" col="43"/>
+          </Arguments>
+         </Infix-Term>
+        </Arguments>
+       </Predicative-Formula>
+      </Disjunctive-Formula>
+     </Biconditional-Formula>
+    </Proposition>
+    <Straightforward-Justification line="188" col="46">
+     <Local-Reference line="188" col="51" idnr="15" spelling="Def3"/>
+    </Straightforward-Justification>
+   </Item>
+   <Item kind="Conclusion" shape="Compact-Statement" line="189" col="14">
+    <Proposition>
+     <Thesis line="189" col="14"/>
+    </Proposition>
+    <Straightforward-Justification line="189" col="17">
+     <Link line="189" col="7"/>
+     <Local-Reference line="189" col="22" idnr="21" spelling="Def5"/>
+    </Straightforward-Justification>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Theorem-Item" line="192" col="7">
+  <Proposition>
+   <Conditional-Formula line="194" col="5">
+    <Universal-Quantifier-Formula line="193" col="50">
+     <Implicitly-Qualified-Segment line="193" col="8">
+      <Variable idnr="5" spelling="x" line="193" col="8"/>
+     </Implicitly-Qualified-Segment>
+     <Biconditional-Formula line="193" col="50">
+      <Negated-Formula line="193" col="29">
+       <Predicative-Formula nr="3" spelling="in" line="193" col="23">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="193" col="20"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="193" col="25"/>
+        </Arguments>
+       </Predicative-Formula>
+      </Negated-Formula>
+      <Biconditional-Formula line="193" col="49">
+       <Predicative-Formula nr="3" spelling="in" line="193" col="35">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="193" col="32"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="3" spelling="Y" line="193" col="37"/>
+        </Arguments>
+       </Predicative-Formula>
+       <Predicative-Formula nr="3" spelling="in" line="193" col="46">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="193" col="43"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="4" spelling="Z" line="193" col="48"/>
+        </Arguments>
+       </Predicative-Formula>
+      </Biconditional-Formula>
+     </Biconditional-Formula>
+    </Universal-Quantifier-Formula>
+    <Predicative-Formula nr="1" spelling="=" line="193" col="62">
+     <Arguments>
+      <Simple-Term idnr="2" spelling="X" line="193" col="60"/>
+     </Arguments>
+     <Arguments>
+      <Infix-Term nr="6" spelling="\&#x2B;\" line="193" col="68">
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="193" col="64"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="4" spelling="Z" line="193" col="70"/>
+       </Arguments>
+      </Infix-Term>
+     </Arguments>
+    </Predicative-Formula>
+   </Conditional-Formula>
+  </Proposition>
+  <Block kind="Proof" line="194" col="5">
+   <Item kind="Assumption" line="195" col="8">
+    <Single-Assumption line="195" col="8">
+     <Proposition>
+      <Label idnr="12" spelling="A1" line="196" col="2"/>
+      <Biconditional-Formula line="196" col="39">
+       <Negated-Formula line="196" col="18">
+        <Predicative-Formula nr="3" spelling="in" line="196" col="12">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="196" col="9"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="196" col="14"/>
+         </Arguments>
+        </Predicative-Formula>
+       </Negated-Formula>
+       <Biconditional-Formula line="196" col="38">
+        <Predicative-Formula nr="3" spelling="in" line="196" col="24">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="196" col="21"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="3" spelling="Y" line="196" col="26"/>
+         </Arguments>
+        </Predicative-Formula>
+        <Predicative-Formula nr="3" spelling="in" line="196" col="35">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="196" col="32"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="4" spelling="Z" line="196" col="37"/>
+         </Arguments>
+        </Predicative-Formula>
+       </Biconditional-Formula>
+      </Biconditional-Formula>
+     </Proposition>
+    </Single-Assumption>
+   </Item>
+   <Item kind="Regular-Statement" shape="Diffuse-Statement" line="197" col="5">
+    <Block kind="Now-Reasoning" line="197" col="5">
+     <Item kind="Generalization" line="198" col="10">
+      <Implicitly-Qualified-Segment line="198" col="9">
+       <Variable idnr="5" spelling="x" line="198" col="9"/>
+      </Implicitly-Qualified-Segment>
+     </Item>
+     <Item kind="Regular-Statement" shape="Compact-Statement" line="199" col="5">
+      <Proposition>
+       <Biconditional-Formula line="199" col="60">
+        <Predicative-Formula nr="3" spelling="in" line="199" col="8">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="199" col="5"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="199" col="10"/>
+         </Arguments>
+        </Predicative-Formula>
+        <Disjunctive-Formula line="199" col="60">
+         <Conjunctive-Formula line="199" col="37">
+          <Predicative-Formula nr="3" spelling="in" line="199" col="19">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="199" col="16"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="3" spelling="Y" line="199" col="21"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Negated-Formula line="199" col="37">
+           <Predicative-Formula nr="3" spelling="in" line="199" col="32">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="199" col="29"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="4" spelling="Z" line="199" col="34"/>
+            </Arguments>
+           </Predicative-Formula>
+          </Negated-Formula>
+         </Conjunctive-Formula>
+         <Conjunctive-Formula line="199" col="60">
+          <Predicative-Formula nr="3" spelling="in" line="199" col="42">
+           <Arguments>
+            <Simple-Term idnr="5" spelling="x" line="199" col="39"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="4" spelling="Z" line="199" col="44"/>
+           </Arguments>
+          </Predicative-Formula>
+          <Negated-Formula line="199" col="60">
+           <Predicative-Formula nr="3" spelling="in" line="199" col="55">
+            <Arguments>
+             <Simple-Term idnr="5" spelling="x" line="199" col="52"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="3" spelling="Y" line="199" col="57"/>
+            </Arguments>
+           </Predicative-Formula>
+          </Negated-Formula>
+         </Conjunctive-Formula>
+        </Disjunctive-Formula>
+       </Biconditional-Formula>
+      </Proposition>
+      <Straightforward-Justification line="199" col="60">
+       <Local-Reference line="199" col="63" idnr="12" spelling="A1"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Regular-Statement" shape="Compact-Statement" line="200" col="10">
+      <Proposition>
+       <Biconditional-Formula line="200" col="47">
+        <Predicative-Formula nr="3" spelling="in" line="200" col="13">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="200" col="10"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="200" col="15"/>
+         </Arguments>
+        </Predicative-Formula>
+        <Disjunctive-Formula line="200" col="47">
+         <Predicative-Formula nr="3" spelling="in" line="200" col="24">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="200" col="21"/>
+          </Arguments>
+          <Arguments>
+           <Infix-Term nr="5" spelling="\" line="200" col="28">
+            <Arguments>
+             <Simple-Term idnr="3" spelling="Y" line="200" col="26"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="4" spelling="Z" line="200" col="30"/>
+            </Arguments>
+           </Infix-Term>
+          </Arguments>
+         </Predicative-Formula>
+         <Predicative-Formula nr="3" spelling="in" line="200" col="38">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="200" col="35"/>
+          </Arguments>
+          <Arguments>
+           <Infix-Term nr="5" spelling="\" line="200" col="42">
+            <Arguments>
+             <Simple-Term idnr="4" spelling="Z" line="200" col="40"/>
+            </Arguments>
+            <Arguments>
+             <Simple-Term idnr="3" spelling="Y" line="200" col="44"/>
+            </Arguments>
+           </Infix-Term>
+          </Arguments>
+         </Predicative-Formula>
+        </Disjunctive-Formula>
+       </Biconditional-Formula>
+      </Proposition>
+      <Straightforward-Justification line="200" col="47">
+       <Link line="200" col="8"/>
+       <Local-Reference line="200" col="52" idnr="21" spelling="Def5"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="201" col="11">
+      <Proposition>
+       <Biconditional-Formula line="201" col="36">
+        <Predicative-Formula nr="3" spelling="in" line="201" col="14">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="201" col="11"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="201" col="16"/>
+         </Arguments>
+        </Predicative-Formula>
+        <Predicative-Formula nr="3" spelling="in" line="201" col="25">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="201" col="22"/>
+         </Arguments>
+         <Arguments>
+          <Infix-Term nr="6" spelling="\&#x2B;\" line="201" col="31">
+           <Arguments>
+            <Simple-Term idnr="3" spelling="Y" line="201" col="27"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="4" spelling="Z" line="201" col="33"/>
+           </Arguments>
+          </Infix-Term>
+         </Arguments>
+        </Predicative-Formula>
+       </Biconditional-Formula>
+      </Proposition>
+      <Straightforward-Justification line="201" col="36">
+       <Link line="201" col="9"/>
+       <Local-Reference line="201" col="41" idnr="15" spelling="Def3"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+   <Item kind="Conclusion" shape="Compact-Statement" line="203" col="14">
+    <Proposition>
+     <Thesis line="203" col="14"/>
+    </Proposition>
+    <Straightforward-Justification line="203" col="17">
+     <Link line="203" col="7"/>
+     <Theorem-Reference line="203" col="26" nr="1" spelling="TARSKI" number="1"/>
+    </Straightforward-Justification>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Definition-Item" line="206" col="12">
+  <Block kind="Registration-Block" line="206" col="12">
+   <Item kind="Cluster" line="207" col="9">
+    <Functorial-Registration line="207" col="9">
+     <Infix-Term nr="2" spelling="&#x7B;&#x7D;" line="207" col="12">
+      <Arguments/>
+      <Arguments/>
+     </Infix-Term>
+     <Adjective-Cluster>
+      <Adjective nr="2" spelling="empty" line="207" col="21"/>
+     </Adjective-Cluster>
+    </Functorial-Registration>
+   </Item>
+   <Item kind="Correctness-Condition" condition="coherence" line="208" col="11">
+    <Straightforward-Justification line="208" col="11"/>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Definition-Item" line="211" col="12">
+  <Block kind="Registration-Block" line="211" col="12">
+   <Item kind="Loci-Declaration" line="212" col="16">
+    <Explicitly-Qualified-Segment line="212" col="5">
+     <Variables>
+      <Variable idnr="26" spelling="x1" line="212" col="8"/>
+     </Variables>
+     <Standard-Type nr="1" spelling="set" line="212" col="15"/>
+    </Explicitly-Qualified-Segment>
+   </Item>
+   <Item kind="Cluster" line="213" col="9">
+    <Functorial-Registration line="213" col="9">
+     <Circumfix-Term nr="2" spelling="{" line="213" col="16">
+      <Right-Circumflex-Symbol nr="2" spelling="}" line="213" col="16"/>
+      <Simple-Term idnr="26" spelling="x1" line="213" col="14"/>
+     </Circumfix-Term>
+     <Adjective-Cluster>
+      <NegatedAdjective line="213" col="23">
+       <Adjective nr="2" spelling="empty" line="213" col="29"/>
+      </NegatedAdjective>
+     </Adjective-Cluster>
+    </Functorial-Registration>
+   </Item>
+   <Item kind="Correctness-Condition" condition="coherence" line="214" col="11">
+    <Block kind="Proof" line="215" col="7">
+     <Item kind="Regular-Statement" shape="Compact-Statement" line="216" col="6">
+      <Proposition>
+       <Predicative-Formula nr="3" spelling="in" line="216" col="9">
+        <Arguments>
+         <Simple-Term idnr="26" spelling="x1" line="216" col="6"/>
+        </Arguments>
+        <Arguments>
+         <Circumfix-Term nr="2" spelling="{" line="216" col="14">
+          <Right-Circumflex-Symbol nr="2" spelling="}" line="216" col="14"/>
+          <Simple-Term idnr="26" spelling="x1" line="216" col="13"/>
+         </Circumfix-Term>
+        </Arguments>
+       </Predicative-Formula>
+      </Proposition>
+      <Straightforward-Justification line="216" col="17">
+       <Definition-Reference line="216" col="30" nr="1" spelling="TARSKI" number="1"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="217" col="12">
+      <Proposition>
+       <Existential-Quantifier-Formula line="217" col="38">
+        <Explicitly-Qualified-Segment line="217" col="12">
+         <Variables>
+          <Variable idnr="5" spelling="x" line="217" col="14"/>
+         </Variables>
+         <Standard-Type nr="1" spelling="set" line="217" col="24"/>
+        </Explicitly-Qualified-Segment>
+        <Predicative-Formula nr="3" spelling="in" line="217" col="32">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="217" col="29"/>
+         </Arguments>
+         <Arguments>
+          <Circumfix-Term nr="2" spelling="{" line="217" col="37">
+           <Right-Circumflex-Symbol nr="2" spelling="}" line="217" col="37"/>
+           <Simple-Term idnr="26" spelling="x1" line="217" col="36"/>
+          </Circumfix-Term>
+         </Arguments>
+        </Predicative-Formula>
+       </Existential-Quantifier-Formula>
+      </Proposition>
+      <Straightforward-Justification line="217" col="37">
+       <Link line="217" col="9"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+   <Item kind="Loci-Declaration" line="219" col="16">
+    <Explicitly-Qualified-Segment line="219" col="5">
+     <Variables>
+      <Variable idnr="27" spelling="x2" line="219" col="8"/>
+     </Variables>
+     <Standard-Type nr="1" spelling="set" line="219" col="15"/>
+    </Explicitly-Qualified-Segment>
+   </Item>
+   <Item kind="Cluster" line="220" col="9">
+    <Functorial-Registration line="220" col="9">
+     <Circumfix-Term nr="2" spelling="{" line="220" col="20">
+      <Right-Circumflex-Symbol nr="2" spelling="}" line="220" col="20"/>
+      <Simple-Term idnr="26" spelling="x1" line="220" col="14"/>
+      <Simple-Term idnr="27" spelling="x2" line="220" col="18"/>
+     </Circumfix-Term>
+     <Adjective-Cluster>
+      <NegatedAdjective line="220" col="27">
+       <Adjective nr="2" spelling="empty" line="220" col="33"/>
+      </NegatedAdjective>
+     </Adjective-Cluster>
+    </Functorial-Registration>
+   </Item>
+   <Item kind="Correctness-Condition" condition="coherence" line="221" col="11">
+    <Block kind="Proof" line="222" col="7">
+     <Item kind="Regular-Statement" shape="Compact-Statement" line="223" col="6">
+      <Proposition>
+       <Predicative-Formula nr="3" spelling="in" line="223" col="9">
+        <Arguments>
+         <Simple-Term idnr="26" spelling="x1" line="223" col="6"/>
+        </Arguments>
+        <Arguments>
+         <Circumfix-Term nr="2" spelling="{" line="223" col="17">
+          <Right-Circumflex-Symbol nr="2" spelling="}" line="223" col="17"/>
+          <Simple-Term idnr="26" spelling="x1" line="223" col="13"/>
+          <Simple-Term idnr="27" spelling="x2" line="223" col="16"/>
+         </Circumfix-Term>
+        </Arguments>
+       </Predicative-Formula>
+      </Proposition>
+      <Straightforward-Justification line="223" col="20">
+       <Definition-Reference line="223" col="33" nr="1" spelling="TARSKI" number="2"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="224" col="12">
+      <Proposition>
+       <Existential-Quantifier-Formula line="224" col="41">
+        <Explicitly-Qualified-Segment line="224" col="12">
+         <Variables>
+          <Variable idnr="5" spelling="x" line="224" col="14"/>
+         </Variables>
+         <Standard-Type nr="1" spelling="set" line="224" col="24"/>
+        </Explicitly-Qualified-Segment>
+        <Predicative-Formula nr="3" spelling="in" line="224" col="32">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="224" col="29"/>
+         </Arguments>
+         <Arguments>
+          <Circumfix-Term nr="2" spelling="{" line="224" col="40">
+           <Right-Circumflex-Symbol nr="2" spelling="}" line="224" col="40"/>
+           <Simple-Term idnr="26" spelling="x1" line="224" col="36"/>
+           <Simple-Term idnr="27" spelling="x2" line="224" col="39"/>
+          </Circumfix-Term>
+         </Arguments>
+        </Predicative-Formula>
+       </Existential-Quantifier-Formula>
+      </Proposition>
+      <Straightforward-Justification line="224" col="40">
+       <Link line="224" col="9"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Definition-Item" line="228" col="12">
+  <Block kind="Registration-Block" line="228" col="12">
+   <Item kind="Cluster" line="229" col="9">
+    <Existential-Registration line="229" col="9">
+     <Adjective-Cluster>
+      <NegatedAdjective line="229" col="13">
+       <Adjective nr="2" spelling="empty" line="229" col="19"/>
+      </NegatedAdjective>
+     </Adjective-Cluster>
+     <Standard-Type nr="1" spelling="set" line="229" col="27"/>
+    </Existential-Registration>
+   </Item>
+   <Item kind="Correctness-Condition" condition="existence" line="230" col="11">
+    <Block kind="Proof" line="231" col="7">
+     <Item kind="Exemplification" line="232" col="21">
+      <Circumfix-Term nr="2" spelling="{" line="232" col="20">
+       <Right-Circumflex-Symbol nr="2" spelling="}" line="232" col="20"/>
+       <Global-Choice-Term line="232" col="18">
+        <Standard-Type nr="1" spelling="set" line="232" col="18"/>
+       </Global-Choice-Term>
+      </Circumfix-Term>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="233" col="15">
+      <Proposition>
+       <Thesis line="233" col="15"/>
+      </Proposition>
+      <Straightforward-Justification line="233" col="15"/>
+     </Item>
+    </Block>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Definition-Item" line="237" col="12">
+  <Block kind="Registration-Block" line="237" col="12">
+   <Item kind="Loci-Declaration" line="238" col="35">
+    <Explicitly-Qualified-Segment line="238" col="5">
+     <Variables>
+      <Variable idnr="28" spelling="D" line="238" col="7"/>
+     </Variables>
+     <Clustered-Type line="238" col="24">
+      <Adjective-Cluster>
+       <NegatedAdjective line="238" col="14">
+        <Adjective nr="2" spelling="empty" line="238" col="20"/>
+       </NegatedAdjective>
+      </Adjective-Cluster>
+      <Standard-Type nr="1" spelling="set" line="238" col="24"/>
+     </Clustered-Type>
+    </Explicitly-Qualified-Segment>
+   </Item>
+   <Item kind="Loci-Declaration" line="238" col="35">
+    <Explicitly-Qualified-Segment line="238" col="25">
+     <Variables>
+      <Variable idnr="2" spelling="X" line="238" col="27"/>
+     </Variables>
+     <Standard-Type nr="1" spelling="set" line="238" col="34"/>
+    </Explicitly-Qualified-Segment>
+   </Item>
+   <Item kind="Cluster" line="239" col="9">
+    <Functorial-Registration line="239" col="9">
+     <Infix-Term nr="3" spelling="\/" line="239" col="14">
+      <Arguments>
+       <Simple-Term idnr="28" spelling="D" line="239" col="11"/>
+      </Arguments>
+      <Arguments>
+       <Simple-Term idnr="2" spelling="X" line="239" col="16"/>
+      </Arguments>
+     </Infix-Term>
+     <Adjective-Cluster>
+      <NegatedAdjective line="239" col="23">
+       <Adjective nr="2" spelling="empty" line="239" col="29"/>
+      </NegatedAdjective>
+     </Adjective-Cluster>
+    </Functorial-Registration>
+   </Item>
+   <Item kind="Correctness-Condition" condition="coherence" line="240" col="11">
+    <Block kind="Proof" line="241" col="7">
+     <Item kind="Choice-Statement" line="242" col="12">
+      <Explicitly-Qualified-Segment line="242" col="12">
+       <Variables>
+        <Variable idnr="5" spelling="x" line="242" col="14"/>
+       </Variables>
+       <Standard-Type nr="1" spelling="set" line="242" col="24"/>
+      </Explicitly-Qualified-Segment>
+      <Conditions>
+       <Proposition>
+        <Label idnr="12" spelling="A1" line="243" col="2"/>
+        <Predicative-Formula nr="3" spelling="in" line="243" col="8">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="243" col="5"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="28" spelling="D" line="243" col="10"/>
+         </Arguments>
+        </Predicative-Formula>
+       </Proposition>
+      </Conditions>
+      <Straightforward-Justification line="243" col="13">
+       <Local-Reference line="243" col="18" idnr="14" spelling="Def1"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Regular-Statement" shape="Compact-Statement" line="244" col="5">
+      <Proposition>
+       <Predicative-Formula nr="3" spelling="in" line="244" col="8">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="244" col="5"/>
+        </Arguments>
+        <Arguments>
+         <Infix-Term nr="3" spelling="\/" line="244" col="13">
+          <Arguments>
+           <Simple-Term idnr="28" spelling="D" line="244" col="10"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="244" col="15"/>
+          </Arguments>
+         </Infix-Term>
+        </Arguments>
+       </Predicative-Formula>
+      </Proposition>
+      <Straightforward-Justification line="244" col="18">
+       <Local-Reference line="244" col="21" idnr="12" spelling="A1"/>
+       <Local-Reference line="244" col="26" idnr="15" spelling="Def3"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="245" col="12">
+      <Proposition>
+       <Existential-Quantifier-Formula line="245" col="40">
+        <Explicitly-Qualified-Segment line="245" col="12">
+         <Variables>
+          <Variable idnr="5" spelling="x" line="245" col="14"/>
+         </Variables>
+         <Standard-Type nr="1" spelling="set" line="245" col="24"/>
+        </Explicitly-Qualified-Segment>
+        <Predicative-Formula nr="3" spelling="in" line="245" col="32">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="245" col="29"/>
+         </Arguments>
+         <Arguments>
+          <Infix-Term nr="3" spelling="\/" line="245" col="37">
+           <Arguments>
+            <Simple-Term idnr="28" spelling="D" line="245" col="34"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="2" spelling="X" line="245" col="39"/>
+           </Arguments>
+          </Infix-Term>
+         </Arguments>
+        </Predicative-Formula>
+       </Existential-Quantifier-Formula>
+      </Proposition>
+      <Straightforward-Justification line="245" col="39">
+       <Link line="245" col="9"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+   <Item kind="Cluster" line="247" col="9">
+    <Functorial-Registration line="247" col="9">
+     <Infix-Term nr="3" spelling="\/" line="247" col="14">
+      <Arguments>
+       <Simple-Term idnr="2" spelling="X" line="247" col="11"/>
+      </Arguments>
+      <Arguments>
+       <Simple-Term idnr="28" spelling="D" line="247" col="16"/>
+      </Arguments>
+     </Infix-Term>
+     <Adjective-Cluster>
+      <NegatedAdjective line="247" col="23">
+       <Adjective nr="2" spelling="empty" line="247" col="29"/>
+      </NegatedAdjective>
+     </Adjective-Cluster>
+    </Functorial-Registration>
+   </Item>
+   <Item kind="Correctness-Condition" condition="coherence" line="248" col="11">
+    <Straightforward-Justification line="248" col="11"/>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Regular-Statement" shape="Compact-Statement" line="251" col="3">
+  <Proposition>
+   <Label idnr="29" spelling="Lm1" line="251" col="3"/>
+   <Conditional-Formula line="252" col="5">
+    <Attributive-Formula line="251" col="23">
+     <Simple-Term idnr="2" spelling="X" line="251" col="6"/>
+     <Adjective-Cluster>
+      <Adjective nr="2" spelling="empty" line="251" col="15"/>
+     </Adjective-Cluster>
+    </Attributive-Formula>
+    <Predicative-Formula nr="1" spelling="=" line="251" col="27">
+     <Arguments>
+      <Simple-Term idnr="2" spelling="X" line="251" col="25"/>
+     </Arguments>
+     <Arguments>
+      <Infix-Term nr="2" spelling="&#x7B;&#x7D;" line="251" col="30">
+       <Arguments/>
+       <Arguments/>
+      </Infix-Term>
+     </Arguments>
+    </Predicative-Formula>
+   </Conditional-Formula>
+  </Proposition>
+  <Block kind="Proof" line="252" col="5">
+   <Item kind="Assumption" line="253" col="8">
+    <Single-Assumption line="253" col="8">
+     <Proposition>
+      <Negated-Formula line="253" col="28">
+       <Existential-Quantifier-Formula line="253" col="28">
+        <Implicitly-Qualified-Segment line="253" col="17">
+         <Variable idnr="5" spelling="x" line="253" col="17"/>
+        </Implicitly-Qualified-Segment>
+        <Predicative-Formula nr="3" spelling="in" line="253" col="25">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="253" col="22"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="253" col="27"/>
+         </Arguments>
+        </Predicative-Formula>
+       </Existential-Quantifier-Formula>
+      </Negated-Formula>
+     </Proposition>
+    </Single-Assumption>
+   </Item>
+   <Item kind="Regular-Statement" shape="Compact-Statement" line="254" col="8">
+    <Proposition>
+     <Biconditional-Formula line="254" col="28">
+      <Predicative-Formula nr="3" spelling="in" line="254" col="11">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="254" col="8"/>
+       </Arguments>
+       <Arguments>
+        <Infix-Term nr="2" spelling="&#x7B;&#x7D;" line="254" col="14">
+         <Arguments/>
+         <Arguments/>
+        </Infix-Term>
+       </Arguments>
+      </Predicative-Formula>
+      <Predicative-Formula nr="3" spelling="in" line="254" col="23">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="254" col="20"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="254" col="25"/>
+       </Arguments>
+      </Predicative-Formula>
+     </Biconditional-Formula>
+    </Proposition>
+    <Straightforward-Justification line="254" col="28">
+     <Link line="254" col="6"/>
+     <Local-Reference line="254" col="33" idnr="14" spelling="Def1"/>
+    </Straightforward-Justification>
+   </Item>
+   <Item kind="Conclusion" shape="Compact-Statement" line="255" col="14">
+    <Proposition>
+     <Thesis line="255" col="14"/>
+    </Proposition>
+    <Straightforward-Justification line="255" col="17">
+     <Link line="255" col="7"/>
+     <Theorem-Reference line="255" col="26" nr="1" spelling="TARSKI" number="1"/>
+    </Straightforward-Justification>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Theorem-Item" line="258" col="7">
+  <Proposition>
+   <Label idnr="30" spelling="Th3" line="258" col="11"/>
+   <Biconditional-Formula line="260" col="5">
+    <Predicative-Formula nr="9" spelling="meets" line="259" col="9">
+     <Arguments>
+      <Simple-Term idnr="2" spelling="X" line="259" col="3"/>
+     </Arguments>
+     <Arguments>
+      <Simple-Term idnr="3" spelling="Y" line="259" col="11"/>
+     </Arguments>
+    </Predicative-Formula>
+    <Existential-Quantifier-Formula line="260" col="5">
+     <Implicitly-Qualified-Segment line="259" col="20">
+      <Variable idnr="5" spelling="x" line="259" col="20"/>
+     </Implicitly-Qualified-Segment>
+     <Conjunctive-Formula line="260" col="5">
+      <Predicative-Formula nr="3" spelling="in" line="259" col="28">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="259" col="25"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="259" col="30"/>
+       </Arguments>
+      </Predicative-Formula>
+      <Predicative-Formula nr="3" spelling="in" line="259" col="37">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="259" col="34"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="259" col="39"/>
+       </Arguments>
+      </Predicative-Formula>
+     </Conjunctive-Formula>
+    </Existential-Quantifier-Formula>
+   </Biconditional-Formula>
+  </Proposition>
+  <Block kind="Proof" line="260" col="5">
+   <Item kind="Conclusion" shape="Diffuse-Statement" line="261" col="8">
+    <Block kind="Hereby-Reasoning" line="261" col="8">
+     <Item kind="Assumption" line="262" col="10">
+      <Single-Assumption line="262" col="10">
+       <Proposition>
+        <Predicative-Formula nr="9" spelling="meets" line="262" col="18">
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="262" col="12"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="3" spelling="Y" line="262" col="20"/>
+         </Arguments>
+        </Predicative-Formula>
+       </Proposition>
+      </Single-Assumption>
+     </Item>
+     <Item kind="Regular-Statement" shape="Compact-Statement" line="263" col="10">
+      <Proposition>
+       <Predicative-Formula nr="2" spelling="&#x3C;&#x3E;" line="263" col="18">
+        <Arguments>
+         <Infix-Term nr="4" spelling="/\" line="263" col="13">
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="263" col="10"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="263" col="15"/>
+          </Arguments>
+         </Infix-Term>
+        </Arguments>
+        <Arguments>
+         <Infix-Term nr="2" spelling="&#x7B;&#x7D;" line="263" col="21">
+          <Arguments/>
+          <Arguments/>
+         </Infix-Term>
+        </Arguments>
+       </Predicative-Formula>
+      </Proposition>
+      <Straightforward-Justification line="263" col="24">
+       <Link line="263" col="8"/>
+       <Local-Reference line="263" col="29" idnr="24" spelling="Def7"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Regular-Statement" shape="Compact-Statement" line="264" col="10">
+      <Proposition>
+       <Negated-Formula line="264" col="31">
+        <Attributive-Formula line="264" col="31">
+         <Infix-Term nr="4" spelling="/\" line="264" col="13">
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="264" col="10"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="264" col="15"/>
+          </Arguments>
+         </Infix-Term>
+         <Adjective-Cluster>
+          <Adjective nr="2" spelling="empty" line="264" col="28"/>
+         </Adjective-Cluster>
+        </Attributive-Formula>
+       </Negated-Formula>
+      </Proposition>
+      <Straightforward-Justification line="264" col="31">
+       <Link line="264" col="8"/>
+       <Local-Reference line="264" col="35" idnr="29" spelling="Lm1"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Choice-Statement" line="265" col="17">
+      <Implicitly-Qualified-Segment line="265" col="19">
+       <Variable idnr="5" spelling="x" line="265" col="19"/>
+      </Implicitly-Qualified-Segment>
+      <Conditions>
+       <Proposition>
+        <Label idnr="12" spelling="A1" line="266" col="2"/>
+        <Predicative-Formula nr="3" spelling="in" line="266" col="8">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="266" col="5"/>
+         </Arguments>
+         <Arguments>
+          <Infix-Term nr="4" spelling="/\" line="266" col="13">
+           <Arguments>
+            <Simple-Term idnr="2" spelling="X" line="266" col="10"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="3" spelling="Y" line="266" col="15"/>
+           </Arguments>
+          </Infix-Term>
+         </Arguments>
+        </Predicative-Formula>
+       </Proposition>
+      </Conditions>
+      <Straightforward-Justification line="266" col="18">
+       <Link line="265" col="8"/>
+       <Local-Reference line="266" col="23" idnr="14" spelling="Def1"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Exemplification" line="267" col="11">
+      <Variable idnr="5" spelling="x" line="267" col="10"/>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="268" col="10">
+      <Proposition>
+       <Conjunctive-Formula line="268" col="27">
+        <Predicative-Formula nr="3" spelling="in" line="268" col="13">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="268" col="10"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="268" col="15"/>
+         </Arguments>
+        </Predicative-Formula>
+        <Predicative-Formula nr="3" spelling="in" line="268" col="22">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="268" col="19"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="3" spelling="Y" line="268" col="24"/>
+         </Arguments>
+        </Predicative-Formula>
+       </Conjunctive-Formula>
+      </Proposition>
+      <Straightforward-Justification line="268" col="27">
+       <Local-Reference line="268" col="30" idnr="12" spelling="A1"/>
+       <Local-Reference line="268" col="35" idnr="18" spelling="Def4"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+   <Item kind="Existential-Assumption" line="270" col="7">
+    <Implicitly-Qualified-Segment line="270" col="9">
+     <Variable idnr="5" spelling="x" line="270" col="9"/>
+    </Implicitly-Qualified-Segment>
+    <Conditions>
+     <Proposition>
+      <Label idnr="13" spelling="A2" line="271" col="2"/>
+      <Conjunctive-Formula line="271" col="20">
+       <Predicative-Formula nr="3" spelling="in" line="271" col="8">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="271" col="5"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="271" col="10"/>
+        </Arguments>
+       </Predicative-Formula>
+       <Predicative-Formula nr="3" spelling="in" line="271" col="17">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="271" col="14"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="3" spelling="Y" line="271" col="19"/>
+        </Arguments>
+       </Predicative-Formula>
+      </Conjunctive-Formula>
+     </Proposition>
+    </Conditions>
+   </Item>
+   <Item kind="Regular-Statement" shape="Compact-Statement" line="272" col="3">
+    <Proposition>
+     <Predicative-Formula nr="3" spelling="in" line="272" col="6">
+      <Arguments>
+       <Simple-Term idnr="5" spelling="x" line="272" col="3"/>
+      </Arguments>
+      <Arguments>
+       <Infix-Term nr="4" spelling="/\" line="272" col="11">
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="272" col="8"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="3" spelling="Y" line="272" col="13"/>
+        </Arguments>
+       </Infix-Term>
+      </Arguments>
+     </Predicative-Formula>
+    </Proposition>
+    <Straightforward-Justification line="272" col="16">
+     <Local-Reference line="272" col="19" idnr="13" spelling="A2"/>
+     <Local-Reference line="272" col="24" idnr="18" spelling="Def4"/>
+    </Straightforward-Justification>
+   </Item>
+   <Item kind="Regular-Statement" shape="Compact-Statement" line="273" col="8">
+    <Proposition>
+     <Predicative-Formula nr="2" spelling="&#x3C;&#x3E;" line="273" col="16">
+      <Arguments>
+       <Infix-Term nr="4" spelling="/\" line="273" col="11">
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="273" col="8"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="3" spelling="Y" line="273" col="13"/>
+        </Arguments>
+       </Infix-Term>
+      </Arguments>
+      <Arguments>
+       <Infix-Term nr="2" spelling="&#x7B;&#x7D;" line="273" col="19">
+        <Arguments/>
+        <Arguments/>
+       </Infix-Term>
+      </Arguments>
+     </Predicative-Formula>
+    </Proposition>
+    <Straightforward-Justification line="273" col="22">
+     <Link line="273" col="6"/>
+     <Local-Reference line="273" col="27" idnr="14" spelling="Def1"/>
+    </Straightforward-Justification>
+   </Item>
+   <Item kind="Conclusion" shape="Compact-Statement" line="274" col="14">
+    <Proposition>
+     <Thesis line="274" col="14"/>
+    </Proposition>
+    <Straightforward-Justification line="274" col="17">
+     <Link line="274" col="7"/>
+     <Local-Reference line="274" col="22" idnr="24" spelling="Def7"/>
+    </Straightforward-Justification>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Theorem-Item" line="277" col="7">
+  <Proposition>
+   <Biconditional-Formula line="279" col="5">
+    <Predicative-Formula nr="9" spelling="meets" line="278" col="9">
+     <Arguments>
+      <Simple-Term idnr="2" spelling="X" line="278" col="3"/>
+     </Arguments>
+     <Arguments>
+      <Simple-Term idnr="3" spelling="Y" line="278" col="11"/>
+     </Arguments>
+    </Predicative-Formula>
+    <Existential-Quantifier-Formula line="279" col="5">
+     <Implicitly-Qualified-Segment line="278" col="20">
+      <Variable idnr="5" spelling="x" line="278" col="20"/>
+     </Implicitly-Qualified-Segment>
+     <Predicative-Formula nr="3" spelling="in" line="278" col="28">
+      <Arguments>
+       <Simple-Term idnr="5" spelling="x" line="278" col="25"/>
+      </Arguments>
+      <Arguments>
+       <Infix-Term nr="4" spelling="/\" line="278" col="33">
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="278" col="30"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="3" spelling="Y" line="278" col="35"/>
+        </Arguments>
+       </Infix-Term>
+      </Arguments>
+     </Predicative-Formula>
+    </Existential-Quantifier-Formula>
+   </Biconditional-Formula>
+  </Proposition>
+  <Block kind="Proof" line="279" col="5">
+   <Item kind="Conclusion" shape="Diffuse-Statement" line="280" col="8">
+    <Block kind="Hereby-Reasoning" line="280" col="8">
+     <Item kind="Assumption" line="281" col="10">
+      <Single-Assumption line="281" col="10">
+       <Proposition>
+        <Predicative-Formula nr="9" spelling="meets" line="281" col="18">
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="281" col="12"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="3" spelling="Y" line="281" col="20"/>
+         </Arguments>
+        </Predicative-Formula>
+       </Proposition>
+      </Single-Assumption>
+     </Item>
+     <Item kind="Regular-Statement" shape="Compact-Statement" line="282" col="10">
+      <Proposition>
+       <Predicative-Formula nr="2" spelling="&#x3C;&#x3E;" line="282" col="18">
+        <Arguments>
+         <Infix-Term nr="4" spelling="/\" line="282" col="13">
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="282" col="10"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="282" col="15"/>
+          </Arguments>
+         </Infix-Term>
+        </Arguments>
+        <Arguments>
+         <Infix-Term nr="2" spelling="&#x7B;&#x7D;" line="282" col="21">
+          <Arguments/>
+          <Arguments/>
+         </Infix-Term>
+        </Arguments>
+       </Predicative-Formula>
+      </Proposition>
+      <Straightforward-Justification line="282" col="24">
+       <Link line="282" col="8"/>
+       <Local-Reference line="282" col="29" idnr="24" spelling="Def7"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Regular-Statement" shape="Compact-Statement" line="283" col="10">
+      <Proposition>
+       <Negated-Formula line="283" col="31">
+        <Attributive-Formula line="283" col="31">
+         <Infix-Term nr="4" spelling="/\" line="283" col="13">
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="283" col="10"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="283" col="15"/>
+          </Arguments>
+         </Infix-Term>
+         <Adjective-Cluster>
+          <Adjective nr="2" spelling="empty" line="283" col="28"/>
+         </Adjective-Cluster>
+        </Attributive-Formula>
+       </Negated-Formula>
+      </Proposition>
+      <Straightforward-Justification line="283" col="31">
+       <Link line="283" col="8"/>
+       <Local-Reference line="283" col="35" idnr="29" spelling="Lm1"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Choice-Statement" line="284" col="17">
+      <Implicitly-Qualified-Segment line="284" col="19">
+       <Variable idnr="5" spelling="x" line="284" col="19"/>
+      </Implicitly-Qualified-Segment>
+      <Conditions>
+       <Proposition>
+        <Label idnr="12" spelling="A1" line="285" col="2"/>
+        <Predicative-Formula nr="3" spelling="in" line="285" col="8">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="285" col="5"/>
+         </Arguments>
+         <Arguments>
+          <Infix-Term nr="4" spelling="/\" line="285" col="13">
+           <Arguments>
+            <Simple-Term idnr="2" spelling="X" line="285" col="10"/>
+           </Arguments>
+           <Arguments>
+            <Simple-Term idnr="3" spelling="Y" line="285" col="15"/>
+           </Arguments>
+          </Infix-Term>
+         </Arguments>
+        </Predicative-Formula>
+       </Proposition>
+      </Conditions>
+      <Straightforward-Justification line="285" col="18">
+       <Link line="284" col="8"/>
+       <Local-Reference line="285" col="23" idnr="14" spelling="Def1"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Exemplification" line="286" col="11">
+      <Variable idnr="5" spelling="x" line="286" col="10"/>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="287" col="10">
+      <Proposition>
+       <Predicative-Formula nr="3" spelling="in" line="287" col="13">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="287" col="10"/>
+        </Arguments>
+        <Arguments>
+         <Infix-Term nr="4" spelling="/\" line="287" col="18">
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="287" col="15"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="287" col="20"/>
+          </Arguments>
+         </Infix-Term>
+        </Arguments>
+       </Predicative-Formula>
+      </Proposition>
+      <Straightforward-Justification line="287" col="23">
+       <Local-Reference line="287" col="26" idnr="12" spelling="A1"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+   <Item kind="Assumption" line="289" col="8">
+    <Single-Assumption line="289" col="8">
+     <Proposition>
+      <Existential-Quantifier-Formula line="289" col="29">
+       <Implicitly-Qualified-Segment line="289" col="13">
+        <Variable idnr="5" spelling="x" line="289" col="13"/>
+       </Implicitly-Qualified-Segment>
+       <Predicative-Formula nr="3" spelling="in" line="289" col="21">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="289" col="18"/>
+        </Arguments>
+        <Arguments>
+         <Infix-Term nr="4" spelling="/\" line="289" col="26">
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="289" col="23"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="289" col="28"/>
+          </Arguments>
+         </Infix-Term>
+        </Arguments>
+       </Predicative-Formula>
+      </Existential-Quantifier-Formula>
+     </Proposition>
+    </Single-Assumption>
+   </Item>
+   <Item kind="Regular-Statement" shape="Compact-Statement" line="290" col="8">
+    <Proposition>
+     <Predicative-Formula nr="2" spelling="&#x3C;&#x3E;" line="290" col="16">
+      <Arguments>
+       <Infix-Term nr="4" spelling="/\" line="290" col="11">
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="290" col="8"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="3" spelling="Y" line="290" col="13"/>
+        </Arguments>
+       </Infix-Term>
+      </Arguments>
+      <Arguments>
+       <Infix-Term nr="2" spelling="&#x7B;&#x7D;" line="290" col="19">
+        <Arguments/>
+        <Arguments/>
+       </Infix-Term>
+      </Arguments>
+     </Predicative-Formula>
+    </Proposition>
+    <Straightforward-Justification line="290" col="22">
+     <Link line="290" col="6"/>
+     <Local-Reference line="290" col="27" idnr="14" spelling="Def1"/>
+    </Straightforward-Justification>
+   </Item>
+   <Item kind="Conclusion" shape="Compact-Statement" line="291" col="14">
+    <Proposition>
+     <Thesis line="291" col="14"/>
+    </Proposition>
+    <Straightforward-Justification line="291" col="17">
+     <Link line="291" col="7"/>
+     <Local-Reference line="291" col="22" idnr="24" spelling="Def7"/>
+    </Straightforward-Justification>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Theorem-Item" line="294" col="7">
+  <Proposition>
+   <Conditional-Formula line="296" col="4">
+    <Conjunctive-Formula line="295" col="34">
+     <Predicative-Formula nr="6" spelling="misses" line="295" col="10">
+      <Arguments>
+       <Simple-Term idnr="2" spelling="X" line="295" col="3"/>
+      </Arguments>
+      <Arguments>
+       <Simple-Term idnr="3" spelling="Y" line="295" col="12"/>
+      </Arguments>
+     </Predicative-Formula>
+     <Predicative-Formula nr="3" spelling="in" line="295" col="19">
+      <Arguments>
+       <Simple-Term idnr="5" spelling="x" line="295" col="16"/>
+      </Arguments>
+      <Arguments>
+       <Infix-Term nr="3" spelling="\/" line="295" col="24">
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="295" col="21"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="3" spelling="Y" line="295" col="26"/>
+        </Arguments>
+       </Infix-Term>
+      </Arguments>
+     </Predicative-Formula>
+    </Conjunctive-Formula>
+    <Disjunctive-Formula line="296" col="4">
+     <Conjunctive-Formula line="295" col="57">
+      <Predicative-Formula nr="3" spelling="in" line="295" col="39">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="295" col="36"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="295" col="41"/>
+       </Arguments>
+      </Predicative-Formula>
+      <Negated-Formula line="295" col="57">
+       <Predicative-Formula nr="3" spelling="in" line="295" col="52">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="295" col="49"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="3" spelling="Y" line="295" col="54"/>
+        </Arguments>
+       </Predicative-Formula>
+      </Negated-Formula>
+     </Conjunctive-Formula>
+     <Conjunctive-Formula line="296" col="4">
+      <Predicative-Formula nr="3" spelling="in" line="295" col="62">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="295" col="59"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="295" col="64"/>
+       </Arguments>
+      </Predicative-Formula>
+      <Negated-Formula line="296" col="4">
+       <Predicative-Formula nr="3" spelling="in" line="295" col="75">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="295" col="72"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="295" col="77"/>
+        </Arguments>
+       </Predicative-Formula>
+      </Negated-Formula>
+     </Conjunctive-Formula>
+    </Disjunctive-Formula>
+   </Conditional-Formula>
+  </Proposition>
+  <Straightforward-Justification line="296" col="4">
+   <Local-Reference line="296" col="9" idnr="15" spelling="Def3"/>
+   <Local-Reference line="296" col="13" idnr="30" spelling="Th3"/>
+  </Straightforward-Justification>
+ </Item>
+ <Item kind="Scheme-Block-Item" line="298" col="6">
+  <Block kind="Scheme-Block" line="298" col="6">
+   <Item kind="Scheme-Head" line="299" col="16">
+    <Scheme idnr="31" spelling="Extensionality"/>
+    <Schematic-Variables>
+     <Functor-Segment line="299" col="24">
+      <Variables>
+       <Variable idnr="2" spelling="X" line="299" col="20"/>
+       <Variable idnr="3" spelling="Y" line="299" col="22"/>
+      </Variables>
+      <Type-List>
+      </Type-List>
+      <Type-Specification>
+       <Standard-Type nr="1" spelling="set" line="299" col="31"/>
+      </Type-Specification>
+     </Functor-Segment>
+     <Predicate-Segment line="299" col="39">
+      <Variables>
+       <Variable idnr="10" spelling="P" line="299" col="34"/>
+      </Variables>
+      <Type-List>
+       <Standard-Type nr="1" spelling="set" line="299" col="38"/>
+      </Type-List>
+     </Predicate-Segment>
+    </Schematic-Variables>
+    <Predicative-Formula nr="1" spelling="=" line="299" col="49">
+     <Arguments>
+      <Private-Functor-Term idnr="2" spelling="X" line="299" col="45"/>
+     </Arguments>
+     <Arguments>
+      <Private-Functor-Term idnr="3" spelling="Y" line="299" col="51"/>
+     </Arguments>
+    </Predicative-Formula>
+    <Provisional-Formulas>
+     <Proposition>
+      <Label idnr="12" spelling="A1" line="301" col="2"/>
+      <Universal-Quantifier-Formula line="301" col="37">
+       <Implicitly-Qualified-Segment line="301" col="9">
+        <Variable idnr="5" spelling="x" line="301" col="9"/>
+       </Implicitly-Qualified-Segment>
+       <Biconditional-Formula line="301" col="37">
+        <Predicative-Formula nr="3" spelling="in" line="301" col="20">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="301" col="17"/>
+         </Arguments>
+         <Arguments>
+          <Private-Functor-Term idnr="2" spelling="X" line="301" col="22"/>
+         </Arguments>
+        </Predicative-Formula>
+        <Private-Predicate-Formula idnr="10" spelling="P" line="301" col="30">
+         <Simple-Term idnr="5" spelling="x" line="301" col="32"/>
+        </Private-Predicate-Formula>
+       </Biconditional-Formula>
+      </Universal-Quantifier-Formula>
+     </Proposition>
+     <Proposition>
+      <Label idnr="13" spelling="A2" line="302" col="2"/>
+      <Universal-Quantifier-Formula line="303" col="5">
+       <Implicitly-Qualified-Segment line="302" col="9">
+        <Variable idnr="5" spelling="x" line="302" col="9"/>
+       </Implicitly-Qualified-Segment>
+       <Biconditional-Formula line="303" col="5">
+        <Predicative-Formula nr="3" spelling="in" line="302" col="20">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="302" col="17"/>
+         </Arguments>
+         <Arguments>
+          <Private-Functor-Term idnr="3" spelling="Y" line="302" col="22"/>
+         </Arguments>
+        </Predicative-Formula>
+        <Private-Predicate-Formula idnr="10" spelling="P" line="302" col="30">
+         <Simple-Term idnr="5" spelling="x" line="302" col="32"/>
+        </Private-Predicate-Formula>
+       </Biconditional-Formula>
+      </Universal-Quantifier-Formula>
+     </Proposition>
+    </Provisional-Formulas>
+   </Item>
+   <Item kind="Regular-Statement" shape="Compact-Statement" line="304" col="2">
+    <Proposition>
+     <Label idnr="16" spelling="A3" line="304" col="2"/>
+     <Conditional-Formula line="305" col="7">
+      <Predicative-Formula nr="3" spelling="in" line="304" col="8">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="304" col="5"/>
+       </Arguments>
+       <Arguments>
+        <Private-Functor-Term idnr="3" spelling="Y" line="304" col="10"/>
+       </Arguments>
+      </Predicative-Formula>
+      <Predicative-Formula nr="3" spelling="in" line="304" col="25">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="304" col="22"/>
+       </Arguments>
+       <Arguments>
+        <Private-Functor-Term idnr="2" spelling="X" line="304" col="27"/>
+       </Arguments>
+      </Predicative-Formula>
+     </Conditional-Formula>
+    </Proposition>
+    <Block kind="Proof" line="305" col="7">
+     <Item kind="Assumption" line="306" col="10">
+      <Single-Assumption line="306" col="10">
+       <Proposition>
+        <Predicative-Formula nr="3" spelling="in" line="306" col="15">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="306" col="12"/>
+         </Arguments>
+         <Arguments>
+          <Private-Functor-Term idnr="3" spelling="Y" line="306" col="17"/>
+         </Arguments>
+        </Predicative-Formula>
+       </Proposition>
+      </Single-Assumption>
+     </Item>
+     <Item kind="Regular-Statement" shape="Compact-Statement" line="307" col="10">
+      <Proposition>
+       <Private-Predicate-Formula idnr="10" spelling="P" line="307" col="10">
+        <Simple-Term idnr="5" spelling="x" line="307" col="12"/>
+       </Private-Predicate-Formula>
+      </Proposition>
+      <Straightforward-Justification line="307" col="16">
+       <Link line="307" col="8"/>
+       <Local-Reference line="307" col="19" idnr="13" spelling="A2"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="308" col="16">
+      <Proposition>
+       <Thesis line="308" col="16"/>
+      </Proposition>
+      <Straightforward-Justification line="308" col="19">
+       <Link line="308" col="9"/>
+       <Local-Reference line="308" col="22" idnr="12" spelling="A1"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+   <Item kind="Regular-Statement" shape="Compact-Statement" line="310" col="3">
+    <Proposition>
+     <Conditional-Formula line="311" col="7">
+      <Predicative-Formula nr="3" spelling="in" line="310" col="6">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="310" col="3"/>
+       </Arguments>
+       <Arguments>
+        <Private-Functor-Term idnr="2" spelling="X" line="310" col="8"/>
+       </Arguments>
+      </Predicative-Formula>
+      <Predicative-Formula nr="3" spelling="in" line="310" col="23">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="310" col="20"/>
+       </Arguments>
+       <Arguments>
+        <Private-Functor-Term idnr="3" spelling="Y" line="310" col="25"/>
+       </Arguments>
+      </Predicative-Formula>
+     </Conditional-Formula>
+    </Proposition>
+    <Block kind="Proof" line="311" col="7">
+     <Item kind="Assumption" line="312" col="10">
+      <Single-Assumption line="312" col="10">
+       <Proposition>
+        <Predicative-Formula nr="3" spelling="in" line="312" col="15">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="312" col="12"/>
+         </Arguments>
+         <Arguments>
+          <Private-Functor-Term idnr="2" spelling="X" line="312" col="17"/>
+         </Arguments>
+        </Predicative-Formula>
+       </Proposition>
+      </Single-Assumption>
+     </Item>
+     <Item kind="Regular-Statement" shape="Compact-Statement" line="313" col="10">
+      <Proposition>
+       <Private-Predicate-Formula idnr="10" spelling="P" line="313" col="10">
+        <Simple-Term idnr="5" spelling="x" line="313" col="12"/>
+       </Private-Predicate-Formula>
+      </Proposition>
+      <Straightforward-Justification line="313" col="16">
+       <Link line="313" col="8"/>
+       <Local-Reference line="313" col="19" idnr="12" spelling="A1"/>
+      </Straightforward-Justification>
+     </Item>
+     <Item kind="Conclusion" shape="Compact-Statement" line="314" col="16">
+      <Proposition>
+       <Thesis line="314" col="16"/>
+      </Proposition>
+      <Straightforward-Justification line="314" col="19">
+       <Link line="314" col="9"/>
+       <Local-Reference line="314" col="22" idnr="13" spelling="A2"/>
+      </Straightforward-Justification>
+     </Item>
+    </Block>
+   </Item>
+   <Item kind="Conclusion" shape="Compact-Statement" line="316" col="14">
+    <Proposition>
+     <Thesis line="316" col="14"/>
+    </Proposition>
+    <Straightforward-Justification line="316" col="17">
+     <Link line="316" col="7"/>
+     <Local-Reference line="316" col="20" idnr="16" spelling="A3"/>
+     <Theorem-Reference line="316" col="29" nr="1" spelling="TARSKI" number="1"/>
+    </Straightforward-Justification>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Scheme-Block-Item" line="319" col="6">
+  <Block kind="Scheme-Block" line="319" col="6">
+   <Item kind="Scheme-Head" line="320" col="7">
+    <Scheme idnr="32" spelling="SetEq"/>
+    <Schematic-Variables>
+     <Predicate-Segment line="320" col="16">
+      <Variables>
+       <Variable idnr="10" spelling="P" line="320" col="11"/>
+      </Variables>
+      <Type-List>
+       <Standard-Type nr="1" spelling="set" line="320" col="15"/>
+      </Type-List>
+     </Predicate-Segment>
+    </Schematic-Variables>
+    <Universal-Quantifier-Formula line="324" col="7">
+     <Explicitly-Qualified-Segment line="321" col="5">
+      <Variables>
+       <Variable idnr="33" spelling="X1" line="321" col="8"/>
+       <Variable idnr="34" spelling="X2" line="321" col="11"/>
+      </Variables>
+      <Standard-Type nr="1" spelling="set" line="321" col="21"/>
+     </Explicitly-Qualified-Segment>
+     <Conditional-Formula line="324" col="7">
+      <Conjunctive-Formula line="323" col="50">
+       <Universal-Quantifier-Formula line="322" col="44">
+        <Explicitly-Qualified-Segment line="322" col="8">
+         <Variables>
+          <Variable idnr="5" spelling="x" line="322" col="10"/>
+         </Variables>
+         <Standard-Type nr="1" spelling="set" line="322" col="20"/>
+        </Explicitly-Qualified-Segment>
+        <Biconditional-Formula line="322" col="44">
+         <Predicative-Formula nr="3" spelling="in" line="322" col="31">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="322" col="28"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="33" spelling="X1" line="322" col="34"/>
+          </Arguments>
+         </Predicative-Formula>
+         <Private-Predicate-Formula idnr="10" spelling="P" line="322" col="40">
+          <Simple-Term idnr="5" spelling="x" line="322" col="42"/>
+         </Private-Predicate-Formula>
+        </Biconditional-Formula>
+       </Universal-Quantifier-Formula>
+       <Universal-Quantifier-Formula line="323" col="44">
+        <Explicitly-Qualified-Segment line="323" col="8">
+         <Variables>
+          <Variable idnr="5" spelling="x" line="323" col="10"/>
+         </Variables>
+         <Standard-Type nr="1" spelling="set" line="323" col="20"/>
+        </Explicitly-Qualified-Segment>
+        <Biconditional-Formula line="323" col="44">
+         <Predicative-Formula nr="3" spelling="in" line="323" col="31">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="323" col="28"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="34" spelling="X2" line="323" col="34"/>
+          </Arguments>
+         </Predicative-Formula>
+         <Private-Predicate-Formula idnr="10" spelling="P" line="323" col="40">
+          <Simple-Term idnr="5" spelling="x" line="323" col="42"/>
+         </Private-Predicate-Formula>
+        </Biconditional-Formula>
+       </Universal-Quantifier-Formula>
+      </Conjunctive-Formula>
+      <Predicative-Formula nr="1" spelling="=" line="323" col="55">
+       <Arguments>
+        <Simple-Term idnr="33" spelling="X1" line="323" col="53"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="34" spelling="X2" line="323" col="58"/>
+       </Arguments>
+      </Predicative-Formula>
+     </Conditional-Formula>
+    </Universal-Quantifier-Formula>
+   </Item>
+   <Item kind="Generalization" line="327" col="43">
+    <Explicitly-Qualified-Segment line="325" col="5">
+     <Variables>
+      <Variable idnr="33" spelling="X1" line="325" col="8"/>
+      <Variable idnr="34" spelling="X2" line="325" col="11"/>
+     </Variables>
+     <Standard-Type nr="1" spelling="set" line="325" col="18"/>
+    </Explicitly-Qualified-Segment>
+   </Item>
+   <Item kind="Assumption" line="327" col="43">
+    <Collective-Assumption line="325" col="28">
+     <Conditions>
+      <Proposition>
+       <Label idnr="12" spelling="A1" line="326" col="2"/>
+       <Universal-Quantifier-Formula line="326" col="46">
+        <Explicitly-Qualified-Segment line="326" col="7">
+         <Variables>
+          <Variable idnr="5" spelling="x" line="326" col="9"/>
+         </Variables>
+         <Standard-Type nr="1" spelling="set" line="326" col="19"/>
+        </Explicitly-Qualified-Segment>
+        <Biconditional-Formula line="326" col="46">
+         <Predicative-Formula nr="3" spelling="in" line="326" col="30">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="326" col="27"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="33" spelling="X1" line="326" col="33"/>
+          </Arguments>
+         </Predicative-Formula>
+         <Private-Predicate-Formula idnr="10" spelling="P" line="326" col="39">
+          <Simple-Term idnr="5" spelling="x" line="326" col="41"/>
+         </Private-Predicate-Formula>
+        </Biconditional-Formula>
+       </Universal-Quantifier-Formula>
+      </Proposition>
+      <Proposition>
+       <Label idnr="13" spelling="A2" line="327" col="2"/>
+       <Universal-Quantifier-Formula line="327" col="43">
+        <Explicitly-Qualified-Segment line="327" col="7">
+         <Variables>
+          <Variable idnr="5" spelling="x" line="327" col="9"/>
+         </Variables>
+         <Standard-Type nr="1" spelling="set" line="327" col="19"/>
+        </Explicitly-Qualified-Segment>
+        <Biconditional-Formula line="327" col="43">
+         <Predicative-Formula nr="3" spelling="in" line="327" col="30">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="327" col="27"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="34" spelling="X2" line="327" col="33"/>
+          </Arguments>
+         </Predicative-Formula>
+         <Private-Predicate-Formula idnr="10" spelling="P" line="327" col="39">
+          <Simple-Term idnr="5" spelling="x" line="327" col="41"/>
+         </Private-Predicate-Formula>
+        </Biconditional-Formula>
+       </Universal-Quantifier-Formula>
+      </Proposition>
+     </Conditions>
+    </Collective-Assumption>
+   </Item>
+   <Item kind="Conclusion" shape="Compact-Statement" line="328" col="13">
+    <Proposition>
+     <Thesis line="328" col="13"/>
+    </Proposition>
+    <Scheme-Justification nr="0" idnr="31" spelling="Extensionality" line="328" col="18">
+     <Local-Reference line="328" col="36" idnr="12" spelling="A1"/>
+     <Local-Reference line="328" col="39" idnr="13" spelling="A2"/>
+    </Scheme-Justification>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Section-Pragma" line="331" col="5">
+ </Item>
+ <Item kind="Theorem-Item" line="334" col="7">
+  <Proposition>
+   <Conditional-Formula line="336" col="5">
+    <Predicative-Formula nr="7" spelling="c&#x3C;" line="335" col="6">
+     <Arguments>
+      <Simple-Term idnr="2" spelling="X" line="335" col="3"/>
+     </Arguments>
+     <Arguments>
+      <Simple-Term idnr="3" spelling="Y" line="335" col="8"/>
+     </Arguments>
+    </Predicative-Formula>
+    <Existential-Quantifier-Formula line="336" col="5">
+     <Implicitly-Qualified-Segment line="335" col="21">
+      <Variable idnr="5" spelling="x" line="335" col="21"/>
+     </Implicitly-Qualified-Segment>
+     <Conjunctive-Formula line="336" col="5">
+      <Predicative-Formula nr="3" spelling="in" line="335" col="29">
+       <Arguments>
+        <Simple-Term idnr="5" spelling="x" line="335" col="26"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="335" col="31"/>
+       </Arguments>
+      </Predicative-Formula>
+      <Negated-Formula line="336" col="5">
+       <Predicative-Formula nr="3" spelling="in" line="335" col="42">
+        <Arguments>
+         <Simple-Term idnr="5" spelling="x" line="335" col="39"/>
+        </Arguments>
+        <Arguments>
+         <Simple-Term idnr="2" spelling="X" line="335" col="44"/>
+        </Arguments>
+       </Predicative-Formula>
+      </Negated-Formula>
+     </Conjunctive-Formula>
+    </Existential-Quantifier-Formula>
+   </Conditional-Formula>
+  </Proposition>
+  <Block kind="Proof" line="336" col="5">
+   <Item kind="Assumption" line="337" col="8">
+    <Single-Assumption line="337" col="8">
+     <Proposition>
+      <Predicative-Formula nr="7" spelling="c&#x3C;" line="337" col="13">
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="337" col="10"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="337" col="15"/>
+       </Arguments>
+      </Predicative-Formula>
+     </Proposition>
+    </Single-Assumption>
+   </Item>
+   <Item kind="Regular-Statement" shape="Compact-Statement" line="338" col="8">
+    <Proposition>
+     <Conjunctive-Formula line="338" col="54">
+      <Negated-Formula line="338" col="42">
+       <Universal-Quantifier-Formula line="338" col="42">
+        <Implicitly-Qualified-Segment line="338" col="17">
+         <Variable idnr="5" spelling="x" line="338" col="17"/>
+        </Implicitly-Qualified-Segment>
+        <Biconditional-Formula line="338" col="42">
+         <Predicative-Formula nr="3" spelling="in" line="338" col="28">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="338" col="25"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="2" spelling="X" line="338" col="30"/>
+          </Arguments>
+         </Predicative-Formula>
+         <Predicative-Formula nr="3" spelling="in" line="338" col="39">
+          <Arguments>
+           <Simple-Term idnr="5" spelling="x" line="338" col="36"/>
+          </Arguments>
+          <Arguments>
+           <Simple-Term idnr="3" spelling="Y" line="338" col="41"/>
+          </Arguments>
+         </Predicative-Formula>
+        </Biconditional-Formula>
+       </Universal-Quantifier-Formula>
+      </Negated-Formula>
+      <Predicative-Formula nr="4" spelling="c=" line="338" col="49">
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="338" col="46"/>
+       </Arguments>
+       <Arguments>
+        <Simple-Term idnr="3" spelling="Y" line="338" col="51"/>
+       </Arguments>
+      </Predicative-Formula>
+     </Conjunctive-Formula>
+    </Proposition>
+    <Straightforward-Justification line="338" col="54">
+     <Link line="338" col="6"/>
+     <Local-Reference line="338" col="59" idnr="25" spelling="Def8"/>
+     <Theorem-Reference line="338" col="68" nr="1" spelling="TARSKI" number="1"/>
+    </Straightforward-Justification>
+   </Item>
+   <Item kind="Conclusion" shape="Compact-Statement" line="339" col="14">
+    <Proposition>
+     <Thesis line="339" col="14"/>
+    </Proposition>
+    <Straightforward-Justification line="339" col="17">
+     <Link line="339" col="7"/>
+     <Definition-Reference line="339" col="30" nr="1" spelling="TARSKI" number="3"/>
+    </Straightforward-Justification>
+   </Item>
+  </Block>
+ </Item>
+ <Item kind="Theorem-Item" line="344" col="7">
+  <Proposition>
+   <Conditional-Formula line="346" col="5">
+    <Predicative-Formula nr="2" spelling="&#x3C;&#x3E;" line="345" col="6">
+     <Arguments>
+      <Simple-Term idnr="2" spelling="X" line="345" col="3"/>
+     </Arguments>
+     <Arguments>
+      <Infix-Term nr="2" spelling="&#x7B;&#x7D;" line="345" col="9">
+       <Arguments/>
+       <Arguments/>
+      </Infix-Term>
+     </Arguments>
+    </Predicative-Formula>
+    <Existential-Quantifier-Formula line="346" col="5">
+     <Implicitly-Qualified-Segment line="345" col="22">
+      <Variable idnr="5" spelling="x" line="345" col="22"/>
+     </Implicitly-Qualified-Segment>
+     <Predicative-Formula nr="3" spelling="in" line="345" col="30">
+      <Arguments>
+       <Simple-Term idnr="5" spelling="x" line="345" col="27"/>
+      </Arguments>
+      <Arguments>
+       <Simple-Term idnr="2" spelling="X" line="345" col="32"/>
+      </Arguments>
+     </Predicative-Formula>
+    </Existential-Quantifier-Formula>
+   </Conditional-Formula>
+  </Proposition>
+  <Block kind="Proof" line="346" col="5">
+   <Item kind="Assumption" line="347" col="8">
+    <Single-Assumption line="347" col="8">
+     <Proposition>
+      <Label idnr="12" spelling="A1" line="348" col="2"/>
+      <Predicative-Formula nr="2" spelling="&#x3C;&#x3E;" line="348" col="8">
+       <Arguments>
+        <Simple-Term idnr="2" spelling="X" line="348" col="5"/>
+       </Arguments>
+       <Arguments>
+        <Infix-Term nr="2" spelling="&#x7B;&#x7D;" line="348" col="11">
+         <Arguments/>
+         <Arguments/>
+        </Infix-Term>
+       </Arguments>
+      </Predicative-Formula>
+     </Proposition>
+    </Single-Assumption>
+   </Item>
+   <Item kind="Assumption" line="349" col="8">
+    <Single-Assumption line="349" col="8">
+     <Proposition>
+      <Negated-Formula line="349" col="28">
+       <Existential-Quantifier-Formula line="349" col="28">
+        <Implicitly-Qualified-Segment line="349" col="17">
+         <Variable idnr="5" spelling="x" line="349" col="17"/>
+        </Implicitly-Qualified-Segment>
+        <Predicative-Formula nr="3" spelling="in" line="349" col="25">
+         <Arguments>
+          <Simple-Term idnr="5" spelling="x" line="349" col="22"/>
+         </Arguments>
+         <Arguments>
+          <Simple-Term idnr="2" spelling="X" line="349" col="27"/>
+         </Arguments>
+        </Predicative-Formula>
+       </Existential-Quantifier-Formula>
+      </Negated-Formula>
+     </Proposition>
+    </Single-Assumption>
+   </Item>
+   <Item kind="Regular-Statement" shape="Compact-Statement" line="350" col="8">
+    <Proposition>
+     <Attributive-Formula line="350" col="20">
+      <Simple-Term idnr="2" spelling="X" line="350" col="8"/>
+      <Adjective-Cluster>
+       <Adjective nr="2" spelling="empty" line="350" col="17"/>
+      </Adjective-Cluster>
+     </Attributive-Formula>
+    </Proposition>
+    <Straightforward-Justification line="350" col="20">
+     <Link line="350" col="6"/>
+     <Local-Reference line="350" col="25" idnr="14" spelling="Def1"/>
+    </Straightforward-Justification>
+   </Item>
+   <Item kind="Conclusion" shape="Compact-Statement" line="351" col="14">
+    <Proposition>
+     <Thesis line="351" col="14"/>
+    </Proposition>
+    <Straightforward-Justification line="351" col="17">
+     <Link line="351" col="7"/>
+     <Local-Reference line="351" col="20" idnr="12" spelling="A1"/>
+     <Local-Reference line="351" col="24" idnr="29" spelling="Lm1"/>
+    </Straightforward-Justification>
+   </Item>
+  </Block>
+ </Item>
+</Text-Proper>

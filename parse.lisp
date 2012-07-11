@@ -123,7 +123,8 @@
        (:ul
 	(:li (:p "For more information about Mizar, see " (:a :href "http://mizar.org" "the Mizar homepage") "."))
 	(:li (:p "To learn more about how Mizar works, see &ldquo;" (:a :href "http://jfr.cib.unibo.it/article/view/1980" :title "Mizar in a nutshell" "Mizar in a nutshell") "&rdquo;, by Adam Grabowski, Artur Korni&#322;owicz, and Adam Naumowicz, " (:i "Journal of Formalized Reasoning") " " (:strong "3") "(2), 2010, pp. 153&ndash;245."))
-	(:li (:p "For a historical overview of Mizar, see &ldquo;" (:a :href "http://markun.cs.shinshu-u.ac.jp/mizar/mma.dir/2005/mma2005(2).pdf" :title "Special Issue on 30 Years of Mizar" "Mizar: The first 30 years") "&rdquo;, by Roman Matuszewski and Piotr Rudnicki, " (:i "Mechanized Mathematics and Its Applications") " " (:strong "4") "(1), March 2005, pp. 3&ndash;24.")))
+	(:li (:p "For a historical overview of Mizar, see &ldquo;" (:a :href "http://markun.cs.shinshu-u.ac.jp/mizar/mma.dir/2005/mma2005(2).pdf" :title "Special Issue on 30 Years of Mizar" "Mizar: The first 30 years") "&rdquo;, by Roman Matuszewski and Piotr Rudnicki, " (:i "Mechanized Mathematics and Its Applications") " " (:strong "4") "(1), March 2005, pp. 3&ndash;24."))
+	(:li (:p "Josef Urban's" (:a :href "http://mizar.cs.ualberta.ca/~mptp/MizAR.html" "MizAR") " (Automated Reasoning for Mizar) service works with semantic representations of Mizar articles (not their parse trees).")))
        (:h1 "The guts")
        (:p "If you're curious about the code that underlies this site, see " (:a :href "https://github.com/jessealama/mizar-parser" :title "mizar-parser on GitHub" "the git repository for it") ".  The site is written in Common Lisp using the excellent " (:a :href "http://weitz.de/hunchentoot/" :title "Hunchentoot" "hunchentoot") " web server.")
        (:h1 "Contact")

@@ -28,7 +28,7 @@
       (:body
        (:h1 "About this service")
        (:p "The intention behind this site is to facilitate programmatic access to Mizar parsing services.  At the moment no HTML-driven interface to the parser services is provided; you are now looking at the only HTML page that this service emits, which is entirely informational.")
-       (:p "This site documents some of the cutting-edge developments in Mizar text transformations.  The site was announced in the paper &lsquo;" (:a :href "http://arxiv.org/abs/1205.0170" "New developments in parsing Mizar") "&rsquo;, by Czes&#322;aw Bylinski and Jesse Alama, which was accepted at " (:a :href "http://www.informatik.uni-bremen.de/cicm2012/cicm.php?event=sysproj&amp;menu=general" :title "Conference on Intelligent Computer Mathematics (CICM 2012) Track E: Systems and Projects" "CICM 2012 Track E (Systems and Projects)") ".")
+       (:p "This site documents some of the cutting-edge developments in Mizar text transformations.  The site was announced in the paper &ldquo;" (:a :href "http://arxiv.org/abs/1205.0170" "New developments in parsing Mizar") "&rdquo;, by Czes&#322;aw Bylinski and Jesse Alama, which was accepted at " (:a :href "http://www.informatik.uni-bremen.de/cicm2012/cicm.php?event=sysproj&amp;menu=general" :title "Conference on Intelligent Computer Mathematics (CICM 2012) Track E: Systems and Projects" "CICM 2012 Track E (Systems and Projects)") ".")
        ((:h1 :id "examples") "Examples")
        (:p "Here are several examples illustrating the transformations  currently supported and the XML representation of the texts.")
        (:ul

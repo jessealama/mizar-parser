@@ -54,7 +54,7 @@
 	  (:li (:a :href "group_10.wsm" "Weakly Strict Mizar form (plain text)"))
 	  (:li (:a :href "group_10.msm" "More Strict Mizar form (plain text)")))))
        ((:h1 :id "download") "Download")
-       (:p "A " (:a :href "/parsing/mizparse.pl" "simple Perl script") " is available to facilitate access to this service.  To get started, just do")
+       (:p "A " (:a :href "/parsing/mizparse.pl" "simple Perl script") " is available to facilitate access to this service.  To get started, download the script and then:")
        ((:blockquote :class "session")
 	(:ol
 	 ((:li :class "comment") "Get an XML parse tree for article.miz")

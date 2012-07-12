@@ -68,7 +68,7 @@
        (:p "For more information, just do " (:code "mizparse.pl --man") ".")
        (:p "Warning: the script is not vanilla Perl because it builds on a few modules available on CPAN.  You may find, on your first execution of the script, that it fails.  Ensure that you have these Perl modules:")
        (:ul
-	(:li (:a :href "http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP.pm") "LWP")
+	(:li (:a :href "http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP.pm" "LWP"))
 	(:li (:a :href "http://search.cpan.org/~jv/Getopt-Long-2.38/lib/Getopt/Long.pm" "Getopt::Long"))
 	(:li (:a :href "http://search.cpan.org/~marekr/Pod-Parser-1.51/lib/Pod/Usage.pm" "Pod::Usage"))
 	(:li (:a :href "http://search.cpan.org/~roode/Readonly-1.03/Readonly.pm" "Readonly")))

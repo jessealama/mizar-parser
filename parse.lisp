@@ -168,15 +168,14 @@
 (defmethod handle (method format transform article)
   (declare (ignore method format transform article))
   (let ((uri (request-uri*))
-	(method-symbol (request-method*))
 	(message (raw-post-data :force-text t)))
     (if message
 	(return-message +http-bad-request+
 			:mime-type "text/plain"
-			:message (format nil "Your request for~%~%  ~a~%~%with the HTTP method~%~%  ~a~%~%with the message of length ~d could not be understood." uri (symbol-name method-symbol) (length message)))
+			:message (format nil "Your request for~%~%  ~a~%~%with the HTTP method~%~%  ~a~%~%with the message of length ~d could not be understood." uri (symbol-name method) (length message)))
 	(return-message +http-bad-request+
 			:mime-type "text/plain"
-			:message (format nil "Your request for~%~%  ~a~%~%with the HTTP method~%~%  ~a~%~%with an empty message could not be understood." uri (symbol-name method-symbol))))))
+			:message (format nil "Your request for~%~%  ~a~%~%with the HTTP method~%~%  ~a~%~%with an empty message could not be understood." uri (symbol-name method))))))
 
 (defmethod handle :around ((method symbol) format transform article)
   (declare (ignore format transform article))

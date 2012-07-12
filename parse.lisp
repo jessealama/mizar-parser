@@ -81,13 +81,13 @@
 	  ((:li :class "comment") "Note the escaping of the URI.")
 	  ((:li :class "comment") "Your browser may wrap the next command over multiple lines;")
 	  ((:li :class "comment") "keep in mind that the URI should not contain whitespace.")
-	  ((:li :class "command") "curl --data @article.miz 'http://mizar.cs.ualberta.ca/parsing/?strictness=wsm&amp;format=text'")
+	  ((:li :class "command") "curl --data @article.miz 'http://mizar.cs.ualberta.ca/parsing/?transform=wsm&amp;format=text'")
 	  ((:li :class "pseudo-response") "Weakly Strict Mizar form of article.miz, in plain text format.")
-	  ((:li :class "command") "curl --data @article.miz 'http://mizar.cs.ualberta.ca/parsing/?strictness=none&amp;format=xml'")
+	  ((:li :class "command") "curl --data @article.miz 'http://mizar.cs.ualberta.ca/parsing/?transform=none&amp;format=xml'")
 	  ((:li :class "pseudo-response") "Parse tree for article.miz, in XML format.")
-	  ((:li :class "command") "curl --data @article.miz 'http://mizar.cs.ualberta.ca/parsing/?strictness=msm&amp;format=text'")
+	  ((:li :class "command") "curl --data @article.miz 'http://mizar.cs.ualberta.ca/parsing/?transform=msm&amp;format=text'")
 	  ((:li :class "pseudo-response") "More Strict Mizar form of article.miz, in plain text format.")
-	  ((:li :class "command") "curl --data @article.miz 'http://mizar.cs.ualberta.ca/parsing/?strictness=msm&amp;format=xml'")
+	  ((:li :class "command") "curl --data @article.miz 'http://mizar.cs.ualberta.ca/parsing/?transform=msm&amp;format=xml'")
 	  ((:li :class "pseudo-response") "XML parse tree of More Strict Mizar form of article.miz.")))
        (:p "Within a Javascript application, one could prepare a suitable HTTP request using the aforementioned XmlHttpRequest approach.  Java developers can use (for example) " (:a :href "http://hc.apache.org/httpcomponents-client-ga/" :title "HttpClient" "the Apache Foundation&apos;s HttpClient") " interface.")
        ((:h1 :id "http-resources") "HTTP resource(s)")
@@ -95,14 +95,14 @@
        (:ul
 	(:li (:p "Supported HTTP Methods: " (:strong "GET") ", " (:strong "POST") ", " (:strong "HEAD") ", " (:strong "OPTIONS") "."))
 	(:li (:p "Protocol: In the message body, include the Mizar text."))
-	(:li (:p "Query Parameters: We support the parameters " (:code "strictness") " and " (:code "format") ".")
+	(:li (:p "Query Parameters: We support the parameters " (:code "transform") " and " (:code "format") ".")
 	     (:ul
 	      (:li (:p (:code "format") ": Two supported values:")
 		   (:ul
 		    (:li (:code "text"))
 		    (:li (:code "xml")))
 		   (:p "The default is " (:code "xml") "."))
-	      (:li (:p (:code "strictness") ": Three supported values:")
+	      (:li (:p (:code "transform") ": Three supported values:")
 		   (:ul
 		    (:li (:p (:code "none"))
 			 (:p "No transformation to the text is done."))
@@ -140,12 +140,12 @@
 		 :port +parser-port+)
   "The Hunchentoot acceptor that we use for the parser service.")
 
-(defgeneric handle (method format strictness article)
+(defgeneric handle (method format transform article)
   (:documentation "Handle the current request on ARTICLE, assuming that it was made using the HTTP method METHOD (e.g., GET, POST, HEAD, PUT, OPTIONS, etc)."))
 
 ;; Don't emit the Server response header
-(defmethod handle :before (method format strictness article)
-  (declare (ignore method format strictness article))
+(defmethod handle :before (method format transform article)
+  (declare (ignore method format transform article))
   (setf (header-out "Server") nil))
 
 (defmacro return-message (http-return-code &key (message "")
@@ -158,8 +158,8 @@
      ,message))
 
 ;; By default, all requests are bad
-(defmethod handle (method format strictness article)
-  (declare (ignore method format strictness article))
+(defmethod handle (method format transform article)
+  (declare (ignore method format transform article))
   (let ((uri (request-uri*))
 	(method-symbol (request-method*))
 	(message (raw-post-data :force-text t)))
@@ -171,8 +171,8 @@
 			:mime-type "text/plain"
 			:message (format nil "Your request for~%~%  ~a~%~%with the HTTP method~%~%  ~a~%~%with an empty message could not be understood." uri (symbol-name method-symbol))))))
 
-(defmethod handle :around ((method symbol) format strictness article)
-  (declare (ignore format strictness article))
+(defmethod handle :around ((method symbol) format transform article)
+  (declare (ignore format transform article))
   (let* ((method-name (symbol-name method))
 	(method-name-lc (format nil "~(~a~)" method-name)))
     (cond ((string= method-name-lc "post")
@@ -187,14 +187,14 @@
 			   :mime-type "text/plain"
 			   :message "We support only the POST, HEAD, and OPTIONS HTTP methods.")))))
 
-(defmethod handle (method format strictness (article null))
-  (declare (ignore method format strictness))
+(defmethod handle (method format transform (article null))
+  (declare (ignore method format transform))
   (error "Unable to handle a request for a null article."))
 
-(defmethod handle ((method symbol) (format null) (strictness string) article)
-  (handle method "xml" strictness article))
+(defmethod handle ((method symbol) (format null) (transform string) article)
+  (handle method "xml" transform article))
 
-(defmethod handle ((method symbol) (format string) (strictness null) article)
+(defmethod handle ((method symbol) (format string) (transform null) article)
   (handle method format "none" article))
 
 (defmacro empty-message-with-code (http-return-code)
@@ -205,35 +205,35 @@
   (handler-case (parse-integer integer-string :junk-allowed nil)
     (error () nil)))
 
-(defmethod handle ((method symbol) (format string) (strictness string) article)
+(defmethod handle ((method symbol) (format string) (transform string) article)
   (let ((format (cond ((string= format "text") :text)
 		      ((string= format "xml") :xml)))
-	(strictness (cond ((string= strictness "none") :none)
-			  ((string= strictness "wsm") :wsm)
-			  ((string= strictness "msm") :msm))))
-    (if (and format strictness)
-	(handle method format strictness article)
+	(transform (cond ((string= transform "none") :none)
+			  ((string= transform "wsm") :wsm)
+			  ((string= transform "msm") :msm))))
+    (if (and format transform)
+	(handle method format transform article)
 	(return-message +http-bad-request+))))
 
-(defmethod handle ((method (eql :options)) format strictness article)
-  (declare (ignore format strictness article))
+(defmethod handle ((method (eql :options)) format transform article)
+  (declare (ignore format transform article))
   (setf (header-out "Accept") "OPTIONS, HEAD, POST")
   (return-message +http-no-content+))
 
-(defmethod handle ((method (eql :head)) format strictness article)
+(defmethod handle ((method (eql :head)) format transform article)
   (declare (ignore method))
   (setf (content-type*) nil)
   (setf (return-code*) +http-no-content+)
-  (handle :post format strictness article))
+  (handle :post format transform article))
 
-(defmethod handle (method (format null) strictness article)
-  (handle method :xml strictness article))
+(defmethod handle (method (format null) transform article)
+  (handle method :xml transform article))
 
-(defmethod handle (method format (strictness null) article)
+(defmethod handle (method format (transform null) article)
   (handle method format :none article))
 
-(defmethod handle :around ((method (eql :post)) format strictness (article article))
-  (declare (ignore format strictness))
+(defmethod handle :around ((method (eql :post)) format transform (article article))
+  (declare (ignore format transform))
   (multiple-value-bind (accom-ok? accom-crashed?)
       (accom article)
     (if accom-ok?
@@ -248,7 +248,7 @@
 
 (defmethod handle ((method (eql :post))
 		   (format (eql :xml))
-		   (strictness (eql :none))
+		   (transform (eql :none))
 		   (article article))
   (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
       (wsmparser article)
@@ -263,7 +263,7 @@
 
 (defmethod handle ((method (eql :post))
 		   (format (eql :text))
-		   (strictness (eql :none))
+		   (transform (eql :none))
 		   (article article))
   (let ((miz-path (file-with-extension article "miz")))
     (return-message +http-ok+
@@ -272,7 +272,7 @@
 
 (defmethod handle ((method (eql :post))
 		   (format (eql :text))
-		   (strictness (eql :wsm))
+		   (transform (eql :wsm))
 		   (article article))
   (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
       (wsmparser article)
@@ -302,7 +302,7 @@
 
 (defmethod handle ((method (eql :post))
 		   (format (eql :xml))
-		   (strictness (eql :wsm))
+		   (transform (eql :wsm))
 		   (article article))
   (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
       (wsmparser article)
@@ -336,7 +336,7 @@
 
 (defmethod handle ((method (eql :post))
 		   (format (eql :text))
-		   (strictness (eql :msm))
+		   (transform (eql :msm))
 		   (article article))
   (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
       (wsmparser article)
@@ -373,7 +373,7 @@
 
 (defmethod handle ((method (eql :post))
 		   (format (eql :xml))
-		   (strictness (eql :msm))
+		   (transform (eql :msm))
 		   (article article))
   (multiple-value-bind (wsmparser-ok? wsmparser-crashed?)
       (wsmparser article)
@@ -409,14 +409,14 @@
      (with-html (:doctype "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">")
        (str +information-message+))))
 
-(defmethod handle (method format strictness (article-text string))
+(defmethod handle (method format transform (article-text string))
   (let* ((tempdir (temporary-directory))
 	 (article (make-instance 'article
 				 :directory (pathname-as-directory (pathname tempdir))
 				 :name "article"
 				 :text article-text)))
     (prog1
-	(handle method format strictness article)
+	(handle method format transform article)
       (delete-directory-and-files tempdir
 				  :if-does-not-exist :ignore))))
 
@@ -518,8 +518,8 @@
 				  (return-message +http-request-entity-too-large+))
 				 ((string= uri "/")
 				  (let ((format (get-parameter "format" request))
-					(strictness (get-parameter "strictness" request)))
-				    (handle method format strictness message)))
+					(transform (get-parameter "transform" request)))
+				    (handle method format transform message)))
 				 ((string= uri "/pretty-print")
 				  (return-message +http-accepted+))
 				 (t

@@ -78,7 +78,7 @@
        (:p "With curl, for example, one can use the service in this way at the commandline:")
        ((:blockquote :class "session")
          (:ol
-	  ((:li :class "comment") "Note the escaping of the article variable and the URI.")
+	  ((:li :class "comment") "Note the escaping of the URI.")
 	  ((:li :class "comment") "Your browser may wrap the next command over multiple lines;")
 	  ((:li :class "comment") "keep in mind that the URI should not contain whitespace.")
 	  ((:li :class "command") "curl --data @article.miz 'http://mizar.cs.ualberta.ca/parsing/?strictness=wsm&amp;format=text'")

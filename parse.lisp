@@ -191,7 +191,7 @@
 	   (setf (header-out "Allow") "POST, HEAD, OPTIONS")
 	   (return-message +http-method-not-allowed+
 			   :mime-type "text/plain"
-			   :message "We support only the POST, HEAD, and OPTIONS HTTP methods.")))))
+			   :message "We support only the GET, POST, HEAD, and OPTIONS HTTP methods.")))))
 
 (defmethod handle (method format transform (article null))
   (declare (ignore method format transform))

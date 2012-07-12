@@ -44,7 +44,4 @@
 			  :if-does-not-exist :error)
       (loop
 	 for line = (read-line file nil nil)
-	 do
-	   (if line
-	       (format s "~a~%" line)
-	       (return))))))
+	 while line do (format s "~a~%" line)))))

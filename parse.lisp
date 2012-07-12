@@ -444,19 +444,15 @@
 				 (return-message +http-length-required+))
 				((> message-length +biggest-article-length+)
 				 (return-message +http-request-entity-too-large+))
-				((string= uri "/")
+				(t
 				 (let ((format (get-parameter "format" request))
 				       (transform (get-parameter "transform" request)))
-				   (handle method format transform message)))
-				((string= uri "/pretty-print")
-				 (return-message +http-accepted+))
-				(t
-				 (return-message +http-not-found+
-						 :mime-type "text/plain"
-						 :message (format nil "Unknown resource ~a." uri))))
+				   (handle method format transform message))))
 			  (return-message +http-length-required+)))
 		    (return-message +http-length-required+))
-		(emit-canned-message)))
+		(if (eq method :get)
+		    (emit-canned-message)
+		    (return-message +http-method-not-allowed+))))
 	  (if (eq method :get)
 	      (cond ((string= uri "/parsing.css")
 		     (handle-file-get "parsing.css" "text/css"))

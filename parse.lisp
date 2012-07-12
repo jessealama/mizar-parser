@@ -65,7 +65,7 @@
 	 ((:li :class "pseudo-response") "Plain text document on standard output")
 	 ((:li :class "comment") "Use mizparse in a text transformation toolchain")
 	 ((:li :class "command") "cool-rewriter article.miz | mizparse.pl --format=xml --transform=msm - | xsltproc hot-stylesheet.xsl - | ...")))
-       (:p "For more information, just do " (:code "mizparse.pl --man") ".")
+       (:p "For more information, just do " (:code "mizparse.pl --man") ".  The current version of the script is " (:strong "1.4") ".")
        (:p "Warning: the script is not vanilla Perl because it builds on a few modules available on CPAN.  You may find, on your first execution of the script, that it fails.  Ensure that you have these Perl modules:")
        (:ul
 	(:li (:a :href "http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP.pm" "LWP"))

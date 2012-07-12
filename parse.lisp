@@ -223,7 +223,7 @@
 
 (defmethod handle ((method (eql :options)) format transform article)
   (declare (ignore format transform article))
-  (setf (header-out "Accept") "OPTIONS, HEAD, POST")
+  (setf (header-out "Accept") "GET, OPTIONS, HEAD, POST")
   (return-message +http-no-content+))
 
 (defmethod handle ((method (eql :head)) format transform article)

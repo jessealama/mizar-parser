@@ -181,7 +181,7 @@ sub slurp {
 sub request_uri {
     if (defined $transform) {
 	if (defined $format) {
-	    return "${MIZAR_PARSER_BASE_URI}?strictness=${transform}&format=${format}";
+	    return "${MIZAR_PARSER_BASE_URI}?transform=${transform}&format=${format}";
 	} else {
 	    die 'Error: the \'format\' parameter has an undefined value.';
 	}

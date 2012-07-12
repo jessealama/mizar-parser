@@ -447,7 +447,12 @@
 			      (t
 			       (let ((format (get-parameter "format" request))
 				     (transform (get-parameter "transform" request)))
-				 (handle method format transform message))))
+				 (handler-case
+				     (handle method format transform message)
+				   (error (c)
+				     (return-message +http-internal-server-error+
+						     :mime-type "text/plain"
+						     :message (format nil "Internal error:~%~a" c)))))))
 			(return-message +http-length-required+)))
 		  (return-message +http-length-required+))
 	      (if (eq method :get)

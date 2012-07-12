@@ -180,7 +180,7 @@
 (defmethod handle :around ((method symbol) format transform article)
   (declare (ignore format transform article))
   (let* ((method-name (symbol-name method))
-	(method-name-lc (format nil "~(~a~)" method-name)))
+	 (method-name-lc (format nil "~(~a~)" method-name)))
     (cond ((string= method-name-lc "post")
 	   (call-next-method))
 	  ((string= method-name-lc "head")

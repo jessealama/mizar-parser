@@ -38,10 +38,13 @@
     (reverse lines)))
 
 (defun file-as-string (path)
-  (let ((newline (make-string 1 :initial-element #\Newline))
-	(lines (lines-of-file path)))
-    (if lines
-	(reduce #'(lambda (s1 s2)
-		    (concatenate 'string s1 newline s2))
-		(lines-of-file path))
-	"")))
+  (with-output-to-string (s)
+    (with-open-file (file path
+			  :direction :input
+			  :if-does-not-exist :error)
+      (loop
+	 for line = (read-line file nil nil)
+	 do
+	   (if line
+	       (format s "~a~%" line)
+	       (return))))))

@@ -166,7 +166,7 @@
 
 ;; By default, all requests are bad
 (defmethod handle (method format transform article)
-  (declare (ignore method format transform article))
+  (declare (ignore format transform article))
   (let ((uri (request-uri*))
 	(message (raw-post-data :force-text t)))
     (if message

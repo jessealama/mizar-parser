@@ -66,6 +66,13 @@
 	 ((:li :class "comment") "Use mizparse in a text transformation toolchain")
 	 ((:li :class "command") "cool-rewriter article.miz | mizparse.pl --format=xml --transform=msm - | xsltproc hot-stylesheet.xsl - | ...")))
        (:p "For more information, just do " (:code "mizparse.pl --man") ".")
+       (:p "Warning: the script is not vanilla Perl because it builds on a few modules available on CPAN.  You may find, on your first execution of the script, that it fails.  Ensure that you have these Perl modules:")
+       (:ul
+	(:li (:a :href "http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP.pm") "LWP")
+	(:li (:a :href "http://search.cpan.org/~jv/Getopt-Long-2.38/lib/Getopt/Long.pm" "Getopt::Long"))
+	(:li (:a :href "http://search.cpan.org/~marekr/Pod-Parser-1.51/lib/Pod/Usage.pm" "Pod::Usage"))
+	(:li (:a :href "http://search.cpan.org/~roode/Readonly-1.03/Readonly.pm" "Readonly")))
+       (:p "If you still have trouble running the script even though these modules are installed on your machine, please " (:a :href "mailto:jesse.alama@gmail.com" "let me know") ".")
        (:h1 "Do things your way")
        (:p "If you'd like to parse Mizar texts on your own machine, first make sure you have Mizar version " (:strong "7.13.01") " (or newer).  Go to " (:a :href "http://mizar.org" "the Mizar homepage") " to download the latest version. The tools that produce parse trees and do the Weakly Strict Mizar and More Strict Mizar text normalizations are " (:code "wsmparser") " and " (:code "msmprocessor") ".  One needs to first run the " (:code "accom") " tool before running " (:code "wsmparser") ", and one needs to run " (:code "wsmparser") " before running " (:code "msmprocessor") ".")
        (:p (:code "wsmparser") " produces two files.  If your Mizar article is called &lsquo;article&rsquo;, doing")

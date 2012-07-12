@@ -187,8 +187,10 @@
 	   (call-next-method))
 	  ((string= method-name-lc "options")
 	   (call-next-method))
+	  ((string= method-name-lc "get")
+	   (call-next-method))
 	  (t
-	   (setf (header-out "Allow") "POST, HEAD, OPTIONS")
+	   (setf (header-out "Allow") "GET, POST, HEAD, OPTIONS")
 	   (return-message +http-method-not-allowed+
 			   :mime-type "text/plain"
 			   :message "We support only the GET, POST, HEAD, and OPTIONS HTTP methods.")))))

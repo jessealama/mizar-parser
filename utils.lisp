@@ -26,17 +26,6 @@
   #- (or sbcl ccl)
   (error "We don't yet implement TEMPORARY-DIRECTORY for your Common Lisp."))
 
-(defun lines-of-file (path)
-  (let (lines)
-    (with-open-file (file path :direction :input
-			       :if-does-not-exist :error)
-      (symbol-macrolet
-	  (($line (read-line file nil nil)))
-	(do ((line $line $line))
-	    ((null line))
-	  (push line lines))))
-    (reverse lines)))
-
 (defun file-as-string (path)
   (with-output-to-string (s)
     (with-open-file (file path

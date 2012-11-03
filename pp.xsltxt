@@ -910,7 +910,7 @@ tpl [Explicitly-Qualified-Segment[Variables]] (#verb) {
     $verb;
   }
   " ";
-  ensure-type ();
+  // ensure-type ();
   apply-type ();
 }
 
@@ -1138,13 +1138,12 @@ tpl [Thesis] {
   "thesis";
 }
 
-tpl [Item[@kind='PropertyRegistration']] { // shouldn't this be "Property-Registration", for parallelism?
-  apply [*[1]]; // property
-  " of ";
-  apply [*[2]];
-  if [*[3]] {  // justification for the property registration
+tpl [Item[@kind='Property-Registration' and @property]] {
+  `@property`; " of ";
+  apply [*[1]];
+  if [*[2]] {  // justification for the property registration
     "\n";
-    apply [*[3]];
+    apply [*[2]];
   } else {
     ";"; "\n";
   }
@@ -1710,4 +1709,8 @@ tpl [Canceled] {
     "canceled;";
   }
   "\n";
+}
+
+tpl [Item[@kind = "Pragma" and @spelling]] {
+  "::"; `@spelling`; "\n";
 }

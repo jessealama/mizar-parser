@@ -300,10 +300,10 @@
   <!-- //////////////////////////////////////////////////////////////////// -->
   <!-- By default, if we don't handle something explicitly, abort! abort! -->
   <xsl:template match="*">
+    <xsl:variable name="n" select="name (.)"/>
+    <xsl:variable name="message" select="concat (&quot;Unexpected element &apos;&quot;, $n, &quot;&apos;.&quot;)"/>
     <xsl:apply-templates select="." mode="die">
-      <xsl:with-param name="message">
-        <xsl:text>Unexpected element.  How did we arrive here?</xsl:text>
-      </xsl:with-param>
+      <xsl:with-param name="message" select="$message"/>
     </xsl:apply-templates>
   </xsl:template>
 
@@ -1419,7 +1419,7 @@ and
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text> </xsl:text>
-    <xsl:call-template name="ensure-type"/>
+    <!-- ensure-type (); -->
     <xsl:call-template name="apply-type"/>
   </xsl:template>
 
@@ -1832,18 +1832,16 @@ and
     <xsl:text>thesis</xsl:text>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;PropertyRegistration&apos;]">
-    <!-- shouldn't this be "Property-Registration", for parallelism? -->
-    <xsl:apply-templates select="*[1]"/>
-    <!-- property -->
+  <xsl:template match="Item[@kind=&apos;Property-Registration&apos; and @property]">
+    <xsl:value-of select="@property"/>
     <xsl:text> of </xsl:text>
-    <xsl:apply-templates select="*[2]"/>
+    <xsl:apply-templates select="*[1]"/>
     <xsl:choose>
-      <xsl:when test="*[3]">
+      <xsl:when test="*[2]">
         <!-- justification for the property registration -->
         <xsl:text>
 </xsl:text>
-        <xsl:apply-templates select="*[3]"/>
+        <xsl:apply-templates select="*[2]"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>;</xsl:text>
@@ -2822,6 +2820,13 @@ and
         <xsl:text>canceled;</xsl:text>
       </xsl:otherwise>
     </xsl:choose>
+    <xsl:text>
+</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="Item[@kind = &quot;Pragma&quot; and @spelling]">
+    <xsl:text>::</xsl:text>
+    <xsl:value-of select="@spelling"/>
     <xsl:text>
 </xsl:text>
   </xsl:template>

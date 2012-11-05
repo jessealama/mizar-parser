@@ -1407,7 +1407,7 @@ and
       <xsl:with-param name="separ">
         <xsl:text> , </xsl:text>
       </xsl:with-param>
-      <xsl:with-param name="elems" select="Variables/Variable"/>
+      <xsl:with-param name="elems" select="Variables/*"/>
     </xsl:call-template>
     <xsl:text> </xsl:text>
     <xsl:choose>
@@ -2066,7 +2066,7 @@ and
       </xsl:for-each>
     </xsl:if>
     <xsl:call-template name="ensure-formula"/>
-    <xsl:text>: </xsl:text>
+    <xsl:text> : </xsl:text>
     <xsl:call-template name="apply-formula"/>
     <xsl:text> }</xsl:text>
   </xsl:template>

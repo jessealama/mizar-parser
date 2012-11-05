@@ -902,7 +902,7 @@ tpl [Item[@kind='Structure-Definition']] {
 }
 
 tpl [Explicitly-Qualified-Segment[Variables]] (#verb) {
-  list (#separ = " , ", #elems = `Variables/Variable`);
+  list (#separ = " , ", #elems = `Variables/*`);
   " ";
   if [$verb = ""] {
     "being";
@@ -1279,7 +1279,7 @@ tpl [Fraenkel-Term] {
     }
   }
   ensure-formula ();
-  ": ";
+  " : ";
   apply-formula ();
   " }";
 }

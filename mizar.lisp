@@ -1,5 +1,5 @@
 
-(in-package :mizar-parser)
+(in-package :mizar)
 
 (defclass article ()
   ((name

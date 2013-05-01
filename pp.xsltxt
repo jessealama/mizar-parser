@@ -1215,9 +1215,8 @@ tpl [Bracket-Functor-Pattern[@spelling]] {
 }
 
 tpl [Fraenkel-Term] {
-  ensure-term ();
   "{ ";
-  apply-term ();
+  apply [*[1]];
   if [Explicitly-Qualified-Segment] {
     " where ";
     // manual listing.  Using the list template would be nicer, but
@@ -1229,9 +1228,8 @@ tpl [Fraenkel-Term] {
       }
     }
   }
-  ensure-formula ();
   ": ";
-  apply-formula ();
+  apply [*[position() = last()]];
   " }";
 }
 
@@ -1706,4 +1704,8 @@ tpl [Multi-Predicative-Formula] {
 
 tpl [RightSideOf-Predicative-Formula[@spelling]] {
   `@spelling`; " "; for-each [Arguments] { apply [*[1]]; }
+}
+
+tpl [Simple-Fraenkel-Term] {
+  "the set of all "; apply [*[position() = last()]];
 }

@@ -1959,9 +1959,8 @@
   </xsl:template>
 
   <xsl:template match="Fraenkel-Term">
-    <xsl:call-template name="ensure-term"/>
     <xsl:text>{ </xsl:text>
-    <xsl:call-template name="apply-term"/>
+    <xsl:apply-templates select="*[1]"/>
     <xsl:if test="Explicitly-Qualified-Segment">
       <xsl:text> where </xsl:text>
       <!-- manual listing.  Using the list template would be nicer, but -->
@@ -1977,9 +1976,8 @@
         </xsl:if>
       </xsl:for-each>
     </xsl:if>
-    <xsl:call-template name="ensure-formula"/>
     <xsl:text>: </xsl:text>
-    <xsl:call-template name="apply-formula"/>
+    <xsl:apply-templates select="*[position() = last()]"/>
     <xsl:text> }</xsl:text>
   </xsl:template>
 
@@ -2808,5 +2806,10 @@ and
     <xsl:for-each select="Arguments">
       <xsl:apply-templates select="*[1]"/>
     </xsl:for-each>
+  </xsl:template>
+
+  <xsl:template match="Simple-Fraenkel-Term">
+    <xsl:text>the set of all </xsl:text>
+    <xsl:apply-templates select="*[position() = last()]"/>
   </xsl:template>
 </xsl:stylesheet>

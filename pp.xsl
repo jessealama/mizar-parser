@@ -39,7 +39,7 @@
   <!-- Utilities -->
   <!-- //////////////////////////////////////////////////////////////////// -->
   <xsl:variable name="supported-version">
-    <xsl:text>7.13.01</xsl:text>
+    <xsl:text>8.1.02</xsl:text>
   </xsl:variable>
 
   <xsl:template name="n-spaces">
@@ -300,10 +300,10 @@
   <!-- //////////////////////////////////////////////////////////////////// -->
   <!-- By default, if we don't handle something explicitly, abort! abort! -->
   <xsl:template match="*">
+    <xsl:variable name="n" select="name (.)"/>
+    <xsl:variable name="message" select="concat (&quot;Unexpected element &apos;&quot;, $n, &quot;&apos;.&quot;)"/>
     <xsl:apply-templates select="." mode="die">
-      <xsl:with-param name="message">
-        <xsl:text>Unexpected element.  How did we arrive here?</xsl:text>
-      </xsl:with-param>
+      <xsl:with-param name="message" select="$message"/>
     </xsl:apply-templates>
   </xsl:template>
 
@@ -423,117 +423,19 @@
 
   <xsl:template match="Item[@kind=&apos;Reservation&apos;]">
     <xsl:text>reserve </xsl:text>
-    <xsl:call-template name="variable-list"/>
+    <xsl:apply-templates select="Variables"/>
     <xsl:text> </xsl:text>
     <xsl:text>for </xsl:text>
-    <xsl:call-template name="ensure-type"/>
-    <xsl:call-template name="apply-type"/>
-    <xsl:text>;</xsl:text>
-    <xsl:text>
-</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="Item[@kind=&apos;Section-Pragma&apos;]">
-    <xsl:text>begin</xsl:text>
-    <xsl:text>
-</xsl:text>
-  </xsl:template>
-
-  <!-- //////////////////////////////////////////////////////////////////// -->
-  <!-- Case blocks -->
-  <!-- //////////////////////////////////////////////////////////////////// -->
-  <xsl:template match="Item[@kind=&apos;Per-Cases&apos;]">
-    <xsl:text>per cases </xsl:text>
-    <xsl:call-template name="apply-justification-if-present">
-      <xsl:with-param name="end">
-        <xsl:text>1</xsl:text>
-      </xsl:with-param>
-    </xsl:call-template>
-  </xsl:template>
-
-  <xsl:template match="Item[@kind=&apos;Case-Block&apos; and Block[@kind = &quot;Suppose&quot;]]">
-    <xsl:apply-templates select="Block[@kind=&apos;Suppose&apos;][1]"/>
-  </xsl:template>
-
-  <xsl:template match="Item[@kind=&apos;Case-Block&apos; and Block[@kind = &quot;Case&quot;]]">
-    <xsl:apply-templates select="Block[@kind=&apos;Case&apos;][1]"/>
-  </xsl:template>
-
-  <xsl:template match="Item[@kind=&apos;Case-Block&apos; and not(Block[@kind = &quot;Case&quot;]) and not(Block[@kind = &quot;Suppose&quot;])]">
-    <xsl:apply-templates select="." mode="die">
-      <xsl:with-param name="message">
-        <xsl:text>Don&apos;t know how to deal with a Case-Block item that lacks both a Suppose block and Case block child!</xsl:text>
-      </xsl:with-param>
-    </xsl:apply-templates>
-  </xsl:template>
-
-  <xsl:template match="Block[@kind=&apos;Case&apos; and Item[@kind = &quot;Case-Head&quot;]]">
     <xsl:choose>
-      <xsl:when test="Item[@kind=&apos;Case-Head&apos;][1]/Collective-Assumption">
-        <!-- skip applying the Case-Head template; we'll do the work here -->
-        <xsl:text>case that </xsl:text>
-        <xsl:call-template name="list">
-          <xsl:with-param name="separ">
-            <xsl:text>
-and
-</xsl:text>
-          </xsl:with-param>
-          <xsl:with-param name="elems" select="Item[@kind=&apos;Case-Head&apos;][1]/Collective-Assumption/Conditions/Proposition"/>
-        </xsl:call-template>
-        <xsl:text>;</xsl:text>
-        <xsl:text>
-</xsl:text>
-        <xsl:apply-templates select="*[position() &gt; 1]"/>
+      <xsl:when test="SetMember">
+        <xsl:for-each select="SetMember[1]">
+          <xsl:apply-templates select="preceding-sibling::*[1]"/>
+        </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:apply-templates select="Item[@kind=&apos;Case-Head&apos;][1]"/>
-        <xsl:text>;</xsl:text>
-        <xsl:text>
-</xsl:text>
-        <xsl:apply-templates select="*[position() &gt; 1]"/>
+        <xsl:apply-templates select="*[position() = last()]"/>
       </xsl:otherwise>
     </xsl:choose>
-    <xsl:text>end;</xsl:text>
-    <xsl:text>
-</xsl:text>
-  </xsl:template>
-
-  <xsl:template match="Block[@kind=&apos;Case&apos; and not(Item[@kind = &quot;Case-Head&quot;])]">
-    <xsl:apply-templates select="." mode="die">
-      <xsl:with-param name="message">
-        <xsl:text>Don&apos;t know how to deal with a Case block that lacks a Case-Head item child!</xsl:text>
-      </xsl:with-param>
-    </xsl:apply-templates>
-  </xsl:template>
-
-  <xsl:template match="Block[@kind=&apos;Suppose&apos; and Item[@kind = &quot;Suppose-Head&quot;]]">
-    <xsl:choose>
-      <xsl:when test="Item[@kind=&apos;Suppose-Head&apos;][1]/Collective-Assumption">
-        <!-- skip applying the Suppose-Head template; we'll do the work here -->
-        <xsl:text>suppose that </xsl:text>
-        <xsl:call-template name="list">
-          <xsl:with-param name="separ">
-            <xsl:text>
-and
-</xsl:text>
-          </xsl:with-param>
-          <xsl:with-param name="elems" select="Item[@kind=&apos;Suppose-Head&apos;][1]/Collective-Assumption/Conditions/Proposition"/>
-        </xsl:call-template>
-        <xsl:text>;</xsl:text>
-        <xsl:text>
-</xsl:text>
-        <xsl:apply-templates select="*[position() &gt; 1]"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:apply-templates select="Item[@kind=&apos;Suppose-Head&apos;][1]"/>
-        <xsl:text>
-</xsl:text>
-        <xsl:apply-templates select="*[position() &gt; 1]"/>
-      </xsl:otherwise>
-    </xsl:choose>
-    <xsl:text>end;</xsl:text>
-    <xsl:text>
-</xsl:text>
   </xsl:template>
 
   <xsl:template match="Block[@kind=&apos;Suppose&apos; and not(Item[@kind = &quot;Suppose-Head&quot;])]">
@@ -542,6 +444,16 @@ and
         <xsl:text>Don&apos;t know how to deal with a Suppose block that lacks a Suppose-Head child!</xsl:text>
       </xsl:with-param>
     </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="Block[@kind = &quot;Suppose&quot; and Item[@kind = &quot;Suppose-Head&quot;]]">
+    <xsl:call-template name="list">
+      <xsl:with-param name="separ">
+        <xsl:text>
+</xsl:text>
+      </xsl:with-param>
+      <xsl:with-param name="elems" select="*"/>
+    </xsl:call-template>
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Case-Head&apos; and Single-Assumption]">
@@ -570,12 +482,12 @@ and
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Suppose-Head&apos; and not(Single-Assumption)]">
-    <xsl:apply-templates select="." mode="die">
-      <xsl:with-param name="message">
-        <xsl:text>Don&apos;t know how to deal with a Suppose-Head item that lacks a Single-Assumption child!</xsl:text>
-      </xsl:with-param>
-    </xsl:apply-templates>
+  <xsl:template match="Item[@kind=&apos;Suppose-Head&apos; and Collective-Assumption]">
+    <xsl:text>suppose </xsl:text>
+    <xsl:apply-templates select="Collective-Assumption[1]"/>
+    <xsl:text>;</xsl:text>
+    <xsl:text>
+</xsl:text>
   </xsl:template>
 
   <!-- //////////////////////////////////////////////////////////////////// -->
@@ -1419,8 +1331,7 @@ and
       </xsl:otherwise>
     </xsl:choose>
     <xsl:text> </xsl:text>
-    <xsl:call-template name="ensure-type"/>
-    <xsl:call-template name="apply-type"/>
+    <xsl:apply-templates select="*[position() = last()]"/>
   </xsl:template>
 
   <xsl:template match="Simple-Term[@spelling]">
@@ -1832,8 +1743,7 @@ and
     <xsl:text>thesis</xsl:text>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;PropertyRegistration&apos;]">
-    <!-- shouldn't this be "Property-Registration", for parallelism? -->
+  <xsl:template match="Item[@kind=&apos;Property-Registration&apos;]">
     <xsl:apply-templates select="*[1]"/>
     <!-- property -->
     <xsl:text> of </xsl:text>
@@ -2824,5 +2734,79 @@ and
     </xsl:choose>
     <xsl:text>
 </xsl:text>
+  </xsl:template>
+
+  <xsl:template match="FlexaryDisjunctive-Formula">
+    <xsl:apply-templates select="*[1]"/>
+    <xsl:text> or ... or </xsl:text>
+    <xsl:apply-templates select="*[2]"/>
+  </xsl:template>
+
+  <xsl:template match="FlexaryConjunctive-Formula">
+    <xsl:apply-templates select="*[1]"/>
+    <xsl:text> &amp; ... &amp; </xsl:text>
+    <xsl:apply-templates select="*[2]"/>
+  </xsl:template>
+
+  <xsl:template match="Item[@kind = &quot;Pragma&quot; and @spelling]">
+    <xsl:text>::</xsl:text>
+    <xsl:value-of select="@spelling"/>
+  </xsl:template>
+
+  <xsl:template match="Item[@kind = &quot;Section-Pragma&quot;]">
+    <xsl:text>begin</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="Item[@kind = &quot;Per-Cases&quot;]">
+    <xsl:text>per cases</xsl:text>
+    <xsl:if test="*">
+      <xsl:text> </xsl:text>
+      <xsl:apply-templates select="*"/>
+    </xsl:if>
+    <xsl:text>;</xsl:text>
+  </xsl:template>
+
+  <xsl:template match="Item[@kind = &quot;Case-Block&quot;]">
+    <xsl:call-template name="list">
+      <xsl:with-param name="separ">
+        <xsl:text>
+</xsl:text>
+      </xsl:with-param>
+      <xsl:with-param name="elems" select="*"/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template match="Block[@kind = &quot;Case&quot;]">
+    <xsl:call-template name="list">
+      <xsl:with-param name="separ">
+        <xsl:text>
+</xsl:text>
+      </xsl:with-param>
+      <xsl:with-param name="elems" select="*"/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template match="Multi-Predicative-Formula">
+    <xsl:if test="count (*) &lt; 2">
+      <xsl:message terminate="yes">
+        <xsl:text>Error: Multi-Predicative-Formula with fewer than 2 children.</xsl:text>
+      </xsl:message>
+    </xsl:if>
+    <xsl:if test="count (*) &gt; 2">
+      <xsl:message terminate="yes">
+        <xsl:text>Error: Multi-Predicative-Formula with more than 2 children.</xsl:text>
+      </xsl:message>
+    </xsl:if>
+    <xsl:apply-templates select="*[1]"/>
+    <xsl:text> </xsl:text>
+    <xsl:apply-templates select="*[2]"/>
+  </xsl:template>
+
+  <xsl:template match="RightSideOf-Predicative-Formula[@spelling]">
+    <xsl:value-of select="@spelling"/>
+    <xsl:text> </xsl:text>
+    <xsl:for-each select="Arguments">
+      <xsl:apply-templates select="*[1]"/>
+    </xsl:for-each>
   </xsl:template>
 </xsl:stylesheet>

@@ -3,8 +3,7 @@
 JAVA = java
 XSLTXT = xsltxt.jar
 emacs-backups = $(strip $(wildcard *~) $(wildcard .*~))
-fasls = $(wildcard *.fasl)
-ccl-fasls = $(wildcard *.dx64fsl)
+fasls = $(strip $(wildcard *.fasl) $(wildcard *.dx64fsl))
 
 all: pp.xsl
 
@@ -17,7 +16,4 @@ ifneq ($(emacs-backups),)
 endif
 ifneq ($(fasls),)
 	rm -f $(fasls)
-endif
-ifneq ($(ccl-fasls),)
-	rm -f $(ccl-fasls)
 endif

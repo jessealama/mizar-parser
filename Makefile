@@ -1,4 +1,4 @@
-.PHONY: clean
+.PHONY: clean all
 
 emacs-backups = $(strip $(wildcard *~) $(wildcard .*~))
 fasls = $(strip $(wildcard *.fasl) $(wildcard *.dx64fsl))

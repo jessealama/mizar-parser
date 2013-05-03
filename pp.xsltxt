@@ -301,11 +301,11 @@ tpl [Block[@kind = "Suppose" and Item[@kind = "Suppose-Head"]]] {
 }
 
 tpl [Item[@kind='Case-Head' and Single-Assumption]] {
-  "case "; apply [Single-Assumption[1]];
+  "case "; apply [Single-Assumption[1]]; ";";
 }
 
 tpl [Item[@kind='Case-Head' and Collective-Assumption]] {
-  "case "; apply [Collective-Assumption[1]];
+  "case "; apply [Collective-Assumption[1]]; ";";
 }
 
 tpl [Item[@kind='Case-Head' and not(Single-Assumption) and not(Collective-Assumption)]] {
@@ -967,7 +967,11 @@ tpl [Definition-Reference[@number and @spelling]] {
 tpl [Item[@kind='Exemplification']] {
   "take ";
   if [*[2]] {  // take X = Y
-    apply [*[1]]; " = "; apply [*[2]];
+    if [*[1]/@idnr = *[2]/@idnr] {
+      apply [*[1]]; // these are identical
+    } else {
+      apply [*[1]]; " = "; apply [*[2]];
+    }
   } else {
     apply [*[1]];
   }
@@ -1088,13 +1092,11 @@ tpl [Thesis] {
   "thesis";
 }
 
-tpl [Item[@kind='Property-Registration']] {
-  apply [*[1]]; // property
-  " of ";
-  apply [*[2]];
-  if [*[3]] {  // justification for the property registration
+tpl [Item[@kind='Property-Registration' and @property]] {
+  `@property`; " of "; apply [*[1]];
+  if [*[2]] {  // justification for the property registration
     "\n";
-    apply [*[3]];
+    apply [*[2]];
   } else {
     ";"; "\n";
   }
@@ -1143,11 +1145,19 @@ tpl [Proposition[not(Label)]] (#indentation) {
   apply [*[1]];
 }
 
-tpl [Label[@spelling]] {
+tpl [Label[@spelling and @spelling = ""]] {
+  "";
+}
+
+tpl [Label[@spelling and not(@spelling = "")]] {
   `@spelling`; ":";
 }
 
-tpl [Local-Reference[@spelling]] {
+tpl [Local-Reference[@spelling and @spelling = ""]] {
+  msg terminate="yes" "Error: Local-Reference with the empty string as a spelling.";
+}
+
+tpl [Local-Reference[@spelling and not(@spelling = "")]] {
   `@spelling`;
 }
 
@@ -1214,21 +1224,27 @@ tpl [Bracket-Functor-Pattern[@spelling]] {
    apply [Right-Circumflex-Symbol[1]];
 }
 
-tpl [Fraenkel-Term] {
+tpl [Fraenkel-Term[Implicitly-Qualified-Segment | Explicitly-Qualified-Segment]] {
   "{ ";
-  apply [*[1]];
-  if [Explicitly-Qualified-Segment] {
+  if [Implicitly-Qualified-Segment | Explicitly-Qualified-Segment] {
+    for-each [(Implicitly-Qualified-Segment | Explicitly-Qualified-Segment)[position() = last()]] {
+      apply [following-sibling::*[1]];
+    }
+  } else {
+    apply [*[2]];
+  }
+  if [Implicitly-Qualified-Segment | Explicitly-Qualified-Segment] {
     " where ";
     // manual listing.  Using the list template would be nicer, but
     // I need to pass in the verb "is"
-    for-each [Explicitly-Qualified-Segment] {
+    for-each [Implicitly-Qualified-Segment | Explicitly-Qualified-Segment] {
       apply [.](#verb = "is");
       if [not(position()=last())] {
         " , ";
       }
     }
   }
-  ": ";
+  " : ";
   apply [*[position() = last()]];
   " }";
 }
@@ -1338,7 +1354,17 @@ tpl [Collective-Assumption[not(Conditions)]] {
   apply [.] (#message = "Collective-Assumption elements must have a Conditions child") mode="die";
 }
 
-tpl [Collective-Assumption] {
+tpl [Collective-Assumption[parent::Item[@kind = "Suppose-Head"]]] {
+  "that"; "\n";
+  list (#separ = "\nand\n", #elems = `Conditions/Proposition`);
+}
+
+tpl [Collective-Assumption[parent::Item[@kind = "Case-Head"]]] {
+  "that"; "\n";
+  list (#separ = "\nand\n", #elems = `Conditions/Proposition`);
+}
+
+tpl [Collective-Assumption[not(parent::Item[@kind = "Suppose-Head"]) and not(parent::Item[@kind = "Case-Head"])]] {
   "assume that"; "\n";
   list (#separ = "\nand\n", #elems = `Conditions/Proposition`); ";"; "\n";
 }
@@ -1560,13 +1586,26 @@ tpl [Block[@kind='Hereby-Reasoning']] {
   "end;"; "\n";
 }
 
-tpl [Item[@kind='Type-Changing-Statement']] {
+tpl [Item[@kind='Type-Changing-Statement' and Equality]] {
   maybe-link ();
   "reconsider ";
-  list (#separ = " , ", #elems = `Variable | Equality`);
+  for-each [Equality] {
+    if [*[1]/@idnr = *[2]/@idnr and not(*[2]/@shape = "SchemataFunc")] {
+      apply [*[1]];
+    } else {
+      apply [*[1]]; " = "; apply [*[2]];
+    }
+    if [count (following-sibling::Equality) > 0] {
+      ", ";
+    }
+  }
   ensure-type ();
   " as "; apply-type ();
   apply-justification-if-present (#end = "1");
+}
+
+tpl [Item[@kind='Type-Changing-Statement' and not(Equality)]] {
+  msg terminate="yes" "Error: Type-Changing-Statement item lacks an Equality child.";
 }
 
 tpl [Equality] {
@@ -1669,11 +1708,11 @@ tpl [FlexaryConjunctive-Formula] {
 }
 
 tpl [Item[@kind = "Pragma" and @spelling]] {
-  "::"; `@spelling`;
+  "::"; `@spelling`; "\n";
 }
 
 tpl [Item[@kind = "Section-Pragma"]] {
-  "begin";
+  "begin"; "\n";
 }
 
 tpl [Item[@kind = "Per-Cases"]] {
@@ -1681,11 +1720,12 @@ tpl [Item[@kind = "Per-Cases"]] {
   if [*] {
     " "; apply [*];
   }
-  ";";
+  ";"; "\n";
 }
 
 tpl [Item[@kind = "Case-Block"]] {
   list (#separ = "\n", #elems = `*`);
+  "end;"; "\n";
 }
 
 tpl [Block[@kind = "Case"]] {

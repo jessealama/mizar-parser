@@ -459,11 +459,13 @@
   <xsl:template match="Item[@kind=&apos;Case-Head&apos; and Single-Assumption]">
     <xsl:text>case </xsl:text>
     <xsl:apply-templates select="Single-Assumption[1]"/>
+    <xsl:text>;</xsl:text>
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Case-Head&apos; and Collective-Assumption]">
     <xsl:text>case </xsl:text>
     <xsl:apply-templates select="Collective-Assumption[1]"/>
+    <xsl:text>;</xsl:text>
   </xsl:template>
 
   <xsl:template match="Item[@kind=&apos;Case-Head&apos; and not(Single-Assumption) and not(Collective-Assumption)]">
@@ -1541,9 +1543,16 @@
     <xsl:choose>
       <xsl:when test="*[2]">
         <!-- take X = Y -->
-        <xsl:apply-templates select="*[1]"/>
-        <xsl:text> = </xsl:text>
-        <xsl:apply-templates select="*[2]"/>
+        <xsl:choose>
+          <xsl:when test="*[1]/@idnr = *[2]/@idnr">
+            <xsl:apply-templates select="*[1]"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select="*[1]"/>
+            <xsl:text> = </xsl:text>
+            <xsl:apply-templates select="*[2]"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates select="*[1]"/>
@@ -1743,17 +1752,16 @@
     <xsl:text>thesis</xsl:text>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Property-Registration&apos;]">
-    <xsl:apply-templates select="*[1]"/>
-    <!-- property -->
+  <xsl:template match="Item[@kind=&apos;Property-Registration&apos; and @property]">
+    <xsl:value-of select="@property"/>
     <xsl:text> of </xsl:text>
-    <xsl:apply-templates select="*[2]"/>
+    <xsl:apply-templates select="*[1]"/>
     <xsl:choose>
-      <xsl:when test="*[3]">
+      <xsl:when test="*[2]">
         <!-- justification for the property registration -->
         <xsl:text>
 </xsl:text>
-        <xsl:apply-templates select="*[3]"/>
+        <xsl:apply-templates select="*[2]"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>;</xsl:text>
@@ -1842,12 +1850,22 @@
     <xsl:apply-templates select="*[1]"/>
   </xsl:template>
 
-  <xsl:template match="Label[@spelling]">
+  <xsl:template match="Label[@spelling and @spelling = &quot;&quot;]">
+    <xsl:text/>
+  </xsl:template>
+
+  <xsl:template match="Label[@spelling and not(@spelling = &quot;&quot;)]">
     <xsl:value-of select="@spelling"/>
     <xsl:text>:</xsl:text>
   </xsl:template>
 
-  <xsl:template match="Local-Reference[@spelling]">
+  <xsl:template match="Local-Reference[@spelling and @spelling = &quot;&quot;]">
+    <xsl:message terminate="yes">
+      <xsl:text>Error: Local-Reference with the empty string as a spelling.</xsl:text>
+    </xsl:message>
+  </xsl:template>
+
+  <xsl:template match="Local-Reference[@spelling and not(@spelling = &quot;&quot;)]">
     <xsl:value-of select="@spelling"/>
   </xsl:template>
 
@@ -1958,14 +1976,23 @@
     <xsl:apply-templates select="Right-Circumflex-Symbol[1]"/>
   </xsl:template>
 
-  <xsl:template match="Fraenkel-Term">
+  <xsl:template match="Fraenkel-Term[Implicitly-Qualified-Segment | Explicitly-Qualified-Segment]">
     <xsl:text>{ </xsl:text>
-    <xsl:apply-templates select="*[1]"/>
-    <xsl:if test="Explicitly-Qualified-Segment">
+    <xsl:choose>
+      <xsl:when test="Implicitly-Qualified-Segment | Explicitly-Qualified-Segment">
+        <xsl:for-each select="(Implicitly-Qualified-Segment | Explicitly-Qualified-Segment)[position() = last()]">
+          <xsl:apply-templates select="following-sibling::*[1]"/>
+        </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:apply-templates select="*[2]"/>
+      </xsl:otherwise>
+    </xsl:choose>
+    <xsl:if test="Implicitly-Qualified-Segment | Explicitly-Qualified-Segment">
       <xsl:text> where </xsl:text>
       <!-- manual listing.  Using the list template would be nicer, but -->
       <!-- I need to pass in the verb "is" -->
-      <xsl:for-each select="Explicitly-Qualified-Segment">
+      <xsl:for-each select="Implicitly-Qualified-Segment | Explicitly-Qualified-Segment">
         <xsl:apply-templates select=".">
           <xsl:with-param name="verb">
             <xsl:text>is</xsl:text>
@@ -1976,7 +2003,7 @@
         </xsl:if>
       </xsl:for-each>
     </xsl:if>
-    <xsl:text>: </xsl:text>
+    <xsl:text> : </xsl:text>
     <xsl:apply-templates select="*[position() = last()]"/>
     <xsl:text> }</xsl:text>
   </xsl:template>
@@ -2163,7 +2190,35 @@
     </xsl:apply-templates>
   </xsl:template>
 
-  <xsl:template match="Collective-Assumption">
+  <xsl:template match="Collective-Assumption[parent::Item[@kind = &quot;Suppose-Head&quot;]]">
+    <xsl:text>that</xsl:text>
+    <xsl:text>
+</xsl:text>
+    <xsl:call-template name="list">
+      <xsl:with-param name="separ">
+        <xsl:text>
+and
+</xsl:text>
+      </xsl:with-param>
+      <xsl:with-param name="elems" select="Conditions/Proposition"/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template match="Collective-Assumption[parent::Item[@kind = &quot;Case-Head&quot;]]">
+    <xsl:text>that</xsl:text>
+    <xsl:text>
+</xsl:text>
+    <xsl:call-template name="list">
+      <xsl:with-param name="separ">
+        <xsl:text>
+and
+</xsl:text>
+      </xsl:with-param>
+      <xsl:with-param name="elems" select="Conditions/Proposition"/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template match="Collective-Assumption[not(parent::Item[@kind = &quot;Suppose-Head&quot;]) and not(parent::Item[@kind = &quot;Case-Head&quot;])]">
     <xsl:text>assume that</xsl:text>
     <xsl:text>
 </xsl:text>
@@ -2540,15 +2595,24 @@ and
 </xsl:text>
   </xsl:template>
 
-  <xsl:template match="Item[@kind=&apos;Type-Changing-Statement&apos;]">
+  <xsl:template match="Item[@kind=&apos;Type-Changing-Statement&apos; and Equality]">
     <xsl:call-template name="maybe-link"/>
     <xsl:text>reconsider </xsl:text>
-    <xsl:call-template name="list">
-      <xsl:with-param name="separ">
-        <xsl:text> , </xsl:text>
-      </xsl:with-param>
-      <xsl:with-param name="elems" select="Variable | Equality"/>
-    </xsl:call-template>
+    <xsl:for-each select="Equality">
+      <xsl:choose>
+        <xsl:when test="*[1]/@idnr = *[2]/@idnr and not(*[2]/@shape = &quot;SchemataFunc&quot;)">
+          <xsl:apply-templates select="*[1]"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:apply-templates select="*[1]"/>
+          <xsl:text> = </xsl:text>
+          <xsl:apply-templates select="*[2]"/>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:if test="count (following-sibling::Equality) &gt; 0">
+        <xsl:text>, </xsl:text>
+      </xsl:if>
+    </xsl:for-each>
     <xsl:call-template name="ensure-type"/>
     <xsl:text> as </xsl:text>
     <xsl:call-template name="apply-type"/>
@@ -2557,6 +2621,12 @@ and
         <xsl:text>1</xsl:text>
       </xsl:with-param>
     </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template match="Item[@kind=&apos;Type-Changing-Statement&apos; and not(Equality)]">
+    <xsl:message terminate="yes">
+      <xsl:text>Error: Type-Changing-Statement item lacks an Equality child.</xsl:text>
+    </xsl:message>
   </xsl:template>
 
   <xsl:template match="Equality">
@@ -2749,10 +2819,14 @@ and
   <xsl:template match="Item[@kind = &quot;Pragma&quot; and @spelling]">
     <xsl:text>::</xsl:text>
     <xsl:value-of select="@spelling"/>
+    <xsl:text>
+</xsl:text>
   </xsl:template>
 
   <xsl:template match="Item[@kind = &quot;Section-Pragma&quot;]">
     <xsl:text>begin</xsl:text>
+    <xsl:text>
+</xsl:text>
   </xsl:template>
 
   <xsl:template match="Item[@kind = &quot;Per-Cases&quot;]">
@@ -2762,6 +2836,8 @@ and
       <xsl:apply-templates select="*"/>
     </xsl:if>
     <xsl:text>;</xsl:text>
+    <xsl:text>
+</xsl:text>
   </xsl:template>
 
   <xsl:template match="Item[@kind = &quot;Case-Block&quot;]">
@@ -2772,6 +2848,9 @@ and
       </xsl:with-param>
       <xsl:with-param name="elems" select="*"/>
     </xsl:call-template>
+    <xsl:text>end;</xsl:text>
+    <xsl:text>
+</xsl:text>
   </xsl:template>
 
   <xsl:template match="Block[@kind = &quot;Case&quot;]">

@@ -2805,15 +2805,19 @@ and
   </xsl:template>
 
   <xsl:template match="FlexaryDisjunctive-Formula">
+    <xsl:text>(</xsl:text>
     <xsl:apply-templates select="*[1]"/>
     <xsl:text> or ... or </xsl:text>
     <xsl:apply-templates select="*[2]"/>
+    <xsl:text>)</xsl:text>
   </xsl:template>
 
   <xsl:template match="FlexaryConjunctive-Formula">
+    <xsl:text>(</xsl:text>
     <xsl:apply-templates select="*[1]"/>
     <xsl:text> &amp; ... &amp; </xsl:text>
     <xsl:apply-templates select="*[2]"/>
+    <xsl:text>)</xsl:text>
   </xsl:template>
 
   <xsl:template match="Item[@kind = &quot;Pragma&quot; and @spelling]">

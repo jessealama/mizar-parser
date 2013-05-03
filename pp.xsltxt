@@ -1700,11 +1700,11 @@ tpl [Canceled] {
 }
 
 tpl [FlexaryDisjunctive-Formula] {
-  apply [*[1]]; " or ... or "; apply [*[2]];
+  "("; apply [*[1]]; " or ... or "; apply [*[2]]; ")";
 }
 
 tpl [FlexaryConjunctive-Formula] {
-  apply [*[1]]; " & ... & "; apply [*[2]];
+  "("; apply [*[1]]; " & ... & "; apply [*[2]]; ")";
 }
 
 tpl [Item[@kind = "Pragma" and @spelling]] {
